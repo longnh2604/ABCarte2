@@ -1,0 +1,6 @@
+framework module Pods_ABCarte2 {
+  umbrella header "Pods-ABCarte2-umbrella.h"
+
+  export *
+  module * { export * }
+}

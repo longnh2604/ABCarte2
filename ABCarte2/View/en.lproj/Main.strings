@@ -1,0 +1,414 @@
+
+/* Class = "UILabel"; text = "血液型"; ObjectID = "088-5H-8qq"; */
+"088-5H-8qq.text" = "血液型";
+
+/* Class = "UILabel"; text = "2015年6月9日日曜日"; ObjectID = "1Jf-Dv-W3F"; */
+"1Jf-Dv-W3F.text" = "2015年6月9日日曜日";
+
+/* Class = "UILabel"; text = "1988年6月9日"; ObjectID = "1iZ-q2-1Gx"; */
+"1iZ-q2-1Gx.text" = "1988年6月9日";
+
+/* Class = "UILabel"; text = "メモ"; ObjectID = "1yW-5c-HMH"; */
+"1yW-5c-HMH.text" = "メモ";
+
+/* Class = "UITextField"; placeholder = "(マンション・建物名・号室)"; ObjectID = "2Bz-mI-Uny"; */
+"2Bz-mI-Uny.placeholder" = "(マンション・建物名・号室)";
+
+/* Class = "UILabel"; text = "2018年6月9日日曜日"; ObjectID = "2DH-te-V94"; */
+"2DH-te-V94.text" = "2018年6月9日日曜日";
+
+/* Class = "UIButton"; normalTitle = "受信"; ObjectID = "2SH-Qz-Fix"; */
+"2SH-Qz-Fix.normalTitle" = "受信";
+
+/* Class = "UIButton"; normalTitle = "未登録"; ObjectID = "2j0-1T-4kX"; */
+"2j0-1T-4kX.normalTitle" = "未登録";
+
+/* Class = "UILabel"; text = "最新来店日"; ObjectID = "2vq-Py-cdY"; */
+"2vq-Py-cdY.text" = "最新来店日";
+
+/* Class = "UIButton"; normalTitle = "備考1"; ObjectID = "38J-OS-5ca"; */
+"38J-OS-5ca.normalTitle" = "備考1";
+
+/* Class = "UITextField"; placeholder = "(都道府県)"; ObjectID = "3HO-7G-UfK"; */
+"3HO-7G-UfK.placeholder" = "(都道府県)";
+
+/* Class = "UIButton"; normalTitle = "新規登録"; ObjectID = "3fJ-yM-Fdq"; */
+"3fJ-yM-Fdq.normalTitle" = "新規登録";
+
+/* Class = "UITextField"; placeholder = "市区町村/郡"; ObjectID = "4yp-5r-12s"; */
+"4yp-5r-12s.placeholder" = "市区町村/郡";
+
+/* Class = "UIButton"; normalTitle = "名前"; ObjectID = "6lk-4J-ISW"; */
+"6lk-4J-ISW.normalTitle" = "名前";
+
+/* Class = "UILabel"; text = "連 絡 先"; ObjectID = "7GN-xR-W1r"; */
+"7GN-xR-W1r.text" = "連 絡 先";
+
+/* Class = "UITextField"; placeholder = "めい"; ObjectID = "7Z9-3Y-O6N"; */
+"7Z9-3Y-O6N.placeholder" = "めい";
+
+/* Class = "UITextField"; placeholder = "せい"; ObjectID = "7cI-70-43a"; */
+"7cI-70-43a.placeholder" = "せい";
+
+/* Class = "UITextField"; placeholder = "(せい)"; ObjectID = "7e2-HS-bfj"; */
+"7e2-HS-bfj.placeholder" = "(せい)";
+
+/* Class = "UIButton"; normalTitle = "設定"; ObjectID = "7ez-nB-TaF"; */
+"7ez-nB-TaF.normalTitle" = "設定";
+
+/* Class = "UILabel"; text = "初回来店日"; ObjectID = "8Ow-Tq-AIY"; */
+"8Ow-Tq-AIY.text" = "初回来店日";
+
+/* Class = "UITextField"; placeholder = "都道府県"; ObjectID = "900-HZ-Gdw"; */
+"900-HZ-Gdw.placeholder" = "都道府県";
+
+/* Class = "UILabel"; text = "メ ー ル"; ObjectID = "95N-Fs-EeC"; */
+"95N-Fs-EeC.text" = "メ ー ル";
+
+/* Class = "UIButton"; normalTitle = "未登録"; ObjectID = "977-Kh-o17"; */
+"977-Kh-o17.normalTitle" = "未登録";
+
+/* Class = "UILabel"; text = "男性"; ObjectID = "9bo-8j-FQR"; */
+"9bo-8j-FQR.text" = "男性";
+
+/* Class = "UIButton"; normalTitle = "未登録"; ObjectID = "9cu-O5-gxU"; */
+"9cu-O5-gxU.normalTitle" = "未登録";
+
+/* Class = "UIButton"; normalTitle = "設定"; ObjectID = "9l5-F0-MyP"; */
+"9l5-F0-MyP.normalTitle" = "設定";
+
+/* Class = "UIButton"; normalTitle = "QR コードでログイン"; ObjectID = "9sG-bq-eQI"; */
+"9sG-bq-eQI.normalTitle" = "QR コードでログイン";
+
+/* Class = "UIButton"; normalTitle = "検 索"; ObjectID = "ACP-tE-zu4"; */
+"ACP-tE-zu4.normalTitle" = "検 索";
+
+/* Class = "UITextField"; placeholder = "暗証番号を入力"; ObjectID = "AH4-Vf-bdK"; */
+"AH4-Vf-bdK.placeholder" = "暗証番号を入力";
+
+/* Class = "UILabel"; text = "女性"; ObjectID = "AOS-iq-zZm"; */
+"AOS-iq-zZm.text" = "女性";
+
+/* Class = "UITextField"; placeholder = "名を入力"; ObjectID = "AQD-lF-CW3"; */
+"AQD-lF-CW3.placeholder" = "名を入力";
+
+/* Class = "UILabel"; text = "緊  急  連  絡  先"; ObjectID = "ARb-2f-i7N"; */
+"ARb-2f-i7N.text" = "緊  急  連  絡  先";
+
+/* Class = "UILabel"; text = "ログイン"; ObjectID = "AXp-Ql-dwF"; */
+"AXp-Ql-dwF.text" = "ログイン";
+
+/* Class = "UILabel"; text = "メール"; ObjectID = "Ax9-V4-Inc"; */
+"Ax9-V4-Inc.text" = "メール";
+
+/* Class = "UITextField"; placeholder = "(名前を入力)"; ObjectID = "BEV-iR-bgY"; */
+"BEV-iR-bgY.placeholder" = "(名前を入力)";
+
+/* Class = "UIButton"; normalTitle = "登録情報一覧"; ObjectID = "CZ7-ZB-aYq"; */
+"CZ7-ZB-aYq.normalTitle" = "登録情報一覧";
+
+/* Class = "UITextField"; placeholder = "ユーザー名を入力"; ObjectID = "DPc-vT-13a"; */
+"DPc-vT-13a.placeholder" = "ユーザー名を入力";
+
+/* Class = "UILabel"; text = "AB型"; ObjectID = "EUM-5n-yga"; */
+"EUM-5n-yga.text" = "AB型";
+
+/* Class = "UILabel"; text = "趣味"; ObjectID = "Eui-xh-kZn"; */
+"Eui-xh-kZn.text" = "趣味";
+
+/* Class = "UILabel"; text = "電 話"; ObjectID = "Fcw-a8-Da8"; */
+"Fcw-a8-Da8.text" = "電 話";
+
+/* Class = "UILabel"; text = "名 前"; ObjectID = "HrM-RE-S9F"; */
+"HrM-RE-S9F.text" = "名 前";
+
+/* Class = "UITextField"; placeholder = "(電話番号入力(ハイフンなし)"; ObjectID = "IME-59-9Ql"; */
+"IME-59-9Ql.placeholder" = "(電話番号入力(ハイフンなし)";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "IbW-fs-Wvc"; */
+"IbW-fs-Wvc.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "性別"; ObjectID = "J2v-jg-d6f"; */
+"J2v-jg-d6f.text" = "性別";
+
+/* Class = "UILabel"; text = "記 入"; ObjectID = "J89-RY-zdC"; */
+"J89-RY-zdC.text" = "記 入";
+
+/* Class = "UILabel"; text = "女性"; ObjectID = "KlD-aE-PcL"; */
+"KlD-aE-PcL.text" = "女性";
+
+/* Class = "UILabel"; text = "女性"; ObjectID = "Krq-FQ-icl"; */
+"Krq-FQ-icl.text" = "女性";
+
+/* Class = "UIButton"; normalTitle = "ログアウト"; ObjectID = "Lgk-N8-8aW"; */
+"Lgk-N8-8aW.normalTitle" = "ログアウト";
+
+/* Class = "UILabel"; text = "顧客番号"; ObjectID = "M32-NH-JI7"; */
+"M32-NH-JI7.text" = "顧客番号";
+
+/* Class = "UILabel"; text = "か な"; ObjectID = "MQd-5n-3ES"; */
+"MQd-5n-3ES.text" = "か な";
+
+/* Class = "UILabel"; text = "言語"; ObjectID = "MYw-ie-GVH"; */
+"MYw-ie-GVH.text" = "言語";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "OPK-b9-jbc"; */
+"OPK-b9-jbc.normalTitle" = "Button";
+
+/* Class = "UIButton"; normalTitle = "カルテ一覧"; ObjectID = "Ovy-oF-VNB"; */
+"Ovy-oF-VNB.normalTitle" = "カルテ一覧";
+
+/* Class = "UILabel"; text = "様"; ObjectID = "PdQ-Ek-gc3"; */
+"PdQ-Ek-gc3.text" = "様";
+
+/* Class = "UIButton"; normalTitle = "未開封"; ObjectID = "RL3-T3-S5Y"; */
+"RL3-T3-S5Y.normalTitle" = "未開封";
+
+/* Class = "UITextField"; placeholder = "姓を入力"; ObjectID = "RRZ-LG-EgA"; */
+"RRZ-LG-EgA.placeholder" = "姓を入力";
+
+/* Class = "UILabel"; text = "xTR-021568"; ObjectID = "S8T-2F-p1D"; */
+"S8T-2F-p1D.text" = "xTR-021568";
+
+/* Class = "UILabel"; text = "備考 2"; ObjectID = "SBT-y1-fed"; */
+"SBT-y1-fed.text" = "備考 2";
+
+/* Class = "UILabel"; text = "趣 味"; ObjectID = "SCC-Xc-YO7"; */
+"SCC-Xc-YO7.text" = "趣 味";
+
+/* Class = "UILabel"; text = "趣味"; ObjectID = "Sbo-qN-pbw"; */
+"Sbo-qN-pbw.text" = "趣味";
+
+/* Class = "UITextField"; placeholder = "(入力)"; ObjectID = "TO5-qO-NDs"; */
+"TO5-qO-NDs.placeholder" = "(入力)";
+
+/* Class = "UIButton"; normalTitle = "備考2"; ObjectID = "TSa-4g-oep"; */
+"TSa-4g-oep.normalTitle" = "備考2";
+
+/* Class = "UILabel"; text = "最終更新日:2018年1月10日 水曜日"; ObjectID = "TbT-Lu-hdL"; */
+"TbT-Lu-hdL.text" = "最終更新日:2018年1月10日 水曜日";
+
+/* Class = "UILabel"; text = "趣 味"; ObjectID = "TxH-BD-b0e"; */
+"TxH-BD-b0e.text" = "趣 味";
+
+/* Class = "UILabel"; text = "携帯"; ObjectID = "Vtj-Yc-HIc"; */
+"Vtj-Yc-HIc.text" = "携帯";
+
+/* Class = "UIButton"; normalTitle = "住所変換"; ObjectID = "WDZ-un-NhP"; */
+"WDZ-un-NhP.normalTitle" = "住所変換";
+
+/* Class = "UIButton"; normalTitle = "要対応"; ObjectID = "XBM-aB-TU3"; */
+"XBM-aB-TU3.normalTitle" = "要対応";
+
+/* Class = "UILabel"; text = "生年月日"; ObjectID = "YSL-FH-HBV"; */
+"YSL-FH-HBV.text" = "生年月日";
+
+/* Class = "UIButton"; normalTitle = "未登録"; ObjectID = "Z8u-hK-d1k"; */
+"Z8u-hK-d1k.normalTitle" = "未登録";
+
+/* Class = "UILabel"; text = "備考 1"; ObjectID = "ZAc-Y8-e3g"; */
+"ZAc-Y8-e3g.text" = "備考 1";
+
+/* Class = "UILabel"; text = "その他の連絡の方法ができます"; ObjectID = "ZGk-qY-Z5f"; */
+"ZGk-qY-Z5f.text" = "その他の連絡の方法ができます";
+
+/* Class = "UIButton"; normalTitle = "ログイン"; ObjectID = "aEO-n9-9zw"; */
+"aEO-n9-9zw.normalTitle" = "ログイン";
+
+/* Class = "UITextField"; placeholder = " 以 降 の井 住 上所"; ObjectID = "aIZ-jR-8tv"; */
+"aIZ-jR-8tv.placeholder" = " 以 降 の井 住 上所";
+
+/* Class = "UILabel"; text = "最新来店日"; ObjectID = "as2-cE-t1W"; */
+"as2-cE-t1W.text" = "最新来店日";
+
+/* Class = "UIButton"; normalTitle = "エラー"; ObjectID = "asx-if-Iyt"; */
+"asx-if-Iyt.normalTitle" = "エラー";
+
+/* Class = "UITextField"; placeholder = "マンション・建物名・号室"; ObjectID = "auZ-WH-6h2"; */
+"auZ-WH-6h2.placeholder" = "マンション・建物名・号室";
+
+/* Class = "UITextField"; placeholder = "設定されていません"; ObjectID = "b0r-3a-e1z"; */
+"b0r-3a-e1z.placeholder" = "設定されていません";
+
+/* Class = "UITextField"; placeholder = "(名を入力)"; ObjectID = "b8g-hK-FI8"; */
+"b8g-hK-FI8.placeholder" = "(名を入力)";
+
+/* Class = "UITextField"; placeholder = "郵便番号"; ObjectID = "bLY-1e-2Iy"; */
+"bLY-1e-2Iy.placeholder" = "郵便番号";
+
+/* Class = "UILabel"; text = "住所"; ObjectID = "bVr-IQ-YMM"; */
+"bVr-IQ-YMM.text" = "住所";
+
+/* Class = "UILabel"; text = "お客様番号"; ObjectID = "cWf-Kz-i3a"; */
+"cWf-Kz-i3a.text" = "お客様番号";
+
+/* Class = "UILabel"; text = "住 所"; ObjectID = "caA-Ft-YPr"; */
+"caA-Ft-YPr.text" = "住 所";
+
+/* Class = "UILabel"; text = "血 液 型"; ObjectID = "cwF-KH-kbb"; */
+"cwF-KH-kbb.text" = "血 液 型";
+
+/* Class = "UILabel"; text = "性 別"; ObjectID = "dAp-k4-TMp"; */
+"dAp-k4-TMp.text" = "性 別";
+
+/* Class = "UITextField"; placeholder = "Aa"; ObjectID = "dQb-aK-4Rz"; */
+"dQb-aK-4Rz.placeholder" = "Aa";
+
+/* Class = "UILabel"; text = "xTR-021568"; ObjectID = "diT-pE-d1Y"; */
+"diT-pE-d1Y.text" = "xTR-021568";
+
+/* Class = "UILabel"; text = "メール受信許可"; ObjectID = "dqt-eI-5Og"; */
+"dqt-eI-5Og.text" = "メール受信許可";
+
+/* Class = "UIButton"; normalTitle = "画像挿入"; ObjectID = "eJQ-6c-p4b"; */
+"eJQ-6c-p4b.normalTitle" = "画像挿入";
+
+/* Class = "UITextField"; placeholder = "名前を入力"; ObjectID = "eLr-qa-w6G"; */
+"eLr-qa-w6G.placeholder" = "名前を入力";
+
+/* Class = "UILabel"; text = "井上 直子"; ObjectID = "eg8-lr-O4g"; */
+"eg8-lr-O4g.text" = "井上 直子";
+
+/* Class = "UISegmentedControl"; ei3-qF-omW.segmentTitles[0] = "Japanese"; ObjectID = "ei3-qF-omW"; */
+"ei3-qF-omW.segmentTitles[0]" = "Japanese";
+
+/* Class = "UISegmentedControl"; ei3-qF-omW.segmentTitles[1] = "English"; ObjectID = "ei3-qF-omW"; */
+"ei3-qF-omW.segmentTitles[1]" = "English";
+
+/* Class = "UIButton"; normalTitle = "画像挿入"; ObjectID = "ekE-WP-pEE"; */
+"ekE-WP-pEE.normalTitle" = "画像挿入";
+
+/* Class = "UILabel"; text = "VER 1.0"; ObjectID = "gIJ-Hs-FTi"; */
+"gIJ-Hs-FTi.text" = "VER 1.0";
+
+/* Class = "UIButton"; normalTitle = "J.BROW SIMULATOR"; ObjectID = "gNO-wb-RBw"; */
+"gNO-wb-RBw.normalTitle" = "J.BROW SIMULATOR";
+
+/* Class = "UIButton"; normalTitle = "完了"; ObjectID = "gTP-9C-ryD"; */
+"gTP-9C-ryD.normalTitle" = "完了";
+
+/* Class = "UILabel"; text = "か     な"; ObjectID = "gbG-as-OhI"; */
+"gbG-as-OhI.text" = "か     な";
+
+/* Class = "UILabel"; text = "メール受信許可"; ObjectID = "gjf-9f-Ivu"; */
+"gjf-9f-Ivu.text" = "メール受信許可";
+
+/* Class = "UIButton"; normalTitle = "未登録"; ObjectID = "hB1-2K-N80"; */
+"hB1-2K-N80.normalTitle" = "未登録";
+
+/* Class = "UITextField"; placeholder = "パスワードを入力"; ObjectID = "hcr-4v-aJd"; */
+"hcr-4v-aJd.placeholder" = "パスワードを入力";
+
+/* Class = "UIButton"; normalTitle = "住所変換"; ObjectID = "heN-dn-s4d"; */
+"heN-dn-s4d.normalTitle" = "住所変換";
+
+/* Class = "UILabel"; text = "いのうえ なおこ"; ObjectID = "hzi-f9-PwT"; */
+"hzi-f9-PwT.text" = "いのうえ なおこ";
+
+/* Class = "UITextField"; placeholder = "(めい)"; ObjectID = "jLr-nf-zXb"; */
+"jLr-nf-zXb.placeholder" = "(めい)";
+
+/* Class = "UILabel"; text = "担当"; ObjectID = "jRf-xu-C6X"; */
+"jRf-xu-C6X.text" = "担当";
+
+/* Class = "UILabel"; text = "2018年1月10日 水曜日"; ObjectID = "kJi-rd-auq"; */
+"kJi-rd-auq.text" = "2018年1月10日 水曜日";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "lSu-Gy-sg6"; */
+"lSu-Gy-sg6.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "作成日:2018年1月10日 水曜日"; ObjectID = "lVv-9i-wzS"; */
+"lVv-9i-wzS.text" = "作成日:2018年1月10日 水曜日";
+
+/* Class = "UILabel"; text = "生年月日"; ObjectID = "mm1-tB-QhV"; */
+"mm1-tB-QhV.text" = "生年月日";
+
+/* Class = "UITextField"; placeholder = "(姓を入力)"; ObjectID = "mxv-rU-nbB"; */
+"mxv-rU-nbB.placeholder" = "(姓を入力)";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "oDi-eS-lF3"; */
+"oDi-eS-lF3.normalTitle" = "Button";
+
+/* Class = "UITextField"; placeholder = "(市区町村/郡)"; ObjectID = "oSB-Mw-IAV"; */
+"oSB-Mw-IAV.placeholder" = "(市区町村/郡)";
+
+/* Class = "UIButton"; normalTitle = "登  録"; ObjectID = "ogc-D4-iLM"; */
+"ogc-D4-iLM.normalTitle" = "登  録";
+
+/* Class = "UIButton"; normalTitle = "登  録"; ObjectID = "pRn-fD-emj"; */
+"pRn-fD-emj.normalTitle" = "登  録";
+
+/* Class = "UILabel"; text = "性 別"; ObjectID = "q3o-la-mss"; */
+"q3o-la-mss.text" = "性 別";
+
+/* Class = "UILabel"; text = "血液型"; ObjectID = "qAa-qU-RaE"; */
+"qAa-qU-RaE.text" = "血液型";
+
+/* Class = "UILabel"; text = "1983年12月10日"; ObjectID = "qr2-5J-bnu"; */
+"qr2-5J-bnu.text" = "1983年12月10日";
+
+/* Class = "UITextField"; placeholder = "設定されていません"; ObjectID = "rb0-iU-mKF"; */
+"rb0-iU-mKF.placeholder" = "設定されていません";
+
+/* Class = "UILabel"; text = "担  当  者"; ObjectID = "rrn-rE-fFa"; */
+"rrn-rE-fFa.text" = "担  当  者";
+
+/* Class = "UILabel"; text = "生年月日"; ObjectID = "ruD-of-IeP"; */
+"ruD-of-IeP.text" = "生年月日";
+
+/* Class = "UIButton"; normalTitle = "同意書"; ObjectID = "sAU-8h-vTb"; */
+"sAU-8h-vTb.normalTitle" = "同意書";
+
+/* Class = "UILabel"; text = "顧  客  番  号"; ObjectID = "tBp-QI-UTq"; */
+"tBp-QI-UTq.text" = "顧  客  番  号";
+
+/* Class = "UITextField"; placeholder = "名前を入力"; ObjectID = "tcS-Tz-xho"; */
+"tcS-Tz-xho.placeholder" = "名前を入力";
+
+/* Class = "UILabel"; text = "顧 客 情 報 を 登 録 / 編 集"; ObjectID = "tn1-eo-J1u"; */
+"tn1-eo-J1u.text" = "顧 客 情 報 を 登 録 / 編 集";
+
+/* Class = "UILabel"; text = "検索する条件を選んでください"; ObjectID = "udF-07-vel"; */
+"udF-07-vel.text" = "検索する条件を選んでください";
+
+/* Class = "UILabel"; text = "名     前"; ObjectID = "uxe-SI-9th"; */
+"uxe-SI-9th.text" = "名     前";
+
+/* Class = "UIButton"; normalTitle = "取  消"; ObjectID = "v61-Ix-ILU"; */
+"v61-Ix-ILU.normalTitle" = "取  消";
+
+/* Class = "UILabel"; text = "お客様を新規作成します。必要事項を記入してください。"; ObjectID = "v7c-BS-RIy"; */
+"v7c-BS-RIy.text" = "お客様を新規作成します。必要事項を記入してください。";
+
+/* Class = "UIButton"; normalTitle = "質問票"; ObjectID = "vYr-M2-ws7"; */
+"vYr-M2-ws7.normalTitle" = "質問票";
+
+/* Class = "UILabel"; text = "顧客番号"; ObjectID = "w3N-pV-cKn"; */
+"w3N-pV-cKn.text" = "顧客番号";
+
+/* Class = "UIButton"; normalTitle = "取  消"; ObjectID = "wQ4-3f-tQ6"; */
+"wQ4-3f-tQ6.normalTitle" = "取  消";
+
+/* Class = "UITextField"; placeholder = "(設定されていません)"; ObjectID = "xIu-yF-yZk"; */
+"xIu-yF-yZk.placeholder" = "(設定されていません)";
+
+/* Class = "UILabel"; text = "080-0000-0000"; ObjectID = "xVE-3x-N0F"; */
+"xVE-3x-N0F.text" = "080-0000-0000";
+
+/* Class = "UITextField"; placeholder = "設定されていません"; ObjectID = "xeC-hK-bxw"; */
+"xeC-hK-bxw.placeholder" = "設定されていません";
+
+/* Class = "UITextField"; placeholder = "郵便番号(ハイフンなし)"; ObjectID = "z6Y-5z-Slg"; */
+"z6Y-5z-Slg.placeholder" = "郵便番号(ハイフンなし)";
+
+/* Class = "UIButton"; normalTitle = "削 除"; ObjectID = "zA3-te-Y7m"; */
+"zA3-te-Y7m.normalTitle" = "削 除";
+
+/* Class = "UILabel"; text = "若しくは"; ObjectID = "zN4-Mf-NGF"; */
+"zN4-Mf-NGF.text" = "若しくは";
+
+/* Class = "UILabel"; text = "生年月日"; ObjectID = "zdv-93-fvT"; */
+"zdv-93-fvT.text" = "生年月日";
+
+/* Class = "UILabel"; text = "お客様名で検索"; ObjectID = "zj5-66-CMx"; */
+"zj5-66-CMx.text" = "お客様名で検索";

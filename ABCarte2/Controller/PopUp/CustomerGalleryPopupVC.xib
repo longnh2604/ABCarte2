@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CustomerGalleryPopupVC" customModule="ABCarte2" customModuleProvider="target">
+            <connections>
+                <outlet property="btnCancel" destination="FnA-b3-WlA" id="HEX-WB-e26"/>
+                <outlet property="btnSave" destination="lG0-M0-B6t" id="4s1-hc-f4I"/>
+                <outlet property="collectionGallery" destination="CxD-AW-Tqw" id="M1V-kg-sc1"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="800"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="CxD-AW-Tqw">
+                    <rect key="frame" x="10" y="10" width="580" height="740"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="C5U-fh-l2d">
+                        <size key="itemSize" width="140" height="200"/>
+                        <size key="headerReferenceSize" width="30" height="30"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="5" minY="5" maxX="5" maxY="5"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lG0-M0-B6t" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                    <rect key="frame" x="175" y="760" width="90" height="30"/>
+                    <color key="backgroundColor" red="0.0" green="0.32852089410000002" blue="0.57488495110000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="9fj-XA-r71"/>
+                        <constraint firstAttribute="width" constant="90" id="GWM-KV-wiz"/>
+                    </constraints>
+                    <state key="normal" title="保存">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="0.0"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="onSave:" destination="-1" eventType="touchUpInside" id="MVN-fI-Gov"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FnA-b3-WlA" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                    <rect key="frame" x="335" y="760" width="90" height="30"/>
+                    <color key="backgroundColor" red="0.58072251080000004" green="0.066734083" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="GsV-Kx-e3i"/>
+                        <constraint firstAttribute="width" constant="90" id="sdJ-F7-Zdb"/>
+                    </constraints>
+                    <state key="normal" title="取消">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="0.0"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="onCancel:" destination="-1" eventType="touchUpInside" id="LxR-0h-Yxk"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="CxD-AW-Tqw" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="10" id="1ji-zZ-6Vq"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="CxD-AW-Tqw" secondAttribute="trailing" constant="10" id="AaP-VY-709"/>
+                <constraint firstItem="CxD-AW-Tqw" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="10" id="I31-WF-8FR"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="FnA-b3-WlA" secondAttribute="bottom" constant="10" id="N4C-61-ikU"/>
+                <constraint firstItem="FnA-b3-WlA" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" constant="80" id="Sde-eo-4YV"/>
+                <constraint firstItem="lG0-M0-B6t" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" constant="-80" id="YaR-A5-jgR"/>
+                <constraint firstItem="lG0-M0-B6t" firstAttribute="top" secondItem="CxD-AW-Tqw" secondAttribute="bottom" constant="10" id="fjL-xJ-Sry"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="lG0-M0-B6t" secondAttribute="bottom" constant="10" id="oZd-1I-msU"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <point key="canvasLocation" x="213.59999999999999" y="-19.340329835082461"/>
+        </view>
+    </objects>
+</document>

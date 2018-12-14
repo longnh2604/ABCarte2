@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="SectionHeader" id="NMB-BF-8PI" customClass="SectionHeader" customModule="ABCarte2" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="768" height="40"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CPk-it-TaF">
+                    <rect key="frame" x="40" y="9.5" width="658" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.83529411760000005" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="CPk-it-TaF" firstAttribute="leading" secondItem="NMB-BF-8PI" secondAttribute="leadingMargin" constant="20" id="7lp-i3-5r5"/>
+                <constraint firstAttribute="trailingMargin" secondItem="CPk-it-TaF" secondAttribute="trailing" constant="50" id="FPS-fj-n7b"/>
+                <constraint firstItem="CPk-it-TaF" firstAttribute="centerY" secondItem="NMB-BF-8PI" secondAttribute="centerY" id="nd8-pQ-Ehn"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="nXq-UO-JlW"/>
+            <connections>
+                <outlet property="sectionLabel" destination="CPk-it-TaF" id="Vfx-DX-aMK"/>
+            </connections>
+        </collectionReusableView>
+    </objects>
+</document>

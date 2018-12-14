@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DailyExaminationPopupVC" customModule="ABCarte2" customModuleProvider="target">
+            <connections>
+                <outlet property="btnAdd" destination="aGX-r9-Ges" id="EMs-5Z-Tez"/>
+                <outlet property="btnClose" destination="ioP-gc-ojS" id="srI-t3-Sqg"/>
+                <outlet property="btnConsent" destination="Mlx-1F-h6s" id="Rse-MZ-MQR"/>
+                <outlet property="btnCounselling" destination="QOd-0R-OFU" id="ezW-0n-ktR"/>
+                <outlet property="btnEdit" destination="tgz-11-vbt" id="f7H-yg-HzQ"/>
+                <outlet property="btnPreview" destination="899-rM-ALr" id="xn7-fK-GnO"/>
+                <outlet property="imvDoc" destination="u2J-qv-dpn" id="WMr-gI-enz"/>
+                <outlet property="lblCreated" destination="Ba7-gp-Y3b" id="wgK-V8-pXr"/>
+                <outlet property="lblTotalPage" destination="VQR-69-C48" id="6iq-gj-A6c"/>
+                <outlet property="tblCusDoc" destination="OwZ-FA-OPi" id="hgy-3m-zwp"/>
+                <outlet property="tblExamDoc" destination="Voh-Pq-MjM" id="jAu-Iv-uXT"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="viewOutside" destination="pSd-eE-zGW" id="x0z-e3-zq9"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="700" height="800"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pSd-eE-zGW">
+                    <rect key="frame" x="20" y="70" width="660" height="710"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nophotoIcon.png" translatesAutoresizingMaskIntoConstraints="NO" id="u2J-qv-dpn">
+                            <rect key="frame" x="320" y="51" width="330" height="440"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="440" id="N1J-j9-yzG"/>
+                                <constraint firstAttribute="width" constant="330" id="hEu-q7-48p"/>
+                            </constraints>
+                        </imageView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="899-rM-ALr" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                            <rect key="frame" x="610" y="451" width="40" height="40"/>
+                            <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="N67-Yu-qtP"/>
+                                <constraint firstAttribute="width" constant="40" id="cPH-t1-Ans"/>
+                            </constraints>
+                            <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                            <state key="normal" image="icon_zoom_black.png"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="20"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="onPreview:" destination="-1" eventType="touchUpInside" id="Xyg-ci-7Pq"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="合計ページ:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VQR-69-C48">
+                            <rect key="frame" x="320" y="511" width="330" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tgz-11-vbt" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                            <rect key="frame" x="430" y="660" width="90" height="30"/>
+                            <color key="backgroundColor" red="0.4549019608" green="0.20000000000000001" blue="0.070588235289999995" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="aAG-es-4Y5"/>
+                            </constraints>
+                            <state key="normal" title="編集">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </state>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="5"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="onEditDocument:" destination="-1" eventType="touchUpInside" id="96X-mA-etd"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aGX-r9-Ges" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                            <rect key="frame" x="320" y="660" width="90" height="30"/>
+                            <color key="backgroundColor" red="0.0" green="0.56904578210000001" blue="0.57461684940000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="90" id="rNf-cw-zG2"/>
+                                <constraint firstAttribute="height" constant="30" id="yTe-jt-RS8"/>
+                            </constraints>
+                            <state key="normal" title="追加">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </state>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="5"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="onAddDocumentFromTemplate:" destination="-1" eventType="touchUpInside" id="2Ks-ZJ-IsH"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="テンプレート" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lh6-om-kfQ">
+                            <rect key="frame" x="0.0" y="20" width="300" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <tableView clipsSubviews="YES" tag="2" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="OwZ-FA-OPi">
+                            <rect key="frame" x="0.0" y="362" width="300" height="328"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </tableView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="お客様データ" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8qf-3k-HZE">
+                            <rect key="frame" x="0.0" y="321" width="300" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="プレビュー" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gax-02-hXu">
+                            <rect key="frame" x="320" y="20" width="87" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ioP-gc-ojS" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                            <rect key="frame" x="540" y="660" width="90" height="30"/>
+                            <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="udz-49-pnX"/>
+                            </constraints>
+                            <state key="normal" title="閉じる">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </state>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="5"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="onClose:" destination="-1" eventType="touchUpInside" id="7v4-7a-GBp"/>
+                            </connections>
+                        </button>
+                        <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Voh-Pq-MjM">
+                            <rect key="frame" x="0.0" y="51" width="300" height="250"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="250" id="cD3-4x-nnh"/>
+                            </constraints>
+                        </tableView>
+                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="作成日：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ba7-gp-Y3b">
+                            <rect key="frame" x="320" y="552" width="330" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="gax-02-hXu" firstAttribute="centerY" secondItem="Lh6-om-kfQ" secondAttribute="centerY" id="0WK-zt-g4n"/>
+                        <constraint firstItem="8qf-3k-HZE" firstAttribute="trailing" secondItem="Voh-Pq-MjM" secondAttribute="trailing" id="7pT-vJ-mca"/>
+                        <constraint firstItem="ioP-gc-ojS" firstAttribute="leading" secondItem="tgz-11-vbt" secondAttribute="trailing" constant="20" id="ASF-gT-HSm"/>
+                        <constraint firstItem="OwZ-FA-OPi" firstAttribute="top" secondItem="8qf-3k-HZE" secondAttribute="bottom" constant="20" id="AzA-Nu-GDX"/>
+                        <constraint firstItem="u2J-qv-dpn" firstAttribute="top" secondItem="Voh-Pq-MjM" secondAttribute="top" id="E8i-9Q-JRa"/>
+                        <constraint firstItem="899-rM-ALr" firstAttribute="trailing" secondItem="u2J-qv-dpn" secondAttribute="trailing" id="IlL-Gc-82a"/>
+                        <constraint firstItem="899-rM-ALr" firstAttribute="bottom" secondItem="u2J-qv-dpn" secondAttribute="bottom" id="JRT-UV-Nbl"/>
+                        <constraint firstItem="8qf-3k-HZE" firstAttribute="leading" secondItem="Voh-Pq-MjM" secondAttribute="leading" id="JZB-zF-kxi"/>
+                        <constraint firstItem="ioP-gc-ojS" firstAttribute="centerY" secondItem="aGX-r9-Ges" secondAttribute="centerY" id="NVL-S1-bYj"/>
+                        <constraint firstItem="OwZ-FA-OPi" firstAttribute="trailing" secondItem="Voh-Pq-MjM" secondAttribute="trailing" id="NvZ-HI-PzL"/>
+                        <constraint firstItem="VQR-69-C48" firstAttribute="leading" secondItem="u2J-qv-dpn" secondAttribute="leading" id="QzS-YK-eQD"/>
+                        <constraint firstItem="Ba7-gp-Y3b" firstAttribute="leading" secondItem="VQR-69-C48" secondAttribute="leading" id="SvY-kX-dmK"/>
+                        <constraint firstItem="aGX-r9-Ges" firstAttribute="leading" secondItem="OwZ-FA-OPi" secondAttribute="trailing" constant="20" id="WAM-RZ-RY6"/>
+                        <constraint firstItem="OwZ-FA-OPi" firstAttribute="leading" secondItem="8qf-3k-HZE" secondAttribute="leading" id="X2T-T8-dUF"/>
+                        <constraint firstItem="VQR-69-C48" firstAttribute="trailing" secondItem="u2J-qv-dpn" secondAttribute="trailing" id="Z4W-BP-fRS"/>
+                        <constraint firstItem="VQR-69-C48" firstAttribute="top" secondItem="u2J-qv-dpn" secondAttribute="bottom" constant="20" id="aNL-MA-tCh"/>
+                        <constraint firstAttribute="trailing" secondItem="u2J-qv-dpn" secondAttribute="trailing" constant="10" id="cJl-rF-pXf"/>
+                        <constraint firstItem="aGX-r9-Ges" firstAttribute="bottom" secondItem="OwZ-FA-OPi" secondAttribute="bottom" id="dpC-ut-Q17"/>
+                        <constraint firstAttribute="bottom" secondItem="OwZ-FA-OPi" secondAttribute="bottom" constant="20" id="eZt-Y9-4L1"/>
+                        <constraint firstItem="u2J-qv-dpn" firstAttribute="leading" secondItem="Voh-Pq-MjM" secondAttribute="trailing" constant="20" id="fCm-pR-jHD"/>
+                        <constraint firstItem="Lh6-om-kfQ" firstAttribute="top" secondItem="pSd-eE-zGW" secondAttribute="top" constant="20" id="gdH-Wc-mBb"/>
+                        <constraint firstItem="tgz-11-vbt" firstAttribute="centerY" secondItem="aGX-r9-Ges" secondAttribute="centerY" id="jH0-Na-G7k"/>
+                        <constraint firstItem="ioP-gc-ojS" firstAttribute="width" secondItem="aGX-r9-Ges" secondAttribute="width" id="ldv-5k-9pv"/>
+                        <constraint firstItem="gax-02-hXu" firstAttribute="leading" secondItem="Lh6-om-kfQ" secondAttribute="trailing" constant="20" id="oie-DB-Vqg"/>
+                        <constraint firstItem="Ba7-gp-Y3b" firstAttribute="trailing" secondItem="VQR-69-C48" secondAttribute="trailing" id="otS-M2-ZHQ"/>
+                        <constraint firstItem="tgz-11-vbt" firstAttribute="width" secondItem="aGX-r9-Ges" secondAttribute="width" id="p5f-6D-i6e"/>
+                        <constraint firstItem="Voh-Pq-MjM" firstAttribute="leading" secondItem="Lh6-om-kfQ" secondAttribute="leading" id="pff-Y4-pJ5"/>
+                        <constraint firstItem="tgz-11-vbt" firstAttribute="leading" secondItem="aGX-r9-Ges" secondAttribute="trailing" constant="20" id="qJT-Ys-pED"/>
+                        <constraint firstItem="Lh6-om-kfQ" firstAttribute="trailing" secondItem="Voh-Pq-MjM" secondAttribute="trailing" id="qd0-kS-8Yq"/>
+                        <constraint firstItem="Voh-Pq-MjM" firstAttribute="top" secondItem="Lh6-om-kfQ" secondAttribute="bottom" constant="10" id="voL-CF-2sh"/>
+                        <constraint firstItem="Ba7-gp-Y3b" firstAttribute="top" secondItem="VQR-69-C48" secondAttribute="bottom" constant="20" id="wfo-b3-Lbu"/>
+                        <constraint firstItem="8qf-3k-HZE" firstAttribute="top" secondItem="Voh-Pq-MjM" secondAttribute="bottom" constant="20" id="yLo-Qh-UEB"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QOd-0R-OFU" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                    <rect key="frame" x="20" y="10" width="200" height="50"/>
+                    <color key="backgroundColor" red="0.0" green="0.56904578210000001" blue="0.57461684940000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="200" id="HqA-Jq-Zko"/>
+                        <constraint firstAttribute="height" constant="50" id="cUs-BE-khm"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                    <state key="normal" title="質問票">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="2"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                            <color key="value" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="onDocumentSelect:" destination="-1" eventType="touchUpInside" id="uFn-Pb-D6Z"/>
+                    </connections>
+                </button>
+                <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mlx-1F-h6s" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                    <rect key="frame" x="250" y="10" width="200" height="50"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                    <state key="normal" title="同意書">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="2"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                            <color key="value" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="onDocumentSelect:" destination="-1" eventType="touchUpInside" id="4Kh-Fw-mXZ"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="0.066666666669999999" green="0.1647058824" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="pSd-eE-zGW" firstAttribute="top" secondItem="QOd-0R-OFU" secondAttribute="bottom" constant="10" id="76j-rN-rj9"/>
+                <constraint firstItem="Mlx-1F-h6s" firstAttribute="centerY" secondItem="QOd-0R-OFU" secondAttribute="centerY" id="92t-i1-JaW"/>
+                <constraint firstItem="Mlx-1F-h6s" firstAttribute="height" secondItem="QOd-0R-OFU" secondAttribute="height" id="Fgj-FY-H90"/>
+                <constraint firstItem="Mlx-1F-h6s" firstAttribute="leading" secondItem="QOd-0R-OFU" secondAttribute="trailing" constant="30" id="Ibl-sm-6dX"/>
+                <constraint firstItem="pSd-eE-zGW" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" constant="-20" id="Kg5-Pe-DlD"/>
+                <constraint firstItem="Lh6-om-kfQ" firstAttribute="leading" secondItem="QOd-0R-OFU" secondAttribute="leading" id="Oi2-mn-ssa"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="pSd-eE-zGW" secondAttribute="trailing" constant="20" id="VWu-Sw-B37"/>
+                <constraint firstItem="QOd-0R-OFU" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="10" id="d87-i9-W38"/>
+                <constraint firstItem="QOd-0R-OFU" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="g2P-V2-4ef"/>
+                <constraint firstItem="Mlx-1F-h6s" firstAttribute="width" secondItem="QOd-0R-OFU" secondAttribute="width" id="pGH-kt-G0a"/>
+                <constraint firstItem="pSd-eE-zGW" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="ptL-eF-6sd"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <point key="canvasLocation" x="353.60000000000002" y="58.47076461769116"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="icon_zoom_black.png" width="100" height="100"/>
+        <image name="nophotoIcon.png" width="662" height="663"/>
+    </resources>
+</document>

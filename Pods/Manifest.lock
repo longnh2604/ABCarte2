@@ -1,0 +1,103 @@
+PODS:
+  - Alamofire (4.7.3)
+  - BarcodeScanner (4.1.3)
+  - Charts (3.2.1):
+    - Charts/Core (= 3.2.1)
+  - Charts/Core (3.2.1)
+  - Crashlytics (3.11.1):
+    - Fabric (~> 1.8.1)
+  - EFColorPicker (1.1.1)
+  - ExpyTableView (1.0)
+  - Fabric (1.8.1)
+  - IQKeyboardManagerSwift (6.0.5)
+  - JGProgressHUD (2.0.3)
+  - JLStickerTextView (0.1.2)
+  - lottie-ios (2.5.2)
+  - NXDrawKit (0.6.1)
+  - Realm (3.11.1):
+    - Realm/Headers (= 3.11.1)
+  - Realm/Headers (3.11.1)
+  - RealmSwift (3.11.1):
+    - Realm (= 3.11.1)
+  - SDWebImage (4.4.2):
+    - SDWebImage/Core (= 4.4.2)
+  - SDWebImage/Core (4.4.2)
+  - SnapKit (4.2.0)
+  - SwiftyJSON (4.1.0)
+  - TransitionButton (0.5.2)
+
+DEPENDENCIES:
+  - Alamofire
+  - BarcodeScanner (~> 4.1.3)
+  - Charts
+  - Crashlytics
+  - EFColorPicker (~> 1.1.0)
+  - ExpyTableView (~> 1.0.0)
+  - Fabric
+  - IQKeyboardManagerSwift (~> 6.0.2)
+  - JGProgressHUD (~> 2.0.3)
+  - JLStickerTextView (from `https://github.com/luiyezheng/JLStickerTextView.git`)
+  - lottie-ios
+  - NXDrawKit (~> 0.6.1)
+  - RealmSwift
+  - SDWebImage (~> 4.4.1)
+  - SnapKit
+  - SwiftyJSON (~> 4.1.0)
+  - TransitionButton (from `https://github.com/AladinWay/TransitionButton.git`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - BarcodeScanner
+    - Charts
+    - Crashlytics
+    - EFColorPicker
+    - ExpyTableView
+    - Fabric
+    - IQKeyboardManagerSwift
+    - JGProgressHUD
+    - lottie-ios
+    - NXDrawKit
+    - Realm
+    - RealmSwift
+    - SDWebImage
+    - SnapKit
+    - SwiftyJSON
+
+EXTERNAL SOURCES:
+  JLStickerTextView:
+    :git: https://github.com/luiyezheng/JLStickerTextView.git
+  TransitionButton:
+    :git: https://github.com/AladinWay/TransitionButton.git
+
+CHECKOUT OPTIONS:
+  JLStickerTextView:
+    :commit: 4c6eb06f0bd312762084b3ea1b559b60cf98c58d
+    :git: https://github.com/luiyezheng/JLStickerTextView.git
+  TransitionButton:
+    :commit: 95e52cc8a0919ca9b0b38dda0281194e53ead175
+    :git: https://github.com/AladinWay/TransitionButton.git
+
+SPEC CHECKSUMS:
+  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  BarcodeScanner: fce1ad2b3f28286b1ab5091fe0979789618bee27
+  Charts: f122fb70b19847fa5817d018b77d6c5a2296ab25
+  Crashlytics: ca7ab4bc304aa216bdc2e4c1a96389ee77252203
+  EFColorPicker: 36c4d1e4dc446352085056c029a79056a0d16d9d
+  ExpyTableView: 75fe6494d4613fd3dc4bd965cce6e14cec7e2223
+  Fabric: 43ed7bac010f588f63ee23ab1a0276b296db5e17
+  IQKeyboardManagerSwift: c14eca30f6001457d6ddf25e313f23fb6578c41c
+  JGProgressHUD: 12b20a8f4ffe05258f8635c1ab92816e451f904d
+  JLStickerTextView: 99158380c95dc5455568892beb81d0529f3a547d
+  lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
+  NXDrawKit: a287045ea335673d6e1e693d80d44073d8726514
+  Realm: 037c5919b9ceb59d6beed5d3b031096856b119b3
+  RealmSwift: c9580133e73ef40ed340401af2dbc9a5790dfea7
+  SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
+  SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
+  SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
+  TransitionButton: fb271583d9c9e4bb116b97103047e5157653f233
+
+PODFILE CHECKSUM: fab922284b96debaa06d72320ac9a683092d3495
+
+COCOAPODS: 1.5.3

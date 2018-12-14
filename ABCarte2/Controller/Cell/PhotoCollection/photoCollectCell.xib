@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="photoCollectCell" id="57m-D9-wPJ" customClass="photoCollectCell" customModule="ABCarte2" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="140" height="200"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                <rect key="frame" x="0.0" y="0.0" width="140" height="200"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NfN-BE-CYP">
+                        <rect key="frame" x="0.0" y="0.0" width="140" height="200"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1983/12/10_00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IYr-43-R3M" customClass="RoundLabel" customModule="ABCarte2" customModuleProvider="target">
+                                <rect key="frame" x="5" y="2" width="130" height="23"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jpu-pX-V5R">
+                                <rect key="frame" x="5" y="30" width="130" height="160"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="34i-nY-Aof">
+                                        <rect key="frame" x="5" y="0.0" width="120" height="160"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="160" id="5zn-Nw-zbj"/>
+                                            <constraint firstAttribute="width" constant="120" id="ucW-Ob-89Y"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="34i-nY-Aof" secondAttribute="trailing" constant="5" id="4Oq-YW-2hP"/>
+                                    <constraint firstAttribute="height" constant="160" id="GDs-K2-mdc"/>
+                                    <constraint firstItem="34i-nY-Aof" firstAttribute="top" secondItem="Jpu-pX-V5R" secondAttribute="top" id="NGY-tm-kHW"/>
+                                    <constraint firstAttribute="width" constant="130" id="RT1-5d-eg5"/>
+                                    <constraint firstItem="34i-nY-Aof" firstAttribute="leading" secondItem="Jpu-pX-V5R" secondAttribute="leading" constant="5" id="iom-jB-NHQ"/>
+                                    <constraint firstAttribute="bottom" secondItem="34i-nY-Aof" secondAttribute="bottom" id="uhm-Cp-W64"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7lO-AH-ZyS" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                                <rect key="frame" x="100" y="160" width="40" height="40"/>
+                                <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="UM0-Wd-Lkb"/>
+                                    <constraint firstAttribute="height" constant="40" id="tdt-iT-f0w"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                <state key="normal" image="icon_zoom_black.png"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="onZoom:" destination="57m-D9-wPJ" eventType="touchUpInside" id="U8E-i7-rj5"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.96470588239999999" green="0.94117647059999998" blue="0.90196078430000004" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="IYr-43-R3M" secondAttribute="trailing" constant="5" id="6TB-FI-SsW"/>
+                            <constraint firstAttribute="bottom" secondItem="7lO-AH-ZyS" secondAttribute="bottom" id="Kn6-en-x6e"/>
+                            <constraint firstAttribute="bottom" secondItem="Jpu-pX-V5R" secondAttribute="bottom" constant="10" id="LPz-vS-ovS"/>
+                            <constraint firstItem="Jpu-pX-V5R" firstAttribute="top" secondItem="IYr-43-R3M" secondAttribute="bottom" constant="5" id="Sxh-uQ-z9K"/>
+                            <constraint firstItem="Jpu-pX-V5R" firstAttribute="centerX" secondItem="NfN-BE-CYP" secondAttribute="centerX" id="Y9v-lQ-zur"/>
+                            <constraint firstItem="IYr-43-R3M" firstAttribute="top" secondItem="NfN-BE-CYP" secondAttribute="top" constant="2" id="hcC-jq-qeV"/>
+                            <constraint firstAttribute="trailing" secondItem="7lO-AH-ZyS" secondAttribute="trailing" id="quH-Y7-D46"/>
+                            <constraint firstItem="IYr-43-R3M" firstAttribute="leading" secondItem="NfN-BE-CYP" secondAttribute="leading" constant="5" id="wz3-po-OjA"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="NfN-BE-CYP" secondAttribute="trailing" id="1oU-S7-34T"/>
+                <constraint firstItem="NfN-BE-CYP" firstAttribute="top" secondItem="57m-D9-wPJ" secondAttribute="top" id="6RH-ur-ihv"/>
+                <constraint firstItem="NfN-BE-CYP" firstAttribute="leading" secondItem="57m-D9-wPJ" secondAttribute="leading" id="Ve6-GD-5gF"/>
+                <constraint firstAttribute="bottom" secondItem="NfN-BE-CYP" secondAttribute="bottom" id="gIh-uI-DN6"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="1qh-Ka-S9W"/>
+            <size key="customSize" width="140" height="200"/>
+            <connections>
+                <outlet property="btnZoom" destination="7lO-AH-ZyS" id="S3D-SB-gcw"/>
+                <outlet property="imvPhoto" destination="34i-nY-Aof" id="uby-14-AHH"/>
+                <outlet property="lblTime" destination="IYr-43-R3M" id="h8k-Kk-Qxx"/>
+            </connections>
+            <point key="canvasLocation" x="-58" y="125"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="icon_zoom_black.png" width="100" height="100"/>
+    </resources>
+</document>
