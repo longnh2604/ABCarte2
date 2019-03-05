@@ -21,4 +21,5 @@ import RealmSwift
     dynamic var is_edited: Int = 0
     dynamic var created_at: Int = 0
     dynamic var updated_at: Int = 0
+    dynamic var imageData: Data?
 }

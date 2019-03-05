@@ -222,34 +222,41 @@ public class SketchView: UIView {
 
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
-
+      
         previousPoint1 = touch.previousLocation(in: self)
         currentPoint = touch.location(in: self)
         currentTool = toolWithCurrentSettings()
         currentTool?.lineWidth = lineWidth
         currentTool?.lineColor = lineColor
         currentTool?.lineAlpha = lineAlpha
-
-        switch currentTool! {
-        case is PenTool:
-            guard let penTool = currentTool as? PenTool else { return }
-            pathArray.add(penTool)
-            penTool.drawingPenType = drawingPenType
-            penTool.setInitialPoint(currentPoint!)
-        case is StampTool:
-            guard let stampTool = currentTool as? StampTool else { return }
-            pathArray.add(stampTool)
-            stampTool.setStampImage(image: stampImage)
-            stampTool.setInitialPoint(currentPoint!)
-        case is EyeDropTool:
-            let pixelColor = getPixelColorAtPoint(point: touch.location(in: self), sourceView: self)
-            lineColor = pixelColor
-            sketchViewDelegate?.updateNewColor!(color: pixelColor)
-        default:
-            guard let currentTool = currentTool else { return }
-            pathArray.add(currentTool)
-            currentTool.setInitialPoint(currentPoint!)
+        
+        #if DEBUG
+        print("touches no = \(touches.count) event = \(event?.allTouches?.count)")
+        #endif
+        
+        if (event?.allTouches?.count)! < 2 {
+            switch currentTool! {
+            case is PenTool:
+                guard let penTool = currentTool as? PenTool else { return }
+                pathArray.add(penTool)
+                penTool.drawingPenType = drawingPenType
+                penTool.setInitialPoint(currentPoint!)
+            case is StampTool:
+                guard let stampTool = currentTool as? StampTool else { return }
+                pathArray.add(stampTool)
+                stampTool.setStampImage(image: stampImage)
+                stampTool.setInitialPoint(currentPoint!)
+            case is EyeDropTool:
+                let pixelColor = getPixelColorAtPoint(point: touch.location(in: self), sourceView: self)
+                lineColor = pixelColor
+                sketchViewDelegate?.updateNewColor!(color: pixelColor)
+            default:
+                guard let currentTool = currentTool else { return }
+                pathArray.add(currentTool)
+                currentTool.setInitialPoint(currentPoint!)
+            }
         }
+        
     }
 
     public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -258,11 +265,12 @@ public class SketchView: UIView {
         previousPoint2 = previousPoint1
         previousPoint1 = touch.previousLocation(in: self)
         currentPoint = touch.location(in: self)
-
+        
         if let penTool = currentTool as? PenTool {
-            let renderingBox = penTool.createBezierRenderingBox(previousPoint2!, widhPreviousPoint: previousPoint1!, withCurrentPoint: currentPoint!)
-
-            setNeedsDisplay(renderingBox)
+            if (event?.allTouches?.count)! < 2 {
+                let renderingBox = penTool.createBezierRenderingBox(previousPoint2!, widhPreviousPoint: previousPoint1!, withCurrentPoint: currentPoint!)
+                setNeedsDisplay(renderingBox)
+            }
         } else {
             currentTool?.moveFromPoint(previousPoint1!, toPoint: currentPoint!)
             setNeedsDisplay()
@@ -270,16 +278,21 @@ public class SketchView: UIView {
     }
 
     public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let pixelRectTool = currentTool as? PixelRectTool {
-            guard let touch = touches.first else { return }
-            previousPoint1 = touch.previousLocation(in: self)
-            currentPoint = touch.location(in: self)
-            pixelRectTool.endFromPoint(previousPoint1!, toPoint: currentPoint!)
-            setNeedsDisplay()
-        } else {
-            touchesMoved(touches, with: event)
+        
+//        guard let touch = touches.first else { return }
+        
+        if (event?.allTouches?.count)! < 2 {
+            if let pixelRectTool = currentTool as? PixelRectTool {
+                guard let touch = touches.first else { return }
+                previousPoint1 = touch.previousLocation(in: self)
+                currentPoint = touch.location(in: self)
+                pixelRectTool.endFromPoint(previousPoint1!, toPoint: currentPoint!)
+                setNeedsDisplay()
+            } else {
+                touchesMoved(touches, with: event)
+            }
+            finishDrawing()
         }
-        finishDrawing()
     }
 
     fileprivate func finishDrawing() {

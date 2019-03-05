@@ -67,6 +67,7 @@ class photoCollectCell: UICollectionViewCell {
         } else {
             btnZoom.isHidden = true
         }
+        setButtonColorStyle(button: btnZoom, type: 1)
     }
     
     @IBAction func onZoom(_ sender: UIButton) {

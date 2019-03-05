@@ -9,33 +9,46 @@
 import UIKit
 import PDFKit
 import Photos
+import MessageUI
+import UIKit.UIGestureRecognizerSubclass
 
 class BookVC: UIViewController {
 
     //IBOutlet
     @IBOutlet weak var pdfView: PDFView!
+    @IBOutlet weak var viewThumbnail: PDFThumbnailView!
+    @IBOutlet weak var constraintViewThumbnailHeight: NSLayoutConstraint!
+    
+    @IBOutlet weak var viewTitleLabel: UIView!
+    @IBOutlet weak var lblTitle: UILabel!
+    @IBOutlet weak var viewPageNo: UIView!
+    @IBOutlet weak var lblPageNo: UILabel!
+    @IBOutlet weak var viewThumbnailContainer: UIView!
     
     //Variable
     var pdfdocument: PDFDocument?
     var pdfthumbView: PDFThumbnailView!
-    weak var observe : NSObjectProtocol?
+    
+    let barHideOnTapGestureRecognizer = UITapGestureRecognizer()
+    let pdfViewGestureRecognizer = PDFViewGestureRecognizer()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        setupUI()
         
-        loadData()
+        setupUI()
     }
     
     func setupUI() {
         
         //set gradient navigation bar
-        var colors = [UIColor]()
-        colors.append(UIColor(red: 69/255, green: 13/255, blue: 1/255, alpha: 1))
-        colors.append(UIColor(red: 166/255, green: 123/255, blue: 89/255, alpha: 1))
-        navigationController?.navigationBar.apply(gradient: colors)
+        guard let navi = navigationController else { return }
         
+        if let set = UserDefaults.standard.integer(forKey: "colorset") as Int? {
+            addNavigationBarColor(navigation: navi,type: set)
+        } else {
+            addNavigationBarColor(navigation: navi,type: 0)
+        }
+    
         let btnLeftMenu: UIButton = UIButton()
         btnLeftMenu.setImage(UIImage(named: "icon_back_white.png"), for: UIControlState())
         btnLeftMenu.addTarget(self, action: #selector(self.back(sender:)), for: UIControlEvents.touchUpInside)
@@ -43,101 +56,148 @@ class BookVC: UIViewController {
         let barButton = UIBarButtonItem(customView: btnLeftMenu)
         self.navigationItem.leftBarButtonItem = barButton
         
-        pdfView.translatesAutoresizingMaskIntoConstraints = false
+        NotificationCenter.default.addObserver(self, selector: #selector(pdfViewPageChanged(_:)), name: .PDFViewPageChanged, object: nil)
         
-        pdfView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        pdfView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        pdfView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        pdfView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        barHideOnTapGestureRecognizer.addTarget(self, action: #selector(gestureRecognizedToggleVisibility(_:)))
+        view.addGestureRecognizer(barHideOnTapGestureRecognizer)
+        
+        pdfView.autoScales = true
+        pdfView.displayMode = .singlePage
+        pdfView.displayDirection = .horizontal
+        pdfView.usePageViewController(true, withViewOptions: [UIPageViewControllerOptionInterPageSpacingKey: 20])
+        
+        pdfView.addGestureRecognizer(pdfViewGestureRecognizer)
+        
+        pdfView.document = pdfdocument
+        
+        viewThumbnail.layoutMode = .horizontal
+        viewThumbnail.pdfView = pdfView
+        
+        viewTitleLabel.isHidden = true
+
+        viewTitleLabel.layer.cornerRadius = 4
+        viewPageNo.layer.cornerRadius = 4
+        
+        loadData()
+        
+        resume()
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        adjustThumbnailViewHeight()
+    }
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { (context) in
+            self.adjustThumbnailViewHeight()
+        }, completion: nil)
+    }
+    
+    private func adjustThumbnailViewHeight() {
+        self.constraintViewThumbnailHeight.constant = 44 + self.view.safeAreaInsets.bottom
+    }
+    
+    @objc func pdfViewPageChanged(_ notification: Notification) {
+        if pdfViewGestureRecognizer.isTracking {
+            hideBars()
+        }
+        updatePageNumberLabel()
+    }
+    
+    @objc func gestureRecognizedToggleVisibility(_ gestureRecognizer: UITapGestureRecognizer) {
+        if let navigationController = navigationController {
+            if navigationController.navigationBar.alpha > 0 {
+                hideBars()
+            } else {
+                showBars()
+            }
+        }
+    }
+    
+    private func resume() {
+        viewThumbnailContainer.alpha = 1
+        
+        pdfView.isHidden = false
+//        viewTitleLabel.alpha = 1
+        viewPageNo.alpha = 1
+
+        barHideOnTapGestureRecognizer.isEnabled = true
+
+        updatePageNumberLabel()
+    }
+    
+    private func updatePageNumberLabel() {
+        if let currentPage = pdfView.currentPage, let index = pdfView.document?.index(for: currentPage), let pageCount = pdfView.document?.pageCount {
+            lblPageNo.text = String(format: "%d/%d", index + 1, pageCount)
+        } else {
+            lblPageNo.text = nil
+        }
+    }
+    
+    private func showBars() {
+//        UIView.animate(withDuration: CATransaction.animationDuration()) {
+//            self.viewThumbnailContainer.alpha = 1
+//            self.viewTitleLabel.alpha = 1
+//            self.viewPageNo.alpha = 1
+//        }
+    }
+    
+    private func hideBars() {
+//        UIView.animate(withDuration: CATransaction.animationDuration()) {
+//            self.viewThumbnailContainer.alpha = 0
+//            self.viewTitleLabel.alpha = 0
+//            self.viewPageNo.alpha = 0
+//        }
     }
     
     func loadData() {
-        guard let path = Bundle.main.url(forResource: "JBS_designbook_20180927", withExtension: "pdf") else { return }
+        var bookPDF: String?
+        #if SERMENT
+        bookPDF = "SERMENT_theory"
+        #else
+        bookPDF = "JBS_designbook"
+        #endif
+        
+        guard let path = Bundle.main.url(forResource: bookPDF, withExtension: "pdf") else { return }
         
         if let document = PDFDocument(url: path) {
             pdfView.document = document
         }
+        
     }
     
     @objc func back(sender: UIBarButtonItem) {
-        guard let loginPageView =  self.storyboard?.instantiateViewController(withIdentifier: "AppSelectVC") as? AppSelectVC else {
-            return
-        }
+        #if SERMENT
+        _ = navigationController?.popViewController(animated: true)
+        #else
+        guard let loginPageView =  self.storyboard?.instantiateViewController(withIdentifier: "AppSelectVC") as? AppSelectVC else { return }
         self.present(loginPageView, animated: true, completion: nil)
-    }
-    
-    func deleteAllPhotos() {
-        let library = PHPhotoLibrary.shared()
-        library.performChanges({
-            let albumsPhoto:PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
-            albumsPhoto.enumerateObjects({(collection, index, object) in
-                if collection.localizedTitle == "Screenshots"{
-                    let photoInAlbum = PHAsset.fetchAssets(in: collection, options: nil)
-                    print(photoInAlbum.count) //Screenshots albums count
-                    PHAssetChangeRequest.deleteAssets(photoInAlbum)
-                }
-            })
-        }) { (success, error) in
-            // Handle success & errors
-        }
-    }
-    
-    func detectScreenShot(action: @escaping () -> ()) {
-        let mainQueue = OperationQueue.main
-        NotificationCenter.default.addObserver(forName: .UIApplicationUserDidTakeScreenshot, object: nil, queue: mainQueue) { notification in
-            // executes after screenshot
-            action()
-        }
-    }
-    
-    @objc func applicationDidBecomeActive() {
-        let status = PHPhotoLibrary.authorizationStatus()
-        
-        if (status == PHAuthorizationStatus.authorized) {
-            // Access has been granted.
-        }
-            
-        else if (status == PHAuthorizationStatus.denied) {
-            // Access has been denied.
-            let loginPageView =  self.storyboard?.instantiateViewController(withIdentifier: "AppSelectVC") as! AppSelectVC
-            self.present(loginPageView, animated: true, completion: nil)
-        }
-            
-        else if (status == PHAuthorizationStatus.notDetermined) {
-            
-            // Access has not been determined.
-            PHPhotoLibrary.requestAuthorization({ (newStatus) in
-                
-                if (newStatus == PHAuthorizationStatus.authorized) {
-                    
-                }
-                    
-                else {
-                    guard let loginPageView =  self.storyboard?.instantiateViewController(withIdentifier: "AppSelectVC") as? AppSelectVC else {
-                        return
-                    }
-                    self.present(loginPageView, animated: true, completion: nil)
-                }
-            })
-        }
-            
-        else if (status == PHAuthorizationStatus.restricted) {
-            // Restricted access - normally won't happen.
-            guard let loginPageView =  self.storyboard?.instantiateViewController(withIdentifier: "AppSelectVC") as? AppSelectVC else {
-                return
-            }
-            self.present(loginPageView, animated: true, completion: nil)
-        }
+        #endif 
     }
     
     //*****************************************************************
     // MARK: - Actions
     //*****************************************************************
+ 
+}
+
+//*****************************************************************
+// MARK: - PDFViewGestureRecognizer
+//*****************************************************************
+
+class PDFViewGestureRecognizer: UIGestureRecognizer {
+    var isTracking = false
     
-    @IBAction func onBack(_ sender: UIButton) {
-        guard let loginPageView =  self.storyboard?.instantiateViewController(withIdentifier: "AppSelectVC") as? AppSelectVC else {
-            return
-        }
-        self.present(loginPageView, animated: true, completion: nil)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        isTracking = true
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        isTracking = false
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+        isTracking = false
     }
 }

@@ -145,14 +145,6 @@ class SimulationEditVC: UIViewController, UIScrollViewDelegate{
 }
 
 extension SimulationEditVC: CanvasDelegate{
-    func updateNewColor(color: UIColor) {
-        
-    }
-    
-    func returnPoints(allPoints: [CGPoint]) {
-        
-    }
-    
     func brush() -> Brush? {
         return currentBrush
     }

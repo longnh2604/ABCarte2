@@ -15,18 +15,18 @@ import Foundation
 //main app url
 //let kAPI_URL = "http://api.autofree.top/"
 
-#if DEBUG
-let kAPI_URL = "http://133.167.107.147/"
-#else
+//#if DEBUG
+//let kAPI_URL = "http://133.167.107.147/"
+//#else
 let kAPI_URL = "http://160.16.137.252/"
-#endif
+//#endif
 
 //amazon
-#if DEBUG
-let kAPI_URL_AWS = "https://s3-ap-northeast-1.amazonaws.com/abcarte-dev/"
-#else
+//#if DEBUG
+//let kAPI_URL_AWS = "https://s3-ap-northeast-1.amazonaws.com/abcarte-dev/"
+//#else
 let kAPI_URL_AWS = "https://s3-ap-northeast-1.amazonaws.com/abcarte/"
-#endif
+//#endif
 
 //*****************************************************************
 // MARK: - ACCOUNT & DEVICE

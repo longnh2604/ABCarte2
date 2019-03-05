@@ -10,5 +10,7 @@
 #define Objc_Bridge_Header_h
 
 #import "FSCalendar.h"
+#import "OCCatch.h"
+#import "SVProgressHUD.h"
 
 #endif /* Objc_Bridge_Header_h */

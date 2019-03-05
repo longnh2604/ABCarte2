@@ -32,6 +32,8 @@ func getAccountData(data:JSON, completion: (Bool) -> ()) {
     newAccount.acc_function = data["acc_function"].intValue
     newAccount.status = data["acc_function"].intValue
     newAccount.acc_name = data["acc_name"].stringValue
+    newAccount.pic_limit = data["pic_limit"].intValue
+    
     GlobalVariables.sharedManager.comName = data["acc_name"].stringValue
     
     newAccount.updated_at = data["updated_at"].intValue
@@ -87,31 +89,31 @@ func getCustomerData(data:JSON) {
     newCustomer.bloodtype = data["bloodtype"].intValue
     newCustomer.customer_no = data["customer_no"].stringValue
     
-    #if DEBUG
+//    #if DEBUG
     if data["pic_url"].stringValue == "" {
         newCustomer.pic_url = data["pic_url"].stringValue
         newCustomer.thumb = newCustomer.pic_url
     } else {
         newCustomer.pic_url = kAPI_URL_AWS + data["pic_url"].stringValue
-        
+
         let linkPath = (data["pic_url"].stringValue as NSString).deletingLastPathComponent
         let lastPath = (data["pic_url"].stringValue as NSString).lastPathComponent
-        
+
         newCustomer.thumb = kAPI_URL_AWS + "\(linkPath)/thumb_\(lastPath)"
     }
-    #else
-    if data["pic_url"].stringValue == "" {
-        newCustomer.pic_url = data["pic_url"].stringValue
-        newCustomer.thumb = newCustomer.pic_url
-    } else {
-        newCustomer.pic_url = kAPI_URL + data["pic_url"].stringValue
-        
-        let linkPath = (data["pic_url"].stringValue as NSString).deletingLastPathComponent
-        let lastPath = (data["pic_url"].stringValue as NSString).lastPathComponent
-        
-        newCustomer.thumb = kAPI_URL + "\(linkPath)/thumb_\(lastPath)"
-    }
-    #endif
+//    #else
+//    if data["pic_url"].stringValue == "" {
+//        newCustomer.pic_url = data["pic_url"].stringValue
+//        newCustomer.thumb = newCustomer.pic_url
+//    } else {
+//        newCustomer.pic_url = kAPI_URL + data["pic_url"].stringValue
+//
+//        let linkPath = (data["pic_url"].stringValue as NSString).deletingLastPathComponent
+//        let lastPath = (data["pic_url"].stringValue as NSString).lastPathComponent
+//
+//        newCustomer.thumb = kAPI_URL + "\(linkPath)/thumb_\(lastPath)"
+//    }
+//    #endif
     
     newCustomer.birthday = data["birthday"].intValue
     newCustomer.hobby = data["hobby"].stringValue
@@ -132,27 +134,27 @@ func getCustomerData(data:JSON) {
     newCustomer.updated_at = data["updated_at"].intValue
     newCustomer.selected_status = 0
     
-    #if DEBUG
-    if data["document_1"].stringValue != "" {
-        newCustomer.document_1 = kAPI_URL_AWS + data["document_1"].stringValue
-    }
-    if data["document_2"].stringValue != "" {
-        newCustomer.document_2 = kAPI_URL_AWS + data["document_2"].stringValue
-    }
-    if data["document_consent"].stringValue != "" {
-        newCustomer.document_consent = kAPI_URL_AWS + data["document_consent"].stringValue
-    }
-    #else
-    if data["document_1"].stringValue != "" {
-        newCustomer.document_1 = kAPI_URL + data["document_1"].stringValue
-    }
-    if data["document_2"].stringValue != "" {
-        newCustomer.document_2 = kAPI_URL + data["document_2"].stringValue
-    }
-    if data["document_consent"].stringValue != "" {
-        newCustomer.document_consent = kAPI_URL + data["document_consent"].stringValue
-    }
-    #endif
+//    #if DEBUG
+//    if data["document_1"].stringValue != "" {
+//        newCustomer.document_1 = kAPI_URL_AWS + data["document_1"].stringValue
+//    }
+//    if data["document_2"].stringValue != "" {
+//        newCustomer.document_2 = kAPI_URL_AWS + data["document_2"].stringValue
+//    }
+//    if data["document_consent"].stringValue != "" {
+//        newCustomer.document_consent = kAPI_URL_AWS + data["document_consent"].stringValue
+//    }
+//    #else
+//    if data["document_1"].stringValue != "" {
+//        newCustomer.document_1 = kAPI_URL + data["document_1"].stringValue
+//    }
+//    if data["document_2"].stringValue != "" {
+//        newCustomer.document_2 = kAPI_URL + data["document_2"].stringValue
+//    }
+//    if data["document_consent"].stringValue != "" {
+//        newCustomer.document_consent = kAPI_URL + data["document_consent"].stringValue
+//    }
+//    #endif
     
     if data["fcSecretMemos"].count > 0 {
         newCustomer.onSecret = 1
@@ -176,32 +178,32 @@ func getACustomerData(data:JSON)->CustomerData {
     newCustomer.bloodtype = data["bloodtype"].intValue
     newCustomer.customer_no = data["customer_no"].stringValue
     
-    #if DEBUG
+//    #if DEBUG
     if data["pic_url"].stringValue == "" {
         newCustomer.pic_url = data["pic_url"].stringValue
         newCustomer.thumb = newCustomer.pic_url
     } else {
         newCustomer.pic_url = kAPI_URL_AWS + data["pic_url"].stringValue
-        
+
         let linkPath = (data["pic_url"].stringValue as NSString).deletingLastPathComponent
         let lastPath = (data["pic_url"].stringValue as NSString).lastPathComponent
-        
+
         newCustomer.thumb = kAPI_URL_AWS + "\(linkPath)/thumb_\(lastPath)"
-        
+
     }
-    #else
-    if data["pic_url"].stringValue == "" {
-        newCustomer.pic_url = data["pic_url"].stringValue
-        newCustomer.thumb = newCustomer.pic_url
-    } else {
-        newCustomer.pic_url = kAPI_URL + data["pic_url"].stringValue
-        
-        let linkPath = (data["pic_url"].stringValue as NSString).deletingLastPathComponent
-        let lastPath = (data["pic_url"].stringValue as NSString).lastPathComponent
-        
-        newCustomer.thumb = kAPI_URL + "\(linkPath)/thumb_\(lastPath)"
-    }
-    #endif
+//    #else
+//    if data["pic_url"].stringValue == "" {
+//        newCustomer.pic_url = data["pic_url"].stringValue
+//        newCustomer.thumb = newCustomer.pic_url
+//    } else {
+//        newCustomer.pic_url = kAPI_URL + data["pic_url"].stringValue
+//
+//        let linkPath = (data["pic_url"].stringValue as NSString).deletingLastPathComponent
+//        let lastPath = (data["pic_url"].stringValue as NSString).lastPathComponent
+//
+//        newCustomer.thumb = kAPI_URL + "\(linkPath)/thumb_\(lastPath)"
+//    }
+//    #endif
     
     newCustomer.birthday = data["birthday"].intValue
     newCustomer.hobby = data["hobby"].stringValue
@@ -221,7 +223,7 @@ func getACustomerData(data:JSON)->CustomerData {
     newCustomer.created_at = data["created_at"].intValue
     newCustomer.updated_at = data["updated_at"].intValue
     
-    #if DEBUG
+//    #if DEBUG
     if data["document_1"].stringValue != "" {
         newCustomer.document_1 = kAPI_URL_AWS + data["document_1"].stringValue
     }
@@ -231,17 +233,17 @@ func getACustomerData(data:JSON)->CustomerData {
     if data["document_consent"].stringValue != "" {
         newCustomer.document_consent = kAPI_URL_AWS + data["document_consent"].stringValue
     }
-    #else
-    if data["document_1"].stringValue != "" {
-        newCustomer.document_1 = kAPI_URL + data["document_1"].stringValue
-    }
-    if data["document_2"].stringValue != "" {
-        newCustomer.document_2 = kAPI_URL + data["document_2"].stringValue
-    }
-    if data["document_consent"].stringValue != "" {
-        newCustomer.document_consent = kAPI_URL + data["document_consent"].stringValue
-    }
-    #endif
+//    #else
+//    if data["document_1"].stringValue != "" {
+//        newCustomer.document_1 = kAPI_URL + data["document_1"].stringValue
+//    }
+//    if data["document_2"].stringValue != "" {
+//        newCustomer.document_2 = kAPI_URL + data["document_2"].stringValue
+//    }
+//    if data["document_consent"].stringValue != "" {
+//        newCustomer.document_consent = kAPI_URL + data["document_consent"].stringValue
+//    }
+//    #endif
     
     if data["fcSecretMemos"].count > 0 {
         newCustomer.onSecret = 1
@@ -253,7 +255,7 @@ func getACustomerData(data:JSON)->CustomerData {
 }
 
 //get the customer cartes
-func getCartesData(data:JSON) {
+func getCartesDataWithCustomer(data:JSON) {
     let newCarte = CarteData()
     newCarte.id = data["id"].intValue
     newCarte.carte_id = data["carte_id"].stringValue
@@ -261,12 +263,62 @@ func getCartesData(data:JSON) {
     newCarte.fc_customer_customer_id = data["fc_customer_customer_id"].stringValue
     newCarte.create_date = data["create_date"].intValue
     newCarte.select_date = data["select_date"].intValue
-    newCarte.carte_photo = data["carte_photo"].stringValue
+    
+    if data["carte_photo"].stringValue.isEmpty {
+        newCarte.carte_photo = data["carte_photo"].stringValue
+    } else {
+        if data["carte_photo"].stringValue.contains("160.16.137.252") {
+            newCarte.carte_photo = data["carte_photo"].stringValue
+        } else {
+            newCarte.carte_photo = kAPI_URL_AWS + data["carte_photo"].stringValue
+        }
+    }
+    
     newCarte.status = data["status"].intValue
     newCarte.selected_status = 0
     
     let dayCome = convertUnixTimestampUK(time: data["select_date"].intValue)
     newCarte.date_converted = dayCome
+    
+    if data["fcCustomer"].count > 0 {
+        let cus = data["fcCustomer"]
+        let newCus = CustomerData()
+        newCus.id = cus["id"].intValue
+        newCus.first_name = cus["first_name"].stringValue
+        newCus.first_name_kana = cus["first_name_kana"].stringValue
+        newCus.last_name = cus["last_name"].stringValue
+        newCus.last_name_kana = cus["last_name_kana"].stringValue
+        newCus.gender = cus["gender"].intValue
+        newCus.urgent_no = cus["urgent_no"].stringValue
+       
+//        #if DEBUG
+        if cus["pic_url"].stringValue == "" {
+            newCus.pic_url = cus["pic_url"].stringValue
+            newCus.thumb = newCus.pic_url
+        } else {
+            newCus.pic_url = kAPI_URL_AWS + cus["pic_url"].stringValue
+
+            let linkPath = (cus["pic_url"].stringValue as NSString).deletingLastPathComponent
+            let lastPath = (cus["pic_url"].stringValue as NSString).lastPathComponent
+
+            newCus.thumb = kAPI_URL_AWS + "\(linkPath)/thumb_\(lastPath)"
+        }
+//        #else
+//        if cus["pic_url"].stringValue == "" {
+//            newCus.pic_url = cus["pic_url"].stringValue
+//            newCus.thumb = newCus.pic_url
+//        } else {
+//            newCus.pic_url = kAPI_URL + cus["pic_url"].stringValue
+//
+//            let linkPath = (cus["pic_url"].stringValue as NSString).deletingLastPathComponent
+//            let lastPath = (cus["pic_url"].stringValue as NSString).lastPathComponent
+//
+//            newCus.thumb = kAPI_URL + "\(linkPath)/thumb_\(lastPath)"
+//        }
+//        #endif
+        
+        newCarte.cus.append(newCus)
+    }
     
     RealmServices.shared.create(newCarte)
 }
@@ -280,7 +332,17 @@ func getCartesDataWithMemo(data:JSON) {
     newCarte.fc_customer_customer_id = data["fc_customer_customer_id"].stringValue
     newCarte.create_date = data["create_date"].intValue
     newCarte.select_date = data["select_date"].intValue
-    newCarte.carte_photo = data["carte_photo"].stringValue
+    
+    if data["carte_photo"].stringValue.isEmpty {
+        newCarte.carte_photo = data["carte_photo"].stringValue
+    } else {
+        if data["carte_photo"].stringValue.contains("160.16.137.252") {
+            newCarte.carte_photo = data["carte_photo"].stringValue
+        } else {
+            newCarte.carte_photo = kAPI_URL_AWS + data["carte_photo"].stringValue
+        }
+    }
+    
     newCarte.status = data["status"].intValue
     newCarte.selected_status = 0
     
@@ -340,31 +402,31 @@ func getCartesDataWithMemo(data:JSON) {
             newMedia.fc_customer_carte_carte_id = media[i]["fc_customer_carte_carte_id"].stringValue
             newMedia.date = media[i]["date"].intValue
             
-            #if DEBUG
+//            #if DEBUG
             if media[i]["url"].stringValue == "" {
                 newMedia.url = media[i]["url"].stringValue
                 newMedia.thumb = newMedia.url
             } else {
                 newMedia.url = kAPI_URL_AWS + media[i]["url"].stringValue
-                
-                let linkPath = (media[i]["url"].stringValue as NSString).deletingLastPathComponent
-                let lastPath = (media[i]["url"].stringValue as NSString).lastPathComponent
-                
-                newMedia.thumb = kAPI_URL_AWS + "\(linkPath)/thumb_\(lastPath)"
-            }
-            #else
-            if media[i]["url"].stringValue == "" {
-                newMedia.url = media[i]["url"].stringValue
-                newMedia.thumb = newMedia.url
-            } else {
-                newMedia.url = kAPI_URL + media[i]["url"].stringValue
 
                 let linkPath = (media[i]["url"].stringValue as NSString).deletingLastPathComponent
                 let lastPath = (media[i]["url"].stringValue as NSString).lastPathComponent
-                
-                newMedia.thumb = kAPI_URL + "\(linkPath)/thumb_\(lastPath)"
+
+                newMedia.thumb = kAPI_URL_AWS + "\(linkPath)/thumb_\(lastPath)"
             }
-            #endif
+//            #else
+//            if media[i]["url"].stringValue == "" {
+//                newMedia.url = media[i]["url"].stringValue
+//                newMedia.thumb = newMedia.url
+//            } else {
+//                newMedia.url = kAPI_URL + media[i]["url"].stringValue
+//
+//                let linkPath = (media[i]["url"].stringValue as NSString).deletingLastPathComponent
+//                let lastPath = (media[i]["url"].stringValue as NSString).lastPathComponent
+//
+//                newMedia.thumb = kAPI_URL + "\(linkPath)/thumb_\(lastPath)"
+//            }
+//            #endif
             
             newMedia.title = media[i]["title"].stringValue
             newMedia.comment = media[i]["comment"].stringValue
@@ -399,7 +461,7 @@ func getMediasDataCus(data:JSON,date:String) {
         newMedia.status = data[i]["status"].intValue
         newMedia.created_at = data[i]["created_at"].intValue
         
-        #if DEBUG
+//        #if DEBUG
         if data[i]["url"].stringValue == "" {
             newMedia.url = data[i]["url"].stringValue
             newMedia.thumb = newMedia.url
@@ -408,22 +470,22 @@ func getMediasDataCus(data:JSON,date:String) {
 
             let linkPath = (data[i]["url"].stringValue as NSString).deletingLastPathComponent
             let lastPath = (data[i]["url"].stringValue as NSString).lastPathComponent
-            
+
             newMedia.thumb = kAPI_URL_AWS + "\(linkPath)/thumb_\(lastPath)"
         }
-        #else
-        if data[i]["url"].stringValue == "" {
-            newMedia.url = data[i]["url"].stringValue
-            newMedia.thumb = newMedia.url
-        } else {
-            newMedia.url = kAPI_URL + data[i]["url"].stringValue
-
-            let linkPath = (data[i]["url"].stringValue as NSString).deletingLastPathComponent
-            let lastPath = (data[i]["url"].stringValue as NSString).lastPathComponent
-            
-            newMedia.thumb = kAPI_URL + "\(linkPath)/thumb_\(lastPath)"
-        }
-        #endif
+//        #else
+//        if data[i]["url"].stringValue == "" {
+//            newMedia.url = data[i]["url"].stringValue
+//            newMedia.thumb = newMedia.url
+//        } else {
+//            newMedia.url = kAPI_URL + data[i]["url"].stringValue
+//
+//            let linkPath = (data[i]["url"].stringValue as NSString).deletingLastPathComponent
+//            let lastPath = (data[i]["url"].stringValue as NSString).lastPathComponent
+//
+//            newMedia.thumb = kAPI_URL + "\(linkPath)/thumb_\(lastPath)"
+//        }
+//        #endif
         
         newMedia.media_id = data[i]["media_id"].stringValue
         newMedia.fc_customer_carte_carte_id = data[i]["fc_customer_carte_carte_id"].stringValue
@@ -446,7 +508,7 @@ func getMediasData(data:JSON) {
     newMedia.fc_customer_carte_carte_id = data["fc_customer_carte_carte_id"].stringValue
     newMedia.date = data["date"].intValue
     
-    #if DEBUG
+//    #if DEBUG
     if data["url"].stringValue == "" {
         newMedia.url = data["url"].stringValue
         newMedia.thumb = newMedia.url
@@ -455,22 +517,22 @@ func getMediasData(data:JSON) {
 
         let linkPath = (data["url"].stringValue as NSString).deletingLastPathComponent
         let lastPath = (data["url"].stringValue as NSString).lastPathComponent
-        
+
         newMedia.thumb = kAPI_URL_AWS + "\(linkPath)/thumb_\(lastPath)"
     }
-    #else
-    if data["url"].stringValue == "" {
-        newMedia.url = data["url"].stringValue
-        newMedia.thumb = newMedia.url
-    } else {
-        newMedia.url = kAPI_URL + data["url"].stringValue
-
-        let linkPath = (data["url"].stringValue as NSString).deletingLastPathComponent
-        let lastPath = (data["url"].stringValue as NSString).lastPathComponent
-        
-        newMedia.thumb = kAPI_URL + "\(linkPath)/thumb_\(lastPath)"
-    }
-    #endif
+//    #else
+//    if data["url"].stringValue == "" {
+//        newMedia.url = data["url"].stringValue
+//        newMedia.thumb = newMedia.url
+//    } else {
+//        newMedia.url = kAPI_URL + data["url"].stringValue
+//
+//        let linkPath = (data["url"].stringValue as NSString).deletingLastPathComponent
+//        let lastPath = (data["url"].stringValue as NSString).lastPathComponent
+//        
+//        newMedia.thumb = kAPI_URL + "\(linkPath)/thumb_\(lastPath)"
+//    }
+//    #endif
 
     newMedia.title = data["title"].stringValue
     newMedia.comment = data["comment"].stringValue
@@ -644,5 +706,4 @@ func getDocumentsData(data:JSON) {
     }
     
     RealmServices.shared.create(newDoc)
-    
 }

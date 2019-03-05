@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 import SDWebImage
-import JGProgressHUD
+import Photos
 
 class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
 
@@ -23,16 +23,19 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
     
     var carteID: String?
     var needLoad: Bool = true
+    var onProgress: Bool = false
     var imageSelected: UIImage?
     var imageConverted: Data?
     var indexDelete : [Int] = []
+    
     var account_name: String = ""
     var account_id: String = ""
-    let hud = JGProgressHUD(style: .dark)
+    var accountPicLimit: Int?
+
+    weak var bottomPanelView: BottomPanelView!
 
     //IBOutlet
     @IBOutlet weak var btnCamera: UIButton!
-    @IBOutlet weak var btnHelp: UIButton!
     @IBOutlet weak var collectionImage: UICollectionView!
     
     @IBOutlet weak var btnComparison: UIButton!
@@ -43,34 +46,28 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
     @IBOutlet weak var lblCusName: UILabel!
     @IBOutlet weak var lblDayCome: UILabel!
     
+    @IBOutlet weak var viewPanelTop: UIView!
     @IBOutlet weak var constraintWCamera: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         loadData()
-        
-        setupUI()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         needLoad = true
     }
-    
-    func showLoading() {
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
-    }
 
     func loadData() {
         if needLoad == true {
             //add loading view
-            showLoading()
+            SVProgressHUD.show(withStatus: "読み込み中")
+            SVProgressHUD.setDefaultMaskType(.clear)
           
             let realm = try! Realm()
             try! realm.write {
@@ -80,7 +77,6 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
             getCarteMedias(carteID: carte.id) { (success) in
                 if success {
    
-                    let realm = RealmServices.shared.realm
                     self.medias = realm.objects(MediaData.self)
                     
                     self.mediasData.removeAll()
@@ -91,13 +87,10 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
                     self.mediasData = self.mediasData.sorted(by: { $0.date > $1.date })
                     
                     self.collectionImage.reloadData()
-                    
-                    self.hud.dismiss()
                 } else {
-           
                     self.navigationController?.popToRootViewController(animated: true)
-                    self.hud.dismiss()
                 }
+                SVProgressHUD.dismiss()
             }
             needLoad = false
         }
@@ -141,6 +134,19 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
             btnCamera.isHidden = false
             constraintWCamera.constant = 120
         }
+        
+        bottomPanelView = BottomPanelView.instanceFromNib(self)
+        view.addSubview(bottomPanelView)
+        bottomPanelView.snp.makeConstraints { (make) -> Void in
+            make.height.height.equalTo(60)
+            make.leading.equalTo(self.view).inset(0)
+            make.trailing.equalTo(self.view).inset(0)
+            make.bottom.equalTo(self.view)
+        }
+        bottomPanelView.btnLogout.isHidden = true
+        bottomPanelView.btnSetting.isHidden = true
+        
+        setViewColorStyle(view: viewPanelTop, type: 1)
     }
     
     func updateTopView() {
@@ -170,52 +176,24 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
             RealmServices.shared.update(self.mediasData[i], with: dict)
         }
     }
-    
-    func cropToBounds(image: UIImage, width: Double, height: Double) -> UIImage {
-        
-        let cgimage = image.cgImage!
-        let contextImage: UIImage = UIImage(cgImage: cgimage)
-        let contextSize: CGSize = contextImage.size
-        var posX: CGFloat = 0.0
-        var posY: CGFloat = 0.0
-        var cgwidth: CGFloat = CGFloat(width)
-        var cgheight: CGFloat = CGFloat(height)
-        
-        // See what size is longer and create the center off of that
-        if contextSize.width > contextSize.height {
-            posX = ((contextSize.width - contextSize.height) / 2)
-            posY = 0
-            cgwidth = contextSize.height
-            cgheight = contextSize.height
-        } else {
-            posX = 0
-            posY = ((contextSize.height - contextSize.width) / 2)
-            cgwidth = contextSize.width
-            cgheight = contextSize.width
-        }
-        
-        let rect: CGRect = CGRect(x: posX, y: posY, width: cgwidth, height: cgheight)
-        
-        // Create bitmap image from context using the rect
-        let imageRef: CGImage = cgimage.cropping(to: rect)!
-        
-        // Create a new image based on the imageRef and rotate back to the original orientation
-        let image: UIImage = UIImage(cgImage: imageRef, scale: image.scale, orientation: image.imageOrientation)
-        
-        return image
-    }
 
     //*****************************************************************
     // MARK: - Action
     //*****************************************************************
 
-    @IBAction func onHelp(_ sender: UIButton) {
-        displayInfo(acc_name: account_name, acc_id: account_id,view:self)
-    }
-
     @IBAction func onCamera(_ sender: UIButton) {
+        
+        #if SERMENT
+        guard let limit = self.mediasData.count as Int?,let acclimit = accountPicLimit else { return }
+        
+        if limit >= acclimit {
+            showAlert(message: MSG_ALERT.kALERT_REACH_LIMIT_PHOTO, view: self)
+            return
+        }
+        #endif
+        
         if GlobalVariables.sharedManager.selectedImageIds.count == 1 || GlobalVariables.sharedManager.selectedImageIds.count == 0 {
-            let storyBoard: UIStoryboard = UIStoryboard(name: "Media", bundle: nil)
+            guard let storyBoard = UIStoryboard(name: "Media", bundle: nil) as UIStoryboard? else { return }
             if let viewController = storyBoard.instantiateViewController(withIdentifier: "ShootingVC") as? ShootingVC {
                 if let navigator = navigationController {
                     viewController.customer = customer
@@ -229,19 +207,35 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
                                     viewController.media = mediasData[i]
                                 }
                             }
+                        } else {
+                            showAlert(message: MSG_ALERT.kALERT_SHOOTING_TRANMISSION_NOT_ALLOW, view: self)
+                            return
                         }
                     }
-
                     navigator.pushViewController(viewController, animated: true)
                 }
             }
         } else {
-            showAlert(message: kALERT_SHOOTING_TRANMISSION_NOT_SATISFY, view: self)
+            if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kShootingTranmission.rawValue) {
+                showAlert(message: MSG_ALERT.kALERT_SHOOTING_TRANMISSION_NOT_SATISFY, view: self)
+            } else {
+                showAlert(message: MSG_ALERT.kALERT_SHOOTING_TRANMISSION_NOT_ALLOW, view: self)
+            }
+            
         }
     }
 
     @IBAction func onCameraRoll(_ sender: UIButton) {
-    
+        
+        #if SERMENT
+        guard let limit = self.mediasData.count as Int?,let acclimit = accountPicLimit else { return }
+        
+        if limit >= acclimit {
+            showAlert(message: MSG_ALERT.kALERT_REACH_LIMIT_PHOTO, view: self)
+            return
+        }
+        #endif
+        
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             let imagePicker = UIImagePickerController()
             imagePicker.delegate = self
@@ -252,17 +246,57 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
             self.present(imagePicker, animated: true, completion: {
                 imagePicker.navigationBar.topItem?.rightBarButtonItem?.tintColor = .black
             })
-     
+        }
+    }
+    
+    func requestPhotoAccess() {
+        //request Photo Access
+        let photos = PHPhotoLibrary.authorizationStatus()
+        if photos == .notDetermined {
+            PHPhotoLibrary.requestAuthorization({ status in
+                if status == .authorized {
+                    print("Granted access to Photo")
+                } else {
+                    // Create Alert
+                    let alert = UIAlertController(title: "写真設定", message: "写真設定がOFFになっています。ONにしてください。", preferredStyle: .alert)
+                    
+                    // Add "OK" Button to alert, pressing it will bring you to the settings app
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                        UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!)
+                    }))
+                    // Show the alert with animation
+                    self.present(alert, animated: true)
+                }
+            })
+        } else if photos == .denied {
+            PHPhotoLibrary.requestAuthorization({ status in
+                
+                if status == .authorized {
+                    print("Granted access to Photo")
+                } else {
+                    // Create Alert
+                    let alert = UIAlertController(title: "写真設定", message: "写真設定がOFFになっています。ONにしてください。", preferredStyle: .alert)
+                    
+                    // Add "OK" Button to alert, pressing it will bring you to the settings app
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                        UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!)
+                    }))
+                    // Show the alert with animation
+                    self.present(alert, animated: true)
+                }
+            })
         }
     }
 
     @IBAction func onDelete(_ sender: UIButton) {
         
         if GlobalVariables.sharedManager.selectedImageIds.count > 0 {
-            let alert = UIAlertController(title: "選択画像を削除", message: "選択されている画像を削除してよろしいですか?", preferredStyle: .alert)
+            let alert = UIAlertController(title: "選択画像を削除", message: MSG_ALERT.kALERT_CONFIRM_DELETE_PHOTO_SELECTED, preferredStyle: .alert)
             let cancel = UIAlertAction(title: "取消", style: .default, handler: nil)
             let confirm = UIAlertAction(title: "OK", style: .default) { UIAlertAction in
-                self.showLoading()
+                
+                SVProgressHUD.show(withStatus: "読み込み中")
+                SVProgressHUD.setDefaultMaskType(.clear)
                 
                 for i in 0 ..< self.mediasData.count {
                     if self.mediasData[i].selected_status == 1 {
@@ -273,16 +307,12 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
                     if success {
                         self.needLoad = true
                         self.loadData()
-                        self.hud.dismiss()
-         
                     } else {
-                        self.hud.dismiss()
-            
                         showAlert(message: "削除に失敗しました。", view: self)
                     }
                 })
-                
                 GlobalVariables.sharedManager.selectedImageIds.removeAll()
+                SVProgressHUD.dismiss()
             }
             
             alert.addAction(confirm)
@@ -292,7 +322,7 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
                 self.present(alert, animated: true, completion: nil)
             }
         } else {
-            showAlert(message: kALERT_PLEASE_SELECT_PHOTO, view: self)
+            showAlert(message: MSG_ALERT.kALERT_PLEASE_SELECT_PHOTO, view: self)
         }
         
     }
@@ -338,16 +368,35 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
                     }
                 }
             } else {
-                showAlert(message: kALERT_ACCOUNT_CANT_ACCESS, view: self)
+                showAlert(message: MSG_ALERT.kALERT_CHOOSE_ONLY_2_PHOTOS, view: self)
             }
         } else {
-            showAlert(message: kALERT_CHOOSE_2_TO_12_PHOTOS, view: self)
+            showAlert(message: MSG_ALERT.kALERT_CHOOSE_2_TO_12_PHOTOS, view: self)
         }
     }
 
     @IBAction func onDrawing(_ sender: UIButton) {
         if GlobalVariables.sharedManager.selectedImageIds.count == 1 {
 
+            #if SERMENT || SHISEI
+            let storyBoard: UIStoryboard = UIStoryboard(name: "Media", bundle: nil)
+            if let viewController = storyBoard.instantiateViewController(withIdentifier: "NewDrawingVC") as? NewDrawingVC {
+                if let navigator = self.navigationController {
+                    viewController.customer = self.customer
+                    viewController.carte = self.carte
+                    
+                    if GlobalVariables.sharedManager.selectedImageIds.count == 1 {
+                        for i in 0 ..< self.mediasData.count {
+                            if self.mediasData[i].media_id == GlobalVariables.sharedManager.selectedImageIds[0] {
+                                viewController.media = self.mediasData[i]
+                            }
+                        }
+                    }
+                    GlobalVariables.sharedManager.selectedImageIds.removeAll()
+                    navigator.pushViewController(viewController, animated: true)
+                }
+            }
+            #else
             let alert = UIAlertController(title: "内容を選択してください", message: nil, preferredStyle: .actionSheet)
             let cancel = UIAlertAction(title: "取消", style: .cancel, handler: nil)
             let drawing = UIAlertAction(title: "描画画面", style: .default) { UIAlertAction in
@@ -356,7 +405,7 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
                     if let navigator = self.navigationController {
                         viewController.customer = self.customer
                         viewController.carte = self.carte
-
+                        
                         if GlobalVariables.sharedManager.selectedImageIds.count == 1 {
                             for i in 0 ..< self.mediasData.count {
                                 if self.mediasData[i].media_id == GlobalVariables.sharedManager.selectedImageIds[0] {
@@ -391,16 +440,16 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
             alert.addAction(cancel)
             alert.addAction(drawing)
             alert.addAction(jbs)
-
+            
             alert.popoverPresentationController?.sourceView = self.btnDrawing
             alert.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection.any
             alert.popoverPresentationController?.sourceRect = self.btnDrawing.bounds
             DispatchQueue.main.async {
                 self.present(alert, animated: true, completion: nil)
             }
-
+            #endif
         } else {
-            showAlert(message: kALERT_DRAWING_ACCESS_NOT_SATISFY, view: self)
+            showAlert(message: MSG_ALERT.kALERT_DRAWING_ACCESS_NOT_SATISFY, view: self)
         }
     }
     
@@ -424,7 +473,7 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
                 }
             }
         } else {
-            showAlert(message: kALERT_DRAWING_ACCESS_NOT_SATISFY, view: self)
+            showAlert(message: MSG_ALERT.kALERT_DRAWING_ACCESS_NOT_SATISFY, view: self)
         }
     }
 }
@@ -436,33 +485,41 @@ class CarteImageListVC: UIViewController,UINavigationControllerDelegate {
 extension CarteImageListVC: UIImagePickerControllerDelegate {
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
         
-        let newImage = imageWithImage(sourceImage: image, scaledToWidth:self.view.frame.width)
-        
-        self.dismiss(animated: true, completion: { () -> Void in
+        if !onProgress {
+            onProgress = true
             
-            self.showLoading()
+            let image = info[UIImagePickerControllerOriginalImage] as! UIImage
             
-            let imgRotated = newImage.updateImageOrientionUpSide()
-            self.imageConverted = UIImageJPEGRepresentation(imgRotated!, 100)
+            let imageView = UIImageView.init(image: UIImage.init(color: UIColor.white, size: CGSize(width: 1469, height: 1959)))
+            imageView.contentMode = .scaleAspectFit
+            imageView.image = image
             
-            addMedias(cusID: self.customer.id, carteID: self.carte.id,mediaData: self.imageConverted!, completion: { (success) in
-                if success {
-                    self.needLoad = true
-                    self.loadData()
-                    self.hud.dismiss()
-                } else {
-                    self.hud.dismiss()
-              
-                    showAlert(message: kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
-                }
+            let newImage = imageWithImage(sourceImage: imageView.asImage(), scaledToWidth: 1469)
+            
+            self.dismiss(animated: true, completion: { () -> Void in
+                
+                SVProgressHUD.show(withStatus: "読み込み中")
+                SVProgressHUD.setDefaultMaskType(.clear)
+                
+                let imgRotated = newImage.updateImageOrientionUpSide()
+                self.imageConverted = UIImageJPEGRepresentation(imgRotated!, 1)
+                
+                addMedias(cusID: self.customer.id, carteID: self.carte.id,mediaData: self.imageConverted!, completion: { (success) in
+                    if success {
+                        self.needLoad = true
+                        self.loadData()
+                    } else {
+                        showAlert(message: MSG_ALERT.kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
+                    }
+                    GlobalVariables.sharedManager.selectedImageIds.removeAll()
+                    SVProgressHUD.dismiss()
+                    self.onProgress = false
+                })
             })
-            
-            GlobalVariables.sharedManager.selectedImageIds.removeAll()
-        })
+        }
+        
     }
-    
 }
 
 //*****************************************************************
@@ -484,9 +541,17 @@ extension CarteImageListVC: UICollectionViewDelegate, UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return mediasData.count
     }
+    
+//    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+//        #if SERMENT
+//        return (collectionView.indexPathsForSelectedItems?.count)! <=  1
+//        #else
+//        return true
+//        #endif
+//    }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
+        
         guard let cell = collectionView.cellForItem(at: indexPath) as? CarteImageCell else {
             return
         }
@@ -560,22 +625,34 @@ extension CarteImageListVC: PhotoViewPopupDelegate {
     
     func onSetCartePhoto(mediaID: String,url: String) {
         
-        showLoading()
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
-        editCarte(carteID: carte.id, mediaURL: url) { (success) in
+        let delimiter = "uploads"
+        guard let path = url.components(separatedBy: delimiter).last else { return }
+        
+        editCarte(carteID: carte.id, mediaURL: "\(delimiter)\(path)") { (success) in
             if success {
-                self.hud.dismiss()
                 self.dismiss(animated: true, completion: {
-                    showAlert(message: kALERT_REGISTER_CARTE_REPRESENTATIVE_SUCCESS, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_REGISTER_CARTE_REPRESENTATIVE_SUCCESS, view: self)
                 })
-                
             } else {
-                self.hud.dismiss()
-                
                 self.dismiss(animated: true, completion: {
-                    showAlert(message: kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
                 })
             }
+            SVProgressHUD.dismiss()
         }
+    }
+}
+
+//*****************************************************************
+// MARK: - BottomPanelView Delegate
+//*****************************************************************
+
+extension CarteImageListVC: BottomPanelViewDelegate {
+    
+    func tapInfo() {
+        displayInfo(acc_name: account_name, acc_id: account_id,view:self)
     }
 }

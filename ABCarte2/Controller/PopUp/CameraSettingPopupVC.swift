@@ -18,6 +18,7 @@ class CameraSettingPopupVC: UIViewController,UIPickerViewDelegate,UIPickerViewDa
     @IBOutlet weak var btnGrid: RoundButton!
     @IBOutlet weak var btnTimer: RoundButton!
     @IBOutlet weak var switchGrid: UISwitch!
+    @IBOutlet weak var lblSwitchTranmission: UILabel!
     @IBOutlet weak var switchTranmission: UISwitch!
     @IBOutlet weak var segResolution: UISegmentedControl!
     
@@ -61,7 +62,21 @@ class CameraSettingPopupVC: UIViewController,UIPickerViewDelegate,UIPickerViewDa
         btnGrid.setTitle("\(gridNo) 本", for: .normal)
         btnTimer.setTitle("\(timerNo) 秒", for: .normal)
         
-        setResolution(reso: imgResolution ?? 0)
+        if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kPhotoResolution.rawValue) {
+            setResolution(reso: imgResolution ?? 0)
+            segResolution.isUserInteractionEnabled = true
+        } else {
+            imgResolution = 1
+            setResolution(reso: imgResolution!)
+            segResolution.isEnabled = false
+        }
+        
+        if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kShootingTranmission.rawValue) {
+            //do nothing
+        } else {
+            switchTranmission.isHidden = true
+            lblSwitchTranmission.isHidden = true
+        }
     }
     
     func setResolution(reso: Int) {
@@ -147,7 +162,12 @@ class CameraSettingPopupVC: UIViewController,UIPickerViewDelegate,UIPickerViewDa
         UserDefaults.standard.set(timerNo, forKey: "timerNo")
         UserDefaults.standard.set(imgResolution, forKey: "imageResolution")
         
-        delegate?.onSetCameraSetting(gridline: gridNo, timer: timerNo,gridSave: onGridSave!,tranmissionSave: onTranmissionSave!,resolution: imgResolution ?? 0)
+        if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kPhotoResolution.rawValue) {
+            delegate?.onSetCameraSetting(gridline: gridNo, timer: timerNo,gridSave: onGridSave!,tranmissionSave: onTranmissionSave!,resolution: imgResolution ?? 0)
+        } else {
+            delegate?.onSetCameraSetting(gridline: gridNo, timer: timerNo,gridSave: onGridSave!,tranmissionSave: onTranmissionSave!,resolution: imgResolution ?? 1)
+        }
+        
         dismiss(animated: true, completion: nil)
     }
     

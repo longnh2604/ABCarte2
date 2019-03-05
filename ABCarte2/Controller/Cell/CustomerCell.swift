@@ -37,7 +37,28 @@ class CustomerCell: UITableViewCell,ExpyTableViewHeaderCell {
             arrowRight(animated: !cellReuse)
 
         case .didExpand:
-            viewCell.backgroundColor = UIColor.init(red: 246/255, green: 240/255, blue: 230/255, alpha: 1)
+            if let set = UserDefaults.standard.integer(forKey: "colorset") as Int? {
+                switch set {
+                case 0:
+                    viewCell.backgroundColor = COLOR_SET000.kSELECT_BACKGROUND_COLOR
+                case 1:
+                    viewCell.backgroundColor = COLOR_SET001.kSELECT_BACKGROUND_COLOR
+                case 2:
+                    viewCell.backgroundColor = COLOR_SET002.kSELECT_BACKGROUND_COLOR
+                case 3:
+                    viewCell.backgroundColor = COLOR_SET003.kSELECT_BACKGROUND_COLOR
+                case 4:
+                    viewCell.backgroundColor = COLOR_SET004.kSELECT_BACKGROUND_COLOR
+                case 5:
+                    viewCell.backgroundColor = COLOR_SET005.kSELECT_BACKGROUND_COLOR
+                case 6:
+                    viewCell.backgroundColor = COLOR_SET006.kSELECT_BACKGROUND_COLOR
+                case 7:
+                    viewCell.backgroundColor = COLOR_SET007.kSELECT_BACKGROUND_COLOR
+                default:
+                    break
+                }
+            }
             print("DID EXPAND")
 
         case .didCollapse:
@@ -99,10 +120,10 @@ class CustomerCell: UITableViewCell,ExpyTableViewHeaderCell {
             PointGender.backgroundColor = UIColor.lightGray
         } else if customer.gender == 1 {
             lblGender.text = "男性"
-            PointGender.backgroundColor = kMALE_COLOR
+            PointGender.backgroundColor = COLOR_SET.kMALE_COLOR
         } else {
             lblGender.text = "女性"
-            PointGender.backgroundColor = kFEMALE_COLOR
+            PointGender.backgroundColor = COLOR_SET.kFEMALE_COLOR
         }
         
         if customer.thumb != "" {
@@ -143,7 +164,7 @@ class DetailCustomerCell: UITableViewCell {
     @IBOutlet weak var lblGender: UILabel!
     @IBOutlet weak var lblCusID: UILabel!
     @IBOutlet weak var mainView: UIView!
-    @IBOutlet weak var cusView: UIView!
+    @IBOutlet weak var cusView: GradientView!
     @IBOutlet weak var btnEdit: UIButton!
     @IBOutlet weak var btnSecret: UIButton!
     @IBOutlet weak var btnInDetail: UIButton!
@@ -158,10 +179,66 @@ class DetailCustomerCell: UITableViewCell {
     @IBOutlet weak var btnMemo2: RoundButton!
     @IBOutlet weak var btnCounsel: RoundButton!
     @IBOutlet weak var btnAgree: RoundButton!
-    @IBOutlet weak var imv_lock_memo_secret: UIImageView!
     
     func configure(with customer: CustomerData) {
 
+        if let set = UserDefaults.standard.integer(forKey: "colorset") as Int? {
+            switch set {
+            case 0:
+                viewCell.backgroundColor = COLOR_SET000.kSELECT_BACKGROUND_COLOR
+                cusView.topColor = COLOR_SET000.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET000.kHEADER_BACKGROUND_COLOR_DOWN
+            case 1:
+                viewCell.backgroundColor = COLOR_SET001.kSELECT_BACKGROUND_COLOR
+                cusView.topColor = COLOR_SET001.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET001.kHEADER_BACKGROUND_COLOR_DOWN
+            case 2:
+                viewCell.backgroundColor = COLOR_SET002.kSELECT_BACKGROUND_COLOR
+                cusView.topColor = COLOR_SET002.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET002.kHEADER_BACKGROUND_COLOR_DOWN
+            case 3:
+                viewCell.backgroundColor = COLOR_SET003.kSELECT_BACKGROUND_COLOR
+                cusView.topColor = COLOR_SET003.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET003.kHEADER_BACKGROUND_COLOR_DOWN
+            case 4:
+                viewCell.backgroundColor = COLOR_SET004.kSELECT_BACKGROUND_COLOR
+                cusView.topColor = COLOR_SET004.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET004.kHEADER_BACKGROUND_COLOR_DOWN
+            case 5:
+                viewCell.backgroundColor = COLOR_SET005.kSELECT_BACKGROUND_COLOR
+                cusView.topColor = COLOR_SET005.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET005.kHEADER_BACKGROUND_COLOR_DOWN
+            case 6:
+                viewCell.backgroundColor = COLOR_SET006.kSELECT_BACKGROUND_COLOR
+                cusView.topColor = COLOR_SET006.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET006.kHEADER_BACKGROUND_COLOR_DOWN
+            case 7:
+                viewCell.backgroundColor = COLOR_SET007.kSELECT_BACKGROUND_COLOR
+                cusView.topColor = COLOR_SET007.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET007.kHEADER_BACKGROUND_COLOR_DOWN
+            default:
+                break
+            }
+        }
+        
+        if customer.memo1 != "" {
+            setButtonColorStyle(button: btnMemo1, type: 0)
+        } else {
+            btnMemo1.backgroundColor = UIColor.lightGray
+        }
+        if customer.memo2 != "" {
+            setButtonColorStyle(button: btnMemo2, type: 0)
+        } else {
+            btnMemo2.backgroundColor = UIColor.lightGray
+        }
+        if customer.onSecret == 1 {
+            setButtonColorStyle(button: btnSecret, type: 0)
+        } else {
+            btnSecret.backgroundColor = UIColor.lightGray
+        }
+        setButtonColorStyle(button: btnEdit, type: 1)
+        setButtonColorStyle(button: btnInDetail, type: 1)
+        
         pointGender.layer.cornerRadius = 5
         pointGender.clipsToBounds = true
 
@@ -185,10 +262,10 @@ class DetailCustomerCell: UITableViewCell {
             pointGender.backgroundColor = UIColor.lightGray
         } else if customer.gender == 1 {
             lblGender.text = "男性"
-            pointGender.backgroundColor = kMALE_COLOR
+            pointGender.backgroundColor = COLOR_SET.kMALE_COLOR
         } else {
             lblGender.text = "女性"
-            pointGender.backgroundColor = kFEMALE_COLOR
+            pointGender.backgroundColor = COLOR_SET.kFEMALE_COLOR
         }
 
         if customer.thumb != "" {
@@ -227,28 +304,22 @@ class DetailCustomerCell: UITableViewCell {
         btnInDetail.addTarget(self, action: #selector(onViewDetail), for: .touchUpInside)
         btnSecret.addTarget(self, action: #selector(onSecret), for: .touchUpInside)
         
-        if customer.memo1 != "" {
-            btnMemo1.backgroundColor = kMEMO_HAS_CONTENT_COLOR
-        } else {
-            btnMemo1.backgroundColor = UIColor.lightGray
-        }
-        if customer.memo2 != "" {
-            btnMemo2.backgroundColor = kMEMO_HAS_CONTENT_COLOR
-        } else {
-            btnMemo2.backgroundColor = UIColor.lightGray
-        }
-        
-        if customer.onSecret == 1 {
-            btnSecret.backgroundColor = kMEMO_HAS_CONTENT_COLOR
-        } else {
-            btnSecret.backgroundColor = UIColor.lightGray
-        }
-        
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kSecretMemo.rawValue) {
-            imv_lock_memo_secret.isHidden = true
+            btnSecret.isHidden = false
         } else {
-            imv_lock_memo_secret.isHidden = false
+            btnSecret.isHidden = true
         }
+    }
+    
+    func setGradientBackground(colorTop: UIColor, colorBottom: UIColor){
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [colorBottom.cgColor, colorTop.cgColor]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 1.0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 0.0)
+        gradientLayer.locations = [0, 1]
+        gradientLayer.frame = bounds
+        
+        layer.insertSublayer(gradientLayer, at: 0)
     }
 
     @objc func onEdit() {

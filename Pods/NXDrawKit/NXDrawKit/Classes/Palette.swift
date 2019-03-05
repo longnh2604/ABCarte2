@@ -8,11 +8,11 @@
 
 import UIKit
 
-@objc public protocol PaletteDelegate
-{
-    func didChangeBrushAlpha(_ alpha:CGFloat)
-    func didChangeBrushWidth(_ width:CGFloat)
-    func didChangeBrushColor(_ color:UIColor)
+
+@objc public protocol PaletteDelegate {
+    @objc optional func didChangeBrushAlpha(_ alpha:CGFloat)
+    @objc optional func didChangeBrushWidth(_ width:CGFloat)
+    @objc optional func didChangeBrushColor(_ color:UIColor)
     
     @objc optional func colorWithTag(_ tag: NSInteger) -> UIColor?
     @objc optional func alphaWithTag(_ tag: NSInteger) -> CGFloat
@@ -20,26 +20,26 @@ import UIKit
 }
 
 
-open class Palette: UIView
-{
+open class Palette: UIView {
     @objc open weak var delegate: PaletteDelegate?
-    fileprivate var brush: Brush = Brush()
+    private var brush: Brush = Brush()
+
+    private let buttonDiameter = UIScreen.main.bounds.width / 10.0
+    private let buttonPadding = UIScreen.main.bounds.width / 25.0
+    private let columnCount = 4
     
-    fileprivate let buttonDiameter = UIScreen.main.bounds.width / 10.0
-    fileprivate let buttonPadding = UIScreen.main.bounds.width / 25.0
-    fileprivate let columnCount = 4
+    private var colorButtonList = [CircleButton]()
+    private var alphaButtonList = [CircleButton]()
+    private var widthButtonList = [CircleButton]()
     
-    fileprivate var colorButtonList = [CircleButton]()
-    fileprivate var alphaButtonList = [CircleButton]()
-    fileprivate var widthButtonList = [CircleButton]()
+    private var totalHeight: CGFloat = 0.0;
     
-    fileprivate var totalHeight: CGFloat = 0.0;
+    private weak var colorPaletteView: UIView?
+    private weak var alphaPaletteView: UIView?
+    private weak var widthPaletteView: UIView?
     
-    fileprivate weak var colorPaletteView: UIView?
-    fileprivate weak var alphaPaletteView: UIView?
-    fileprivate weak var widthPaletteView: UIView?
     
-    // MARK: - Public Methods
+    // MARK: - Initializer
     public init() {
         super.init(frame: CGRect.zero)
     }
@@ -52,7 +52,7 @@ open class Palette: UIView
         return self.brush
     }
     
-    
+
     // MARK: - Private Methods
     override open var intrinsicContentSize : CGSize {
         let size: CGSize = CGSize(width: UIScreen().bounds.size.width, height: self.totalHeight)
@@ -71,7 +71,7 @@ open class Palette: UIView
         return self.totalHeight
     }
     
-    fileprivate func setupColorView() {
+    private func setupColorView() {
         let view = UIView()
         self.addSubview(view)
         self.colorPaletteView = view
@@ -90,7 +90,7 @@ open class Palette: UIView
         self.colorPaletteView?.frame = CGRect(x: 0, y: 0, width: button!.frame.maxX + self.buttonPadding, height: self.totalHeight)
     }
     
-    fileprivate func colorButtonRect(index: NSInteger, diameter: CGFloat, padding: CGFloat) -> CGRect {
+    private func colorButtonRect(index: NSInteger, diameter: CGFloat, padding: CGFloat) -> CGRect {
         var rect: CGRect = CGRect.zero
         let indexValue = index - 1
         let count = self.columnCount
@@ -101,7 +101,7 @@ open class Palette: UIView
         return rect
     }
     
-    fileprivate func setupAlphaView() {
+    private func setupAlphaView() {
         let view = UIView()
         self.addSubview(view)
         self.alphaPaletteView = view
@@ -120,7 +120,7 @@ open class Palette: UIView
         self.alphaPaletteView?.frame = CGRect(x: startX, y: 0, width: button!.frame.maxX + self.buttonPadding, height: self.totalHeight)
     }
     
-    fileprivate func alphaButtonRect(index: NSInteger, diameter: CGFloat, padding: CGFloat) -> CGRect {
+    private func alphaButtonRect(index: NSInteger, diameter: CGFloat, padding: CGFloat) -> CGRect {
         var rect: CGRect = CGRect.zero
         let indexValue = index - 1
         rect.origin.x = padding
@@ -130,7 +130,7 @@ open class Palette: UIView
         return rect
     }
     
-    fileprivate func setupWidthView() {
+    private func setupWidthView() {
         let view = UIView()
         self.addSubview(view)
         self.widthPaletteView = view
@@ -143,7 +143,7 @@ open class Palette: UIView
             button?.frame = self.widthButtonRect(buttonDiameter, padding: self.buttonPadding, lastY: lastY)
             self.widthPaletteView!.addSubview(button!)
             button?.addTarget(self, action: #selector(Palette.onClickWidthPicker(_:)), for: .touchUpInside)
-            
+
             lastY = (button?.frame)!.maxY
             self.widthButtonList.append(button!)
         }
@@ -152,7 +152,7 @@ open class Palette: UIView
         self.widthPaletteView?.frame = CGRect(x: startX, y: 0, width: button!.frame.maxX + self.buttonPadding, height: self.totalHeight)
     }
     
-    fileprivate func widthButtonRect(_ diameter: CGFloat, padding: CGFloat, lastY: CGFloat) -> CGRect {
+    private func widthButtonRect(_ diameter: CGFloat, padding: CGFloat, lastY: CGFloat) -> CGRect {
         var rect: CGRect = CGRect.zero
         rect.origin.x = padding + ((self.buttonDiameter - diameter) / 2)
         rect.origin.y = lastY + padding
@@ -160,10 +160,9 @@ open class Palette: UIView
         
         return rect
     }
-    
-    fileprivate func setupDefaultValues() {
-        //        var button: CircleButton = self.colorButtonList.first!
-        var button: CircleButton = self.colorButtonList[3]
+
+    private func setupDefaultValues() {
+        var button: CircleButton = self.colorButtonList.first!
         button.isSelected = true
         self.brush.color = button.color!
         
@@ -176,96 +175,95 @@ open class Palette: UIView
         self.brush.width = button.diameter!
     }
     
-    @objc fileprivate func onClickColorPicker(_ button: CircleButton) {
+    @objc private func onClickColorPicker(_ button: CircleButton) {
         self.brush.color = button.color!;
         let shouldEnable = !self.brush.color.isEqual(UIColor.clear)
-        
+
         self.resetButtonSelected(self.colorButtonList, button: button)
         self.updateColorOfButtons(self.widthButtonList, color: button.color!)
         self.updateColorOfButtons(self.alphaButtonList, color: button.color!, enable: shouldEnable)
         
-        delegate?.didChangeBrushColor(self.brush.color)
+        self.delegate?.didChangeBrushColor?(self.brush.color)
     }
-    
-    @objc fileprivate func onClickAlphaPicker(_ button: CircleButton) {
+
+    @objc private func onClickAlphaPicker(_ button: CircleButton) {
         self.brush.alpha = button.opacity!
         self.resetButtonSelected(self.alphaButtonList, button: button)
         
-        delegate?.didChangeBrushAlpha(self.brush.alpha)
+        self.delegate?.didChangeBrushAlpha?(self.brush.alpha)
     }
-    
-    @objc fileprivate func onClickWidthPicker(_ button: CircleButton) {
+
+    @objc private func onClickWidthPicker(_ button: CircleButton) {
         self.brush.width = button.diameter!;
         self.resetButtonSelected(self.widthButtonList, button: button)
         
-        delegate?.didChangeBrushWidth(self.brush.width)
+        self.delegate?.didChangeBrushWidth?(self.brush.width)
     }
     
-    fileprivate func resetButtonSelected(_ list: [CircleButton], button: CircleButton) {
+    private func resetButtonSelected(_ list: [CircleButton], button: CircleButton) {
         for aButton: CircleButton in list {
             aButton.isSelected = aButton.isEqual(button)
         }
     }
     
-    fileprivate func updateColorOfButtons(_ list: [CircleButton], color: UIColor, enable: Bool = true) {
+    private func updateColorOfButtons(_ list: [CircleButton], color: UIColor, enable: Bool = true) {
         for aButton: CircleButton in list {
             aButton.update(color)
             aButton.isEnabled = enable
         }
     }
     
-    fileprivate func color(_ tag: NSInteger) -> UIColor {
+    private func color(_ tag: NSInteger) -> UIColor {
         if let color = self.delegate?.colorWithTag?(tag)  {
             return color
         }
-        
+
         return self.colorWithTag(tag)
     }
     
-    fileprivate func colorWithTag(_ tag: NSInteger) -> UIColor {
+    private func colorWithTag(_ tag: NSInteger) -> UIColor {
         switch(tag) {
-        case 1:
-            return UIColor.black
-        case 2:
-            return UIColor.darkGray
-        case 3:
-            return UIColor.gray
-        case 4:
-            return brush.color
-        //                return UIColor.white
-        case 5:
-            return UIColor(red: 0.8, green: 0.2, blue: 0.2, alpha: 1.0)
-        case 6:
-            return UIColor.orange
-        case 7:
-            return UIColor.green
-        case 8:
-            return UIColor(red: 0.15, green: 0.47, blue: 0.23, alpha: 1.0)
-        case 9:
-            return UIColor(red: 0.2, green: 0.3, blue: 1.0, alpha: 1.0)
-        case 10:
-            return UIColor(red: 0.2, green: 0.8, blue: 1.0, alpha: 1.0)
-        case 11:
-            return UIColor(red: 0.62, green: 0.32, blue: 0.17, alpha: 1.0)
-        case 12:
-            return UIColor.yellow
-        default:
-            return UIColor.black
+            case 1:
+                return UIColor.black
+            case 2:
+                return UIColor.darkGray
+            case 3:
+                return UIColor.gray
+            case 4:
+                return UIColor.white
+            case 5:
+                return UIColor(red: 0.8, green: 0.2, blue: 0.2, alpha: 1.0)
+            case 6:
+                return UIColor.orange
+            case 7:
+                return UIColor.green
+            case 8:
+                return UIColor(red: 0.15, green: 0.47, blue: 0.23, alpha: 1.0)
+            case 9:
+                return UIColor(red: 0.2, green: 0.3, blue: 1.0, alpha: 1.0)
+            case 10:
+                return UIColor(red: 0.2, green: 0.8, blue: 1.0, alpha: 1.0)
+            case 11:
+                return UIColor(red: 0.62, green: 0.32, blue: 0.17, alpha: 1.0)
+            case 12:
+                return UIColor.yellow
+            default:
+                return UIColor.black
         }
     }
     
-    fileprivate func opacity(_ tag: NSInteger) -> CGFloat {
+    private func opacity(_ tag: NSInteger) -> CGFloat {
         if let opacity = self.delegate?.alphaWithTag?(tag) {
             if 0 > opacity || opacity > 1 {
                 return CGFloat(tag) / 3.0
             }
             return opacity
         }
-        
+
         return CGFloat(tag) / 3.0
     }
-    
-    fileprivate func brushWidth(_ tag: NSInteger) -> CGFloat {
+
+    private func brushWidth(_ tag: NSInteger) -> CGFloat {
         if let width = self.delegate?.widthWithTag?(tag) {
             if 0 > width || width > self.buttonDiameter {
                 return self.buttonDiameter * (CGFloat(tag) / 4.0)

@@ -78,8 +78,8 @@ class VisitPopupVC: UIViewController {
         charac2.isHidden = false
         charac3.isHidden = false
         
-        btnDayVisit.backgroundColor = kMEMO_SELECT_COLOR
-        btnRangeSpec.backgroundColor = kMEMO_SELECT_COLOR
+        btnDayVisit.backgroundColor = COLOR_SET.kMEMO_SELECT_COLOR
+        btnRangeSpec.backgroundColor = COLOR_SET.kMEMO_SELECT_COLOR
     }
     
     func removeAllTypeDate() {
@@ -141,7 +141,7 @@ class VisitPopupVC: UIViewController {
                     searchParams.append("&carte_select_date_from_3=\(dateFrom3!)&carte_select_date_to_3=\(dateFrom3!)")
                 }
                 if dateFrom1 == nil && dateFrom2 == nil && dateFrom3 == nil {
-                    showAlert(message: kALERT_INPUT_DATE, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_INPUT_DATE, view: self)
                     return
                 }
                 self.delegate?.onVisitSearch(params:searchParams,type:1)
@@ -190,7 +190,7 @@ class VisitPopupVC: UIViewController {
                 }
                 
                 if dateFrom1 == nil && dateTo1 == nil && dateFrom2 == nil && dateTo2 == nil && dateFrom3 == nil && dateTo3 == nil {
-                    showAlert(message: kALERT_INPUT_DATE, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_INPUT_DATE, view: self)
                     return
                 }
                 
@@ -212,7 +212,7 @@ class VisitPopupVC: UIViewController {
                     searchParams.append("&last_day_come_from_3=\(dateFrom3!)&last_day_come_to_3=\(dateFrom3!)")
                 }
                 if dateFrom1 == nil && dateFrom2 == nil && dateFrom3 == nil {
-                    showAlert(message: kALERT_INPUT_DATE, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_INPUT_DATE, view: self)
                     return
                 }
                 self.delegate?.onVisitSearch(params:searchParams,type: 2)
@@ -260,7 +260,7 @@ class VisitPopupVC: UIViewController {
                 }
                 
                 if dateFrom1 == nil && dateTo1 == nil && dateFrom2 == nil && dateTo2 == nil && dateFrom3 == nil && dateTo3 == nil {
-                    showAlert(message: kALERT_INPUT_DATE, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_INPUT_DATE, view: self)
                     return
                 }
                 
@@ -282,7 +282,7 @@ class VisitPopupVC: UIViewController {
                     searchParams.append("&first_day_come_from_3=\(dateFrom3!)&first_day_come_to_3=\(dateFrom3!)")
                 }
                 if dateFrom1 == nil && dateFrom2 == nil && dateFrom3 == nil {
-                    showAlert(message: kALERT_INPUT_DATE, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_INPUT_DATE, view: self)
                     return
                 }
                 self.delegate?.onVisitSearch(params:searchParams,type: 2)
@@ -330,7 +330,7 @@ class VisitPopupVC: UIViewController {
                 }
                 
                 if dateFrom1 == nil && dateTo1 == nil && dateFrom2 == nil && dateTo2 == nil && dateFrom3 == nil && dateTo3 == nil {
-                    showAlert(message: kALERT_INPUT_DATE, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_INPUT_DATE, view: self)
                     return
                 }
                 
@@ -341,7 +341,7 @@ class VisitPopupVC: UIViewController {
         case 4:
             
             if tfDay1.text == "" && tfYear1.text == "" || tfDay1.text != "" && tfYear1.text == "" || tfDay1.text == "" && tfYear1.text != "" {
-                showAlert(message: kALERT_INPUT_DATA, view: self)
+                showAlert(message: MSG_ALERT.kALERT_INPUT_DATA, view: self)
                 return
             } else {
                 
@@ -426,13 +426,13 @@ class VisitPopupVC: UIViewController {
   
         switch sender.tag {
         case 1:
-            btnDayVisit.backgroundColor = kMEMO_SELECT_COLOR
+            btnDayVisit.backgroundColor = COLOR_SET.kMEMO_SELECT_COLOR
         case 2:
-            btnLstDayVisit.backgroundColor = kMEMO_SELECT_COLOR
+            btnLstDayVisit.backgroundColor = COLOR_SET.kMEMO_SELECT_COLOR
         case 3:
-            btnFirstDayVisit.backgroundColor = kMEMO_SELECT_COLOR
+            btnFirstDayVisit.backgroundColor = COLOR_SET.kMEMO_SELECT_COLOR
         case 4:
-            btnVisitInterval.backgroundColor = kMEMO_SELECT_COLOR
+            btnVisitInterval.backgroundColor = COLOR_SET.kMEMO_SELECT_COLOR
         default:
             break
         }
@@ -443,7 +443,7 @@ class VisitPopupVC: UIViewController {
         specType = sender.tag
         switch sender.tag {
         case 1:
-            btnDateSpec.backgroundColor = kMEMO_SELECT_COLOR
+            btnDateSpec.backgroundColor = COLOR_SET.kMEMO_SELECT_COLOR
             btnToDate1.isHidden = true
             btnToDate2.isHidden = true
             btnToDate3.isHidden = true
@@ -451,7 +451,7 @@ class VisitPopupVC: UIViewController {
             charac2.isHidden = true
             charac3.isHidden = true
         case 2:
-            btnRangeSpec.backgroundColor = kMEMO_SELECT_COLOR
+            btnRangeSpec.backgroundColor = COLOR_SET.kMEMO_SELECT_COLOR
             btnToDate1.isHidden = false
             btnToDate2.isHidden = false
             btnToDate3.isHidden = false

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import JGProgressHUD
 
 class AccountSettingPopupVC: UIViewController {
 
@@ -35,20 +34,16 @@ class AccountSettingPopupVC: UIViewController {
             showAlert(message: "同じパスワードで更新はできません。", view: self)
         } else {
             //add loading view
-            let hud = JGProgressHUD(style: .dark)
-            hud.vibrancyEnabled = true
-            hud.textLabel.text = "LOADING"
-            hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-            hud.show(in: self.view)
+            SVProgressHUD.show(withStatus: "読み込み中")
+            SVProgressHUD.setDefaultMaskType(.clear)
             
             updateAccountPass(currentP: tfCurrPassword.text!, newP: tfNewPassword.text!) { (success) in
                 if success {
                     showAlert(message: "シークレットメモのパスワードを更新しました。", view: self)
-                    hud.dismiss()
                 } else {
                     showAlert(message: "パスワードが間違っています。正しいパスワードを入力してください。", view: self)
-                    hud.dismiss()
                 }
+                SVProgressHUD.dismiss()
             }
         }
     }

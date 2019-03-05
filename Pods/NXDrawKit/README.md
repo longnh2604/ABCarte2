@@ -8,13 +8,14 @@
 [![Version](https://img.shields.io/cocoapods/v/NXDrawKit.svg?style=flat)](http://cocoapods.org/pods/NXDrawKit)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](http://cocoapods.org/pods/NXDrawKit)
 [![Platform](https://img.shields.io/cocoapods/p/NXDrawKit.svg?style=flat)](http://cocoapods.org/pods/NXDrawKit)
-[![Swift](https://img.shields.io/badge/Swift-2.3-green.svg)](http://cocoapods.org/pods/NXDrawKit)
 [![Swift](https://img.shields.io/badge/Swift-3.0-orange.svg)](http://cocoapods.org/pods/NXDrawKit)
 [![Swift](https://img.shields.io/badge/Swift-4.0-red.svg)](http://cocoapods.org/pods/NXDrawKit)
+[![Swift](https://img.shields.io/badge/Swift-4.2-green.svg)](http://cocoapods.org/pods/NXDrawKit)
 
 #### ⚠️ **To use with Swift 2.3 please ensure you are using == 0.4.1** ⚠️ 
 #### ⚠️ **To use with Swift 3.x please ensure you are using >= 0.5.0** ⚠️ 
 #### ⚠️ **To use with Swift 4.x please ensure you are using >= 0.6.1** ⚠️ 
+#### ⚠️ **To use with Swift 4.2 please ensure you are using >= 0.7.1** ⚠️ 
 
 # Purpose
 It's just started for my personal app for iPhone.
@@ -130,7 +131,7 @@ func didChangeBrushWidth(width: CGFloat)
 
  - ***tag*** can be ***1 ... 12*** 
  - If you return ***nil***, the color of tag will set with default color provided by **NXDrawKit**.
- - If you return ***clearColor()***, the color of tag will be Eraser.
+ - If you return ***clearColor***, the color of tag will be Eraser.
 
 ```swift
 func colorWithTag(tag: NSInteger) -> UIColor?
@@ -175,25 +176,25 @@ var clearButton: UIButton?
   - All methods can return ***nil***, so you should check before use whether it's ***nil*** or not.
 ```swift
 public extension UIImage {
-    public func asPNGData() -> NSData? {
-        return UIImagePNGRepresentation(self)
+    @objc public func asPNGData() -> Data? {
+        return self.pngData()
     }
     
-    public func asJPEGData(quality: CGFloat) -> NSData? {
-        return UIImageJPEGRepresentation(self, quality);
+    @objc public func asJPEGData(_ quality: CGFloat) -> Data? {
+        return self.jpegData(compressionQuality: quality);
     }
     
-    public func asPNGImage() -> UIImage? {
+    @objc public func asPNGImage() -> UIImage? {
         if let data = self.asPNGData() {
-            return UIImage.init(data: data)
+            return UIImage(data: data)
         }
         
         return nil
     }
-
-    public func asJPGImage(quality: CGFloat) -> UIImage? {
+    
+    @objc public func asJPGImage(_ quality: CGFloat) -> UIImage? {
         if let data = self.asJPEGData(quality) {
-            return UIImage.init(data: data)
+            return UIImage(data: data)
         }
         
         return nil
@@ -204,9 +205,11 @@ public extension UIImage {
 
 
 # Version History
-* 0.6.0
+* 0.7.1
+    * UPDATE: Support XCode10, Swift 4.2
+* 0.6.1
     * UPDATE: Support XCode9, Swift 4.0
-* 0.5.0
+* 0.5.1
     * UPDATE: Support XCode8, Swift 3.0
 * 0.4.1
     * UPDATE: Support XCode8, Swift 2.3
@@ -220,10 +223,10 @@ public extension UIImage {
     * Release
 
 ## Will be improved
+- [x] Swift style code
 - [x] There is no Eraser, so user can't erase stroke. - added v0.2.0
 - [ ] User can't remove background image after it's set.
 - [ ] `Palette` and `ToolBar` can't customize easily.
-- [ ] All the code looks like ***ObjC***.
 
 
 # Author

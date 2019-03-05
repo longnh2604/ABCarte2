@@ -24,7 +24,9 @@ enum PopUpType:Int{
 
 enum DocType:Int{
     case Consent
-    case Counseling
+    case Counselling
+    case Handwritting
+    case Outline
 }
 
 //*****************************************************************
@@ -43,8 +45,8 @@ enum ImageResolution:Int{
 
 enum AppFunctions:Int{
     case kMultiLanguage = 1
-    case kFreeword = 2
-    case kStamp = 3
+//    case kFreeword = 2
+//    case kStamp = 3
     case kSecretMemo = 4
     case kCompareTranmission = 5
     case kMorphing = 6
@@ -59,4 +61,33 @@ enum AppFunctions:Int{
     case kFullStampSticker = 15
     case kMosaic = 16
     case kPenSize = 17
+    case kCalendar = 18
+    case kPhotoResolution = 19
+    case kSilhouette = 20
+    case kEyeDrop = 21
+    case kOpacity = 22
+    case kCarteDocs = 23
+    case kAdditionalDoc = 24
+}
+
+//*****************************************************************
+// MARK: - Functions Type
+//*****************************************************************
+
+enum alphabetIndex: Int {
+    case A = 1
+    case Ka = 2
+    case Sa = 3
+    case Ta = 4
+    case Na = 5
+    case Ha = 6
+    case Ma = 7
+    case Ya = 8
+    case Ra = 9
+    case Wa = 10
+    case AG = 11
+    case HN = 12
+    case OU = 13
+    case VZ = 14
+    case All = 15
 }

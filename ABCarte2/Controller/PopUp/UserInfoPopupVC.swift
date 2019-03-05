@@ -53,9 +53,7 @@ class UserInfoPopupVC: UIViewController {
         
         countStorage { (success) in
             if success {
-                
-            } else {
-                
+                self.updateChartData()
             }
         }
     }
@@ -64,7 +62,13 @@ class UserInfoPopupVC: UIViewController {
         
         // 2. generate chart data entries
         let track = ["使用容量","空き容量"]
-        let money = [2, 3]
+        
+        guard let limit = GlobalVariables.sharedManager.limitSize,let curr = GlobalVariables.sharedManager.currentSize else { return }
+        let limitGB = Double(limit) / 1_024 / 1_024 / 1_024
+        let currGB = Double(curr) / 1_024 / 1_024 / 1_024
+        let remainGB = limitGB - currGB
+        
+        let money = [currGB,remainGB]
         
         var entries = [PieChartDataEntry]()
         for (index, value) in money.enumerated() {
@@ -90,16 +94,16 @@ class UserInfoPopupVC: UIViewController {
         chartStorageLimit.data = data
         chartStorageLimit.noDataText = "データーがない"
         // user interaction
-        chartStorageLimit.isUserInteractionEnabled = true
+        chartStorageLimit.isUserInteractionEnabled = false
         
         let d = Description()
 //        d.text = "データー量"
         chartStorageLimit.rotationEnabled = false
         chartStorageLimit.chartDescription = d
-        chartStorageLimit.centerText = "GB"
+        chartStorageLimit.centerText = "\(limitGB)GB"
         chartStorageLimit.holeRadiusPercent = 0.5
         chartStorageLimit.transparentCircleColor = UIColor.clear
-        chartStorageLimit.backgroundColor = kBACKGROUND_LIGHT_GRAY
+        chartStorageLimit.backgroundColor = COLOR_SET.kBACKGROUND_LIGHT_GRAY
         
     }
     

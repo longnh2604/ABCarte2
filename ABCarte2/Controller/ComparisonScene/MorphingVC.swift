@@ -9,7 +9,6 @@
 import UIKit
 import RealmSwift
 import SDWebImage
-import JGProgressHUD
 
 class MorphingVC: UIViewController, UIScrollViewDelegate {
     
@@ -23,8 +22,9 @@ class MorphingVC: UIViewController, UIScrollViewDelegate {
     var lastIndex: Int?
     var onSlideIndex: Int?
     var imageConverted: Data?
+    var carteIDTemp: Int?
     var onTemp: Bool = false
-    let hud = JGProgressHUD(style: .dark)
+    var startPosition: CGPoint?
     
     //IBOutlet
     @IBOutlet weak var imvCus: UIImageView!
@@ -77,7 +77,18 @@ class MorphingVC: UIViewController, UIScrollViewDelegate {
         collectionImg.selectItem(at: index, animated: true, scrollPosition: .centeredVertically)
         
         viewGeneral.isUserInteractionEnabled = false
+        
+        sliderTrans.isContinuous = true
+//        Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(updateSlider(timer:)), userInfo: nil, repeats: false)
     }
+    
+//    @objc func updateSlider(timer: Timer) {
+//        let index = Float(self.sliderTrans.value + 1)
+//        self.sliderTrans.setValue(index, animated: true)
+//        if self.sliderTrans.value > self.sliderTrans.maximumValue {
+//            timer.invalidate()
+//        }
+//    }
     
     func updateTopView() {
         if customer.thumb != "" {
@@ -102,21 +113,15 @@ class MorphingVC: UIViewController, UIScrollViewDelegate {
             lblDayCome.text = date + getDayOfWeek(date)!
         }
     }
-    
-    func showLoading() {
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
-    }
 
     func arrangeImage() {
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
+        
         for subview in viewGeneral.subviews {
             subview.removeFromSuperview()
         }
 
-        showLoading()
-        
         for i in 0 ..< mediasData.count {
             
             let imageView = UIImageView()
@@ -138,7 +143,7 @@ class MorphingVC: UIViewController, UIScrollViewDelegate {
         }
         viewGeneral.clipsToBounds = true
         
-        self.hud.dismiss()
+        SVProgressHUD.dismiss()
     }
     
     func reArrangeImage() {
@@ -172,38 +177,31 @@ class MorphingVC: UIViewController, UIScrollViewDelegate {
 
     @IBAction func handlePan(recognizer:UIPanGestureRecognizer) {
 
-        let translation = recognizer.translation(in: self.view)
-        if let view = recognizer.view {
-            view.center = CGPoint(x:view.center.x + translation.x,
-                                  y:view.center.y + translation.y)
-        }
-        recognizer.setTranslation(CGPoint.zero, in: self.view)
-
-        if recognizer.state == UIGestureRecognizerState.ended {
-            // 1
-            let velocity = recognizer.velocity(in: self.view)
-            let magnitude = sqrt((velocity.x * velocity.x) + (velocity.y * velocity.y))
-            let slideMultiplier = magnitude / 200
-           
-            // 2
-            let slideFactor = 0.1 * slideMultiplier     //Increase for more of a slide
-            // 3
-            var finalPoint = CGPoint(x:recognizer.view!.center.x + (velocity.x * slideFactor),
-                                     y:recognizer.view!.center.y + (velocity.y * slideFactor))
-            // 4
-            finalPoint.x = min(max(finalPoint.x, 0), self.view.bounds.size.width)
-            finalPoint.y = min(max(finalPoint.y, 0), self.view.bounds.size.height)
-
-            // 5
-            UIView.animate(withDuration: Double(slideFactor * 2),
-                           delay: 0,
-                           // 6
-                options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    recognizer.view!.center = finalPoint
-            }) { (success) in
-                self.view.updateConstraints()
+//        if recognizer.state == .began || recognizer.state == .changed {
+//
+//            let translation = recognizer.translation(in: self.view)
+//            // note: 'view' is optional and need to be unwrapped
+//            recognizer.view!.center = CGPoint(x: recognizer.view!.center.x + translation.x, y: recognizer.view!.center.y + translation.y)
+//            recognizer.setTranslation(CGPoint.zero, in: self.view)
+//        }
+        
+        // Allows smooth movement of stickers.
+        if recognizer.state == .began || recognizer.state == .changed
+        {
+            let point = recognizer.location(in: self.viewGeneral)
+            if let superview = self.viewGeneral
+            {
+                let restrictByPoint : CGFloat = 30.0
+                let superBounds = CGRect(x: superview.bounds.origin.x + restrictByPoint, y: superview.bounds.origin.y + restrictByPoint, width: superview.bounds.size.width - 2*restrictByPoint, height: superview.bounds.size.height - 2*restrictByPoint)
+                if (superBounds.contains(point))
+                {
+                    let translation = recognizer.translation(in: self.viewGeneral)
+                    recognizer.view!.center = CGPoint(x: recognizer.view!.center.x + translation.x, y: recognizer.view!.center.y + translation.y)
+                    recognizer.setTranslation(CGPoint.zero, in: self.viewGeneral)
+                }
             }
         }
+
     }
 
     func removeAllGestures() {
@@ -224,25 +222,20 @@ class MorphingVC: UIViewController, UIScrollViewDelegate {
     }
 
     func onSaveImage(image: UIImage) {
-        showLoading()
+        SVProgressHUD.showProgress(0.3, status: "サーバーにアップロード中:30%")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
-        self.imageConverted = UIImageJPEGRepresentation(image, 100)
+        self.imageConverted = UIImageJPEGRepresentation(image, 1)
         
         if onTemp == false {
             addMedias(cusID: self.customer.id, carteID: self.carte.id,mediaData: self.imageConverted!, completion: { (success) in
                 if success {
-          
-                    self.hud.dismiss()
                 } else {
-                    self.hud.dismiss()
-           
-                    showAlert(message: kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
                 }
+                SVProgressHUD.dismiss()
             })
         } else {
-            //Check current date
-            var isAdded: Bool = false
-            
             for i in 0 ..< cartesData.count {
                 let today = Date()
                 
@@ -250,53 +243,47 @@ class MorphingVC: UIViewController, UIScrollViewDelegate {
                 let isSame = date.isInSameDay(date: today)
                 
                 if isSame {
-                 
-                    isAdded = true
-                    
                     addMedias(cusID: self.customer.id, carteID: self.cartesData[i].id,mediaData: self.imageConverted!, completion: { (success) in
                         if success {
-                    
-                            self.hud.dismiss()
                         } else {
-                            self.hud.dismiss()
-                     
-                            showAlert(message: kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
+                            showAlert(message: MSG_ALERT.kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
                         }
+                        SVProgressHUD.dismiss()
                     })
                     return
-                    
                 } else {
-          
-                    isAdded = false
+                    if let carteID = self.carteIDTemp {
+                        addMedias(cusID: self.customer.id, carteID: carteID,mediaData: self.imageConverted!, completion: { (success) in
+                            if success {
+                            } else {
+                                showAlert(message: MSG_ALERT.kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
+                            }
+                            SVProgressHUD.dismiss()
+                        })
+                        return
+                    }
                 }
             }
             
-            if isAdded == false {
-                
-                let currDate = Date()
-                let timeInterval = Int(currDate.timeIntervalSince1970)
-                
-                //Create Carte first
-                addCarteWithIDReturn(cusID: customer.id, date: timeInterval) { (carteID) in
-                    if carteID != 0 {
-                     
-                        
-                        addMedias(cusID: self.customer.id, carteID: carteID,mediaData: self.imageConverted!, completion: { (success) in
-                            if success {
-                           
-                                self.hud.dismiss()
-                            } else {
-                                self.hud.dismiss()
-                           
-                                showAlert(message: kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
-                            }
-                        })
-                        
-                    } else {
-                        self.hud.dismiss()
+            let currDate = Date()
+            let timeInterval = Int(currDate.timeIntervalSince1970)
+            
+            //Create Carte first
+            addCarteWithIDReturn(cusID: customer.id, date: timeInterval) { (carteID) in
+                if carteID != 0 {
+                    self.carteIDTemp = carteID
                     
-                        showAlert(message: kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
-                    }
+                    addMedias(cusID: self.customer.id, carteID: carteID,mediaData: self.imageConverted!, completion: { (success) in
+                        if success {
+                        } else {
+                            showAlert(message: MSG_ALERT.kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
+                        }
+                        SVProgressHUD.dismiss()
+                    })
+                    
+                } else {
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
+                    SVProgressHUD.dismiss()
                 }
             }
         }

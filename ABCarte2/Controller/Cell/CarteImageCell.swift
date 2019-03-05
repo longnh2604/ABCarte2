@@ -73,6 +73,8 @@ class CarteImageCell: UICollectionViewCell {
         }
         
         btnZoom.tag = media.id
+        
+        setButtonColorStyle(button: btnZoom, type: 1)
     }
     
     @IBAction func onZoom(_ sender: UIButton) {

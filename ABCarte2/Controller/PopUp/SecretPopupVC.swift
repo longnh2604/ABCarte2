@@ -8,7 +8,6 @@
 
 import UIKit
 import RealmSwift
-import JGProgressHUD
 
 protocol SecretPopupVCDelegate: class {
     func didCloseSecret()
@@ -49,13 +48,9 @@ class SecretPopupVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         tblMemo.register(nib, forCellReuseIdentifier: "SecretCell")
         
         //add loading view
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
-        
-        print(customer.id)
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
+   
         getCusSecretMemo(cusID: customer.id) { (success) in
             if success {
             
@@ -69,11 +64,10 @@ class SecretPopupVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 }
                 
                 self.tblMemo.reloadData()
-                hud.dismiss()
             } else {
                 showAlert(message: "シークレットメモの読込に失敗しました。ネットワークの状態を確認してください。", view: self)
-                hud.dismiss()
             }
+            SVProgressHUD.dismiss()
         }
     }
 
@@ -125,10 +119,8 @@ class SecretPopupVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
     
     @IBAction func onSave(_ sender: UIButton) {
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
         //check textfield first
         if tvContent.text == "" {
@@ -141,8 +133,6 @@ class SecretPopupVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             let alert = UIAlertController(title: "メモを上書き保存します。よろしいですか？", message: nil, preferredStyle: .alert)
             let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
             let confirm = UIAlertAction(title: "OK", style: .default) { UIAlertAction in
-                
-                hud.show(in: self.view)
                 
                 editSecretMemo(secretID: self.secretData[self.indexSelected!].id, content: self.tvContent.text, auth: self.authenPass!,completion: { (success) in
                     if success {
@@ -158,7 +148,6 @@ class SecretPopupVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                                 }
                                 
                                 self.tblMemo.reloadData()
-                                hud.dismiss()
                                 
                                 self.showButtonOption(hidden: true)
                                 self.tvContent.text = ""
@@ -170,13 +159,13 @@ class SecretPopupVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                                 self.lblDayCreate.text = "作成日:"
                             } else {
                                 showAlert(message: "メモの読込に失敗しました。ネットワークの状態を確認してください。", view: self)
-                                hud.dismiss()
                             }
+                            SVProgressHUD.dismiss()
                         }
                     } else {
                         showAlert(message: "メモの更新に失敗しました。ネットワークの状態を確認してください。", view: self)
-                        hud.dismiss()
                     }
+                    SVProgressHUD.dismiss()
                 })
             }
             
@@ -196,7 +185,8 @@ class SecretPopupVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             let cancel = UIAlertAction(title: "キャンセル", style: .default, handler: nil)
             let confirm = UIAlertAction(title: "OK", style: .default) { UIAlertAction in
                 
-                hud.show(in: self.view)
+                SVProgressHUD.show(withStatus: "読み込み中")
+                SVProgressHUD.setDefaultMaskType(.clear)
                 
                 addSecretMemo(cusID: self.customer.id, content: self.tvContent.text, auth: self.authenPass!) { (success) in
                     if success {
@@ -212,8 +202,7 @@ class SecretPopupVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                                 }
                                 
                                 self.tblMemo.reloadData()
-                                hud.dismiss()
-                                
+                          
                                 self.showButtonOption(hidden: true)
                                 self.tvContent.text = ""
                                 self.tvContent.isSelectable = false
@@ -224,12 +213,12 @@ class SecretPopupVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                                 self.lblDayCreate.text = "作成日:"
                             } else {
                                 showAlert(message: "メモの読込に失敗しました。ネットワークの状態を確認してください。", view: self)
-                                hud.dismiss()
                             }
+                            SVProgressHUD.dismiss()
                         }
                     } else {
                         showAlert(message: "Failed to Add New Memo", view: self)
-                        hud.dismiss()
+                        SVProgressHUD.dismiss()
                     }
                 }
             }
@@ -252,11 +241,8 @@ class SecretPopupVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             let alert = UIAlertController(title: "選択しているメモを削除します。よろしいですか？", message: nil, preferredStyle: .alert)
             let cancel = UIAlertAction(title: "取消", style: .default, handler: nil)
             let confirm = UIAlertAction(title: "OK", style: .default) { UIAlertAction in
-                let hud = JGProgressHUD(style: .dark)
-                hud.vibrancyEnabled = true
-                hud.textLabel.text = "LOADING"
-                hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-                hud.show(in: self.view)
+                SVProgressHUD.show(withStatus: "読み込み中")
+                SVProgressHUD.setDefaultMaskType(.clear)
                 
                 deleteSecretMemo(memoID: self.secretData[self.indexSelected!].id,auth: self.authenPass!, completion: { (success) in
                     if success {
@@ -274,21 +260,19 @@ class SecretPopupVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                                 
                                 self.tblMemo.reloadData()
                                 self.tvContent.text = ""
-                                hud.dismiss()
-                                
+    
                                 self.indexSelected = nil
                                 
                                 self.lblDayCreate.text = "作成日:"
                             } else {
-                         
                                 showAlert(message: "シークレットメモの読込に失敗しました。ネットワークの状態を確認してください。", view: self)
-                                hud.dismiss()
                             }
+                            SVProgressHUD.dismiss()
                         }
                     } else {
                         showAlert(message: "Failed to Delete Memo", view: self)
-                        hud.dismiss()
                     }
+                    SVProgressHUD.dismiss()
                 })
             }
             

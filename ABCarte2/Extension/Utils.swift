@@ -14,10 +14,52 @@ import SystemConfiguration
 import SystemConfiguration.CaptiveNetwork
 import Alamofire
 import SwiftyJSON
+import Accelerate
 
 struct tupleR {
     var result: Bool
     var message: String
+}
+
+//*****************************************************************
+// MARK: - Convert Bytes
+//*****************************************************************
+
+public struct Units {
+    
+    public let bytes: Int64
+    
+    public var kilobytes: Double {
+        return Double(bytes) / 1_024
+    }
+    
+    public var megabytes: Double {
+        return kilobytes / 1_024
+    }
+    
+    public var gigabytes: Double {
+        return megabytes / 1_024
+    }
+    
+    public init(bytes: Int64) {
+        self.bytes = bytes
+    }
+    
+    public func getReadableUnit() -> String {
+        
+        switch bytes {
+        case 0..<1_024:
+            return "\(bytes) bytes"
+        case 1_024..<(1_024 * 1_024):
+            return "\(String(format: "%.2f", kilobytes)) kb"
+        case 1_024..<(1_024 * 1_024 * 1_024):
+            return "\(String(format: "%.2f", megabytes)) mb"
+        case (1_024 * 1_024 * 1_024)...Int64.max:
+            return "\(String(format: "%.2f", gigabytes)) gb"
+        default:
+            return "\(bytes) bytes"
+        }
+    }
 }
 
 //*****************************************************************
@@ -287,7 +329,7 @@ public func convertUnixTimestamp(time: Int)->String {
     let date = NSDate(timeIntervalSince1970: TimeInterval(time))
     let dayTimePeriodFormatter = DateFormatter()
     dayTimePeriodFormatter.locale = Locale(identifier: "ja_JP")
-    dayTimePeriodFormatter.dateFormat = "YYYY年MM月dd日"
+    dayTimePeriodFormatter.dateFormat = "yyyy年MM月dd日"
     let dateString = dayTimePeriodFormatter.string(from: date as Date)
     
     return dateString
@@ -297,7 +339,7 @@ public func convertUnixTimestampDT(time: Int)->String {
     let date = NSDate(timeIntervalSince1970: TimeInterval(time))
     let dayTimePeriodFormatter = DateFormatter()
     dayTimePeriodFormatter.locale = Locale(identifier: "ja_JP")
-    dayTimePeriodFormatter.dateFormat = "YYYY年MM月dd日 HH時mm分ss秒"
+    dayTimePeriodFormatter.dateFormat = "yyyy年MM月dd日 HH時mm分ss秒"
     let dateString = dayTimePeriodFormatter.string(from: date as Date)
     
     return dateString
@@ -462,6 +504,24 @@ public extension String {
 }
 
 //*****************************************************************
+// MARK: - Gradient View
+//*****************************************************************
+
+extension UIView {
+    func applyGradient(colours: [UIColor]) -> Void {
+        self.applyGradient(colours: colours, locations: nil)
+    }
+    
+    func applyGradient(colours: [UIColor], locations: [NSNumber]?) -> Void {
+        let gradient: CAGradientLayer = CAGradientLayer()
+        gradient.frame = self.bounds
+        gradient.colors = colours.map { $0.cgColor }
+        gradient.locations = locations
+        self.layer.insertSublayer(gradient, at: 0)
+    }
+}
+
+//*****************************************************************
 // MARK: - Gradient Navigation
 //*****************************************************************
 
@@ -502,6 +562,29 @@ extension UINavigationBar
     }
 }
 
+public func addNavigationBarColor(navigation: UINavigationController,type:Int) {
+    switch type {
+    case 0:
+        navigation.navigationBar.apply(gradient: [COLOR_SET000.kHEADER_BACKGROUND_COLOR_UP,COLOR_SET000.kHEADER_BACKGROUND_COLOR_DOWN])
+    case 1:
+        navigation.navigationBar.apply(gradient: [COLOR_SET001.kHEADER_BACKGROUND_COLOR_UP,COLOR_SET001.kHEADER_BACKGROUND_COLOR_DOWN])
+    case 2:
+        navigation.navigationBar.apply(gradient: [COLOR_SET002.kHEADER_BACKGROUND_COLOR_UP,COLOR_SET002.kHEADER_BACKGROUND_COLOR_DOWN])
+    case 3:
+        navigation.navigationBar.apply(gradient: [COLOR_SET003.kHEADER_BACKGROUND_COLOR_UP,COLOR_SET003.kHEADER_BACKGROUND_COLOR_DOWN])
+    case 4:
+        navigation.navigationBar.apply(gradient: [COLOR_SET004.kHEADER_BACKGROUND_COLOR_UP,COLOR_SET004.kHEADER_BACKGROUND_COLOR_DOWN])
+    case 5:
+        navigation.navigationBar.apply(gradient: [COLOR_SET005.kHEADER_BACKGROUND_COLOR_UP,COLOR_SET005.kHEADER_BACKGROUND_COLOR_DOWN])
+    case 6:
+        navigation.navigationBar.apply(gradient: [COLOR_SET006.kHEADER_BACKGROUND_COLOR_UP,COLOR_SET006.kHEADER_BACKGROUND_COLOR_DOWN])
+    case 7:
+        navigation.navigationBar.apply(gradient: [COLOR_SET007.kHEADER_BACKGROUND_COLOR_UP,COLOR_SET007.kHEADER_BACKGROUND_COLOR_DOWN])
+    default:
+        break
+    }
+}
+
 //*****************************************************************
 // MARK: - Compare Date
 //*****************************************************************
@@ -531,6 +614,27 @@ extension Date {
     var isInThePast: Bool {
         return self < Date()
     }
+    static var yesterday: Date {
+        return Calendar.current.date(byAdding: .day, value: -1, to: Date().noon)!
+    }
+    static var tomorrow: Date {
+        return Calendar.current.date(byAdding: .day, value: 1, to: Date().noon)!
+    }
+    var dayBefore: Date {
+        return Calendar.current.date(byAdding: .day, value: -1, to: noon)!
+    }
+    var dayAfter: Date {
+        return Calendar.current.date(byAdding: .day, value: 1, to: noon)!
+    }
+    var noon: Date {
+        return Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: self)!
+    }
+    var month: Int {
+        return Calendar.current.component(.month,  from: self)
+    }
+    var isLastDayOfMonth: Bool {
+        return dayAfter.month != month
+    }
 }
 
 //*****************************************************************
@@ -549,6 +653,26 @@ public func imageWithImage (sourceImage:UIImage, scaledToWidth: CGFloat) -> UIIm
     let newImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
     return newImage!
+}
+
+//*****************************************************************
+// MARK: - Merge Two UIImage
+//*****************************************************************
+
+public func mergeTwoUIImage(topImage:UIImage,bottomImage:UIImage,width:CGFloat,height:CGFloat)->UIImage {
+    let botImg = bottomImage
+    let topImg = topImage
+
+    let size = CGSize(width: width, height: height)
+    UIGraphicsBeginImageContext(size)
+    
+    let areaSize = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+    botImg.draw(in: areaSize)
+    topImg.draw(in: areaSize, blendMode: .normal, alpha: 1)
+    
+    let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+    UIGraphicsEndImageContext()
+    return newImage
 }
 
 //*****************************************************************
@@ -668,6 +792,39 @@ extension UIImage {
         
         return newImage!
     }
+    
+    func resizeImageUsingVImage(size:CGSize) -> UIImage? {
+        let cgImage = self.cgImage!
+        var format = vImage_CGImageFormat(bitsPerComponent: 8, bitsPerPixel: 32, colorSpace: nil, bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.first.rawValue), version: 0, decode: nil, renderingIntent: CGColorRenderingIntent.defaultIntent)
+        var sourceBuffer = vImage_Buffer()
+        defer {
+            free(sourceBuffer.data)
+        }
+        var error = vImageBuffer_InitWithCGImage(&sourceBuffer, &format, nil, cgImage, numericCast(kvImageNoFlags))
+        guard error == kvImageNoError else { return nil }
+        // create a destination buffer
+        let scale = self.scale
+        let destWidth = Int(size.width)
+        let destHeight = Int(size.height)
+        let bytesPerPixel = self.cgImage!.bitsPerPixel/8
+        let destBytesPerRow = destWidth * bytesPerPixel
+        let destData = UnsafeMutablePointer<UInt8>.allocate(capacity: destHeight * destBytesPerRow)
+        defer {
+            destData.deallocate()
+//            destData.deallocate(capacity: destHeight * destBytesPerRow)
+        }
+        var destBuffer = vImage_Buffer(data: destData, height: vImagePixelCount(destHeight), width: vImagePixelCount(destWidth), rowBytes: destBytesPerRow)
+        // scale the image
+        error = vImageScale_ARGB8888(&sourceBuffer, &destBuffer, nil, numericCast(kvImageHighQualityResampling))
+        guard error == kvImageNoError else { return nil }
+        // create a CGImage from vImage_Buffer
+        var destCGImage = vImageCreateCGImageFromBuffer(&destBuffer, &format, nil, nil, numericCast(kvImageNoFlags), &error)?.takeRetainedValue()
+        guard error == kvImageNoError else { return nil }
+        // create a UIImage
+        let resizedImage = destCGImage.flatMap { UIImage(cgImage: $0, scale: 0.0, orientation: self.imageOrientation) }
+        destCGImage = nil
+        return resizedImage
+    }
 }
 
 //*****************************************************************
@@ -764,8 +921,9 @@ func hexStringToUIColor (hex:String) -> UIColor {
 
 func displayInfo(acc_name:String,acc_id:String,view:UIViewController) {
     let version = Bundle.main.infoDictionary!["CFBundleVersion"]!
+    let appName = Bundle.main.infoDictionary![kCFBundleNameKey as String] as! String
     
-    let alert = UIAlertController(title: "アプリ情報", message: "\nATTENDER ver \(version)", preferredStyle: .alert)
+    let alert = UIAlertController(title: "アプリ情報", message: "\n\(appName) ver \(version)", preferredStyle: .alert)
     
     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
     
@@ -793,41 +951,41 @@ func getWiFiSsid() -> String? {
 }
 
 //Check Internet Connection
-public class Reachability {
-    
-    class func isConnectedToNetwork() -> Bool {
-        
-        var zeroAddress = sockaddr_in(sin_len: 0, sin_family: 0, sin_port: 0, sin_addr: in_addr(s_addr: 0), sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
-        zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
-        zeroAddress.sin_family = sa_family_t(AF_INET)
-        
-        let defaultRouteReachability = withUnsafePointer(to: &zeroAddress) {
-            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {zeroSockAddress in
-                SCNetworkReachabilityCreateWithAddress(nil, zeroSockAddress)
-            }
-        }
-        
-        var flags: SCNetworkReachabilityFlags = SCNetworkReachabilityFlags(rawValue: 0)
-        if SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) == false {
-            return false
-        }
-        
-        /* Only Working for WIFI
-         let isReachable = flags == .reachable
-         let needsConnection = flags == .connectionRequired
-         
-         return isReachable && !needsConnection
-         */
-        
-        // Working for Cellular and WIFI
-        let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
-        let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
-        let ret = (isReachable && !needsConnection)
-        
-        return ret
-        
-    }
-}
+//public class Reachability {
+//    
+//    class func isConnectedToNetwork() -> Bool {
+//        
+//        var zeroAddress = sockaddr_in(sin_len: 0, sin_family: 0, sin_port: 0, sin_addr: in_addr(s_addr: 0), sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
+//        zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
+//        zeroAddress.sin_family = sa_family_t(AF_INET)
+//        
+//        let defaultRouteReachability = withUnsafePointer(to: &zeroAddress) {
+//            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {zeroSockAddress in
+//                SCNetworkReachabilityCreateWithAddress(nil, zeroSockAddress)
+//            }
+//        }
+//        
+//        var flags: SCNetworkReachabilityFlags = SCNetworkReachabilityFlags(rawValue: 0)
+//        if SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) == false {
+//            return false
+//        }
+//        
+//        /* Only Working for WIFI
+//         let isReachable = flags == .reachable
+//         let needsConnection = flags == .connectionRequired
+//         
+//         return isReachable && !needsConnection
+//         */
+//        
+//        // Working for Cellular and WIFI
+//        let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
+//        let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
+//        let ret = (isReachable && !needsConnection)
+//        
+//        return ret
+//        
+//    }
+//}
 
 //*****************************************************************
 // MARK: - Get Location From Postal Code
@@ -859,6 +1017,241 @@ func getLocationFromPostalCode(postalCode : String,completion: @escaping StringC
             }
         case.failure(let error):
             print(error)
+        }
+    }
+}
+
+//*****************************************************************
+// MARK: - Get Header Key Value from URL Response
+//*****************************************************************
+
+func onConvertHeaderResult(res: HTTPURLResponse) {
+    
+    let keyValues = res.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
+    
+    // Now filter the array, searching for your header-key, also lowercased
+    if let myHeaderValue = keyValues.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
+        GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
+    } else {
+        GlobalVariables.sharedManager.pageTotal = 1
+    }
+    
+    //get total customer
+    if let myHeaderValue = keyValues.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
+        GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
+    } else {
+        GlobalVariables.sharedManager.totalCus = 0
+    }
+    
+    //get current page
+    if let myHeaderValue = keyValues.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
+        GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
+    } else {
+        GlobalVariables.sharedManager.pageCurr = 1
+    }
+}
+
+//*****************************************************************
+// MARK: - Printer
+//*****************************************************************
+
+func printUrl(_ url: URL) {
+    guard (UIPrintInteractionController.canPrint(url)) else {
+        Swift.print("Unable to print: \(url)")
+        return
+    }
+    
+    showPrintInteraction(url)
+}
+
+func showPrintInteraction(_ url: URL) {
+    let controller = UIPrintInteractionController.shared
+    controller.accessibilityLanguage = "ja"
+    controller.printingItem = url
+    controller.printInfo = printerInfo(url.lastPathComponent)
+    controller.present(animated: true, completionHandler: nil)
+}
+
+func printerInfo(_ jobName: String) -> UIPrintInfo {
+    let printInfo = UIPrintInfo.printInfo()
+    printInfo.outputType = .general
+    printInfo.jobName = jobName
+    Swift.print("Printing: \(jobName)")
+    return printInfo
+}
+
+//*****************************************************************
+// MARK: - Tableview
+//*****************************************************************
+
+extension UITableView {
+    
+    public func reloadData(_ completion: @escaping ()->()) {
+        UIView.animate(withDuration: 0, animations: {
+            self.reloadData()
+        }, completion:{ _ in
+            completion()
+        })
+    }
+    
+    func scroll(to: scrollsTo, animated: Bool) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
+            let numberOfSections = self.numberOfSections
+            let numberOfRows = self.numberOfRows(inSection: numberOfSections-1)
+            switch to{
+            case .top:
+                if numberOfRows > 0 {
+                    let indexPath = IndexPath(row: 0, section: 0)
+                    self.scrollToRow(at: indexPath, at: .top, animated: animated)
+                }
+                break
+            case .bottom:
+                if numberOfRows > 0 {
+                    let indexPath = IndexPath(row: numberOfRows-1, section: (numberOfSections-1))
+                    self.scrollToRow(at: indexPath, at: .bottom, animated: animated)
+                }
+                break
+            }
+        }
+    }
+    
+    enum scrollsTo {
+        case top,bottom
+    }
+}
+
+//*****************************************************************
+// MARK: - Round Corner Top of UIButton
+//*****************************************************************
+
+extension UIButton {
+    func roundTopCorner(){
+        let maskPAth1 = UIBezierPath(roundedRect: self.bounds,
+                                     byRoundingCorners: [.topLeft , .topRight],
+                                     cornerRadii:CGSize(width:8.0, height:8.0))
+        let maskLayer1 = CAShapeLayer()
+        maskLayer1.frame = self.bounds
+        maskLayer1.path = maskPAth1.cgPath
+        self.layer.mask = maskLayer1
+    }
+}
+
+//*****************************************************************
+// MARK: - Color Style
+//*****************************************************************
+
+//Button
+public func setButtonColorStyle(button:UIButton,type:Int) {
+    if let set = UserDefaults.standard.integer(forKey: "colorset") as Int? {
+        switch set {
+        case 0:
+            if type == 0 {
+                button.backgroundColor = COLOR_SET000.kACCENT_COLOR
+            } else {
+                button.backgroundColor = COLOR_SET000.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 1:
+            if type == 0 {
+                button.backgroundColor = COLOR_SET001.kACCENT_COLOR
+            } else {
+                button.backgroundColor = COLOR_SET001.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 2:
+            if type == 0 {
+                button.backgroundColor = COLOR_SET002.kACCENT_COLOR
+            } else {
+                button.backgroundColor = COLOR_SET002.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 3:
+            if type == 0 {
+                button.backgroundColor = COLOR_SET003.kACCENT_COLOR
+            } else {
+                button.backgroundColor = COLOR_SET003.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 4:
+            if type == 0 {
+                button.backgroundColor = COLOR_SET004.kACCENT_COLOR
+            } else {
+                button.backgroundColor = COLOR_SET004.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 5:
+            if type == 0 {
+                button.backgroundColor = COLOR_SET005.kACCENT_COLOR
+            } else {
+                button.backgroundColor = COLOR_SET005.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 6:
+            if type == 0 {
+                button.backgroundColor = COLOR_SET006.kACCENT_COLOR
+            } else {
+                button.backgroundColor = COLOR_SET006.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 7:
+            if type == 0 {
+                button.backgroundColor = COLOR_SET007.kACCENT_COLOR
+            } else {
+                button.backgroundColor = COLOR_SET007.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        default:
+            break
+        }
+    }
+}
+
+//View
+public func setViewColorStyle(view:UIView,type:Int) {
+    if let set = UserDefaults.standard.integer(forKey: "colorset") as Int? {
+        switch set {
+        case 0:
+            if type == 0 {
+                view.backgroundColor = COLOR_SET000.kACCENT_COLOR
+            } else {
+                view.backgroundColor = COLOR_SET000.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 1:
+            if type == 0 {
+                view.backgroundColor = COLOR_SET001.kACCENT_COLOR
+            } else {
+                view.backgroundColor = COLOR_SET001.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 2:
+            if type == 0 {
+                view.backgroundColor = COLOR_SET002.kACCENT_COLOR
+            } else {
+                view.backgroundColor = COLOR_SET002.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 3:
+            if type == 0 {
+                view.backgroundColor = COLOR_SET003.kACCENT_COLOR
+            } else {
+                view.backgroundColor = COLOR_SET003.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 4:
+            if type == 0 {
+                view.backgroundColor = COLOR_SET004.kACCENT_COLOR
+            } else {
+                view.backgroundColor = COLOR_SET004.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 5:
+            if type == 0 {
+                view.backgroundColor = COLOR_SET005.kACCENT_COLOR
+            } else {
+                view.backgroundColor = COLOR_SET005.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 6:
+            if type == 0 {
+                view.backgroundColor = COLOR_SET006.kACCENT_COLOR
+            } else {
+                view.backgroundColor = COLOR_SET006.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        case 7:
+            if type == 0 {
+                view.backgroundColor = COLOR_SET007.kACCENT_COLOR
+            } else {
+                view.backgroundColor = COLOR_SET007.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            }
+        default:
+            break
         }
     }
 }

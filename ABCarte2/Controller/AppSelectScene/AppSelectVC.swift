@@ -40,49 +40,29 @@ class AppSelectVC: UIViewController {
     @IBAction func onButtonSelect(_ sender: UIButton) {
         switch sender.tag {
         case 0:
-  
-            guard let mainPageView =  self.storyboard?.instantiateViewController(withIdentifier: "MainVC") as? MainVC else {
-                return
-            }
-        
+            guard let mainPageView =  self.storyboard?.instantiateViewController(withIdentifier: "MainVC") as? MainVC else { return }
             let navController = UINavigationController(rootViewController: mainPageView)
             navController.navigationBar.tintColor = UIColor.white
             self.present(navController, animated: true, completion: nil)
         case 1:
-        
-            showAlert(message: kALERT_FUNCTION_UNDER_CONSTRUCTION, view: self)
+            showAlert(message: MSG_ALERT.kALERT_FUNCTION_UNDER_CONSTRUCTION, view: self)
         case 2:
-          
             if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kJBrowOperation.rawValue) {
-                
-                guard let vc =  self.storyboard?.instantiateViewController(withIdentifier: "BookVC") as? BookVC else {
-                    return
-                }
-            
+                guard let vc =  self.storyboard?.instantiateViewController(withIdentifier: "BookVC") as? BookVC else { return }
                 let navController = UINavigationController(rootViewController: vc)
                 self.present(navController, animated: true, completion: nil)
             } else {
-                showAlert(message: kALERT_ACCOUNT_CANT_ACCESS, view: self)
+                showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
             }
-            
         case 3:
-          
             if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kJBrowPractice.rawValue) {
-                
-                guard let story: UIStoryboard = UIStoryboard(name: "JBS", bundle: nil) as UIStoryboard? else {
-                    return
-                }
-                
-                guard let vc =  story.instantiateViewController(withIdentifier: "StartingVC") as? StartingVC else {
-                    return
-                }
-            
+                guard let story: UIStoryboard = UIStoryboard(name: "JBS", bundle: nil) as UIStoryboard?,
+                      let vc =  story.instantiateViewController(withIdentifier: "StartingVC") as? StartingVC else { return }
                 let navController = UINavigationController(rootViewController: vc)
                 self.present(navController, animated: true, completion: nil)
             } else {
-                showAlert(message: kALERT_ACCOUNT_CANT_ACCESS, view: self)
+                showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
             }
-        
         default:
             break
         }

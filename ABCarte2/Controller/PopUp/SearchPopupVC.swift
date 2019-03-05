@@ -31,7 +31,11 @@ class SearchPopupVC: UIViewController {
  
     func setupUI() {
         
+        #if SHISEI
+        searchTitleArr = ["五 十 音( 頭 文 字 )検 索","お客様の姓・名で検索","電話番号検索","性別検索","お客様番号検索","担当者名検索","住所検索","誕生日検索"]
+        #else
         searchTitleArr = ["五 十 音( 頭 文 字 )検 索","お客様の姓・名で検索","電話番号検索","来店日検索","性別検索","お客様番号検索","担当者名検索","住所検索","誕生日検索","備考検索"]
+        #endif
         
         //create triangle in top of view
         let triangle = TriangleView(frame: CGRect(x: 145 + 20, y: -15, width: 20 , height: 15))
@@ -46,6 +50,37 @@ class SearchPopupVC: UIViewController {
         tblSearch.rowHeight = UITableViewAutomaticDimension
         tblSearch.estimatedRowHeight = 40
         tblSearch.tableFooterView = UIView()
+        
+        if let set = UserDefaults.standard.integer(forKey: "colorset") as Int? {
+            switch set {
+            case 0:
+                viewSearch.backgroundColor = COLOR_SET000.kEDIT_SCREEN_BACKGROUND_COLOR
+                tblSearch.backgroundColor = COLOR_SET000.kEDIT_SCREEN_BACKGROUND_COLOR
+            case 1:
+                viewSearch.backgroundColor = COLOR_SET001.kEDIT_SCREEN_BACKGROUND_COLOR
+                tblSearch.backgroundColor = COLOR_SET001.kEDIT_SCREEN_BACKGROUND_COLOR
+            case 2:
+                viewSearch.backgroundColor = COLOR_SET002.kEDIT_SCREEN_BACKGROUND_COLOR
+                tblSearch.backgroundColor = COLOR_SET002.kEDIT_SCREEN_BACKGROUND_COLOR
+            case 3:
+                viewSearch.backgroundColor = COLOR_SET003.kEDIT_SCREEN_BACKGROUND_COLOR
+                tblSearch.backgroundColor = COLOR_SET003.kEDIT_SCREEN_BACKGROUND_COLOR
+            case 4:
+                viewSearch.backgroundColor = COLOR_SET004.kEDIT_SCREEN_BACKGROUND_COLOR
+                tblSearch.backgroundColor = COLOR_SET004.kEDIT_SCREEN_BACKGROUND_COLOR
+            case 5:
+                viewSearch.backgroundColor = COLOR_SET005.kEDIT_SCREEN_BACKGROUND_COLOR
+                tblSearch.backgroundColor = COLOR_SET005.kEDIT_SCREEN_BACKGROUND_COLOR
+            case 6:
+                viewSearch.backgroundColor = COLOR_SET006.kEDIT_SCREEN_BACKGROUND_COLOR
+                tblSearch.backgroundColor = COLOR_SET006.kEDIT_SCREEN_BACKGROUND_COLOR
+            case 7:
+                viewSearch.backgroundColor = COLOR_SET007.kEDIT_SCREEN_BACKGROUND_COLOR
+                tblSearch.backgroundColor = COLOR_SET007.kEDIT_SCREEN_BACKGROUND_COLOR
+            default:
+                break
+            }
+        }
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

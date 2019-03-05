@@ -16,6 +16,7 @@ class DeviceInfoPopupVC: UIViewController {
     
     //Variable
     weak var delegate:DeviceInfoPopupVCDelegate?
+    let network: NetworkManager = NetworkManager.sharedInstance
     
     //IBOutlet
     @IBOutlet weak var tfiPadModel: UITextField!
@@ -44,18 +45,30 @@ class DeviceInfoPopupVC: UIViewController {
             tfDeviceID.text = String(result)
         }
         
-        if Reachability.isConnectedToNetwork() {
-           imvInternetStatus.image = UIImage(named: "icon_wifi_on_color")
-        } else {
-            imvInternetStatus.image = UIImage(named: "icon_wifi_off_color")
+        do {
+            try network.reachability.startNotifier()
+        } catch {
+            print("error connection")
         }
+        network.delegate = self
+        checkNetworking()
         
         lblWifiName.text = getWiFiSsid()
         
         switchDeviceTransfer.isOn = false
     }
+    
+    func checkNetworking() {
+        NetworkManager.isUnreachable { _ in
+            self.imvInternetStatus.image = UIImage(named: "icon_wifi_off_color")
+        }
+        NetworkManager.isReachable { _ in
+            self.imvInternetStatus.image = UIImage(named: "icon_wifi_on_color")
+        }
+    }
 
     @IBAction func onClose(_ sender: Any) {
+        network.reachability.stopNotifier()
         dismiss(animated: true, completion: nil)
     }
     
@@ -81,5 +94,11 @@ class DeviceInfoPopupVC: UIViewController {
                 self.present(alert, animated: true, completion: nil)
             }
         }
+    }
+}
+
+extension DeviceInfoPopupVC: NetworkManagerDelegate {
+    func onNetworkStatusChange() {
+        checkNetworking()
     }
 }

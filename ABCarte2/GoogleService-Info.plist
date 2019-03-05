@@ -7,34 +7,34 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>1060583893187-jqn9drbm8efbiq25ab85ig96tm44glti.apps.googleusercontent.com</string>
+	<string>1086041626650-87e6n6fc994lvisbqqnim7v5v4u8fng8.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1060583893187-jqn9drbm8efbiq25ab85ig96tm44glti</string>
+	<string>com.googleusercontent.apps.1086041626650-87e6n6fc994lvisbqqnim7v5v4u8fng8</string>
 	<key>API_KEY</key>
-	<string>AIzaSyB1rNwyO1-idzm-vA4HW64w7jn7-UKm_6Y</string>
+	<string>AIzaSyATpb_ErZWdOwBRMx9qS33eZRP-pOaMMTs</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1060583893187</string>
+	<string>1086041626650</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>co.jp.Oluxe.ABCarte2</string>
+	<string>co.jp.CollectU</string>
 	<key>PROJECT_ID</key>
-	<string>abcarte2-2cba9</string>
+	<string>attender-3c24d</string>
 	<key>STORAGE_BUCKET</key>
-	<string>abcarte2-2cba9.appspot.com</string>
+	<string>attender-3c24d.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1060583893187:ios:132dc05e81b57af2</string>
+	<string>1:1086041626650:ios:8e2e0d52240c1612</string>
 	<key>DATABASE_URL</key>
-	<string>https://abcarte2-2cba9.firebaseio.com</string>
+	<string>https://attender-3c24d.firebaseio.com</string>
 </dict>
 </plist>

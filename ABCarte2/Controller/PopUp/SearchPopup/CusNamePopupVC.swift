@@ -48,7 +48,7 @@ class CusNamePopupVC: UIViewController {
     @IBAction func onSearch(_ sender: UIButton) {
         
         if (tfJPLName1.text?.isEmpty)! && (tfJPFName1.text?.isEmpty)! && (tfWLName1.text?.isEmpty)! && (tfWFName1.text?.isEmpty)! && (tfJPLName2.text?.isEmpty)! && (tfJPFName2.text?.isEmpty)! && (tfWLName2.text?.isEmpty)! && (tfWFName2.text?.isEmpty)! && (tfJPLName3.text?.isEmpty)! && (tfJPFName3.text?.isEmpty)! && (tfWLName3.text?.isEmpty)! && (tfWFName3.text?.isEmpty)! {
-            showAlert(message: kALERT_INPUT_DATA, view: self)
+            showAlert(message: MSG_ALERT.kALERT_INPUT_DATA, view: self)
             return
         }
     self.delegate?.onCusNameSearch(LName1:tfJPLName1.text!,FName1:tfJPFName1.text!,LNameKana1:tfWLName1.text!,FNameKana1:tfWFName1.text!,LName2:tfJPLName2.text!,FName2:tfJPFName2.text!,LNameKana2:tfWLName2.text!,FNameKana2:tfWFName2.text!,LName3:tfJPLName3.text!,FName3:tfJPFName3.text!,LNameKana3:tfWLName3.text!,FNameKana3:tfWFName3.text!)

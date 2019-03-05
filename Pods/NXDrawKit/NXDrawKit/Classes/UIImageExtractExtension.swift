@@ -8,18 +8,19 @@
 
 import UIKit
 
+
 public extension UIImage {
     @objc public func asPNGData() -> Data? {
-        return UIImagePNGRepresentation(self)
+        return self.pngData()
     }
     
     @objc public func asJPEGData(_ quality: CGFloat) -> Data? {
-        return UIImageJPEGRepresentation(self, quality);
+        return self.jpegData(compressionQuality: quality);
     }
     
     @objc public func asPNGImage() -> UIImage? {
         if let data = self.asPNGData() {
-            return UIImage.init(data: data)
+            return UIImage(data: data)
         }
         
         return nil
@@ -27,7 +28,7 @@ public extension UIImage {
     
     @objc public func asJPGImage(_ quality: CGFloat) -> UIImage? {
         if let data = self.asJPEGData(quality) {
-            return UIImage.init(data: data)
+            return UIImage(data: data)
         }
         
         return nil

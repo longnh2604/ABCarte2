@@ -1,48 +1,111 @@
 PODS:
-  - Alamofire (4.7.3)
+  - Alamofire (4.8.1)
   - BarcodeScanner (4.1.3)
   - Charts (3.2.1):
     - Charts/Core (= 3.2.1)
   - Charts/Core (3.2.1)
-  - Crashlytics (3.11.1):
-    - Fabric (~> 1.8.1)
+  - Crashlytics (3.12.0):
+    - Fabric (~> 1.9.0)
   - EFColorPicker (1.1.1)
   - ExpyTableView (1.0)
-  - Fabric (1.8.1)
-  - IQKeyboardManagerSwift (6.0.5)
-  - JGProgressHUD (2.0.3)
+  - Fabric (1.9.0)
+  - Firebase/Core (5.16.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 5.5.0)
+  - Firebase/CoreOnly (5.16.0):
+    - FirebaseCore (= 5.2.0)
+  - Firebase/Messaging (5.16.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (= 3.3.0)
+  - FirebaseAnalytics (5.5.0):
+    - FirebaseCore (~> 5.2)
+    - FirebaseInstanceID (~> 3.4)
+    - GoogleAppMeasurement (= 5.5.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
+    - GoogleUtilities/MethodSwizzler (~> 5.2)
+    - GoogleUtilities/Network (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+    - nanopb (~> 0.3)
+  - FirebaseAnalyticsInterop (1.1.0)
+  - FirebaseCore (5.2.0):
+    - GoogleUtilities/Logger (~> 5.2)
+  - FirebaseInstanceID (3.4.0):
+    - FirebaseCore (~> 5.2)
+    - GoogleUtilities/Environment (~> 5.3)
+    - GoogleUtilities/UserDefaults (~> 5.3)
+  - FirebaseMessaging (3.3.0):
+    - FirebaseAnalyticsInterop (~> 1.1)
+    - FirebaseCore (~> 5.2)
+    - FirebaseInstanceID (~> 3.4)
+    - GoogleUtilities/Environment (~> 5.2)
+    - GoogleUtilities/Reachability (~> 5.2)
+    - Protobuf (~> 3.1)
+  - GoogleAppMeasurement (5.5.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
+    - GoogleUtilities/MethodSwizzler (~> 5.2)
+    - GoogleUtilities/Network (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+    - nanopb (~> 0.3)
+  - GoogleUtilities/AppDelegateSwizzler (5.3.7):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (5.3.7)
+  - GoogleUtilities/Logger (5.3.7):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (5.3.7):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (5.3.7):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (5.3.7)"
+  - GoogleUtilities/Reachability (5.3.7):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (5.3.7):
+    - GoogleUtilities/Logger
+  - IQKeyboardManagerSwift (6.2.0)
   - JLStickerTextView (0.1.2)
   - lottie-ios (2.5.2)
-  - NXDrawKit (0.6.1)
-  - Realm (3.11.1):
-    - Realm/Headers (= 3.11.1)
-  - Realm/Headers (3.11.1)
-  - RealmSwift (3.11.1):
-    - Realm (= 3.11.1)
-  - SDWebImage (4.4.2):
-    - SDWebImage/Core (= 4.4.2)
-  - SDWebImage/Core (4.4.2)
+  - nanopb (0.3.901):
+    - nanopb/decode (= 0.3.901)
+    - nanopb/encode (= 0.3.901)
+  - nanopb/decode (0.3.901)
+  - nanopb/encode (0.3.901)
+  - NXDrawKit (0.7.1)
+  - Protobuf (3.6.1)
+  - ReachabilitySwift (4.3.0)
+  - Realm (3.13.1):
+    - Realm/Headers (= 3.13.1)
+  - Realm/Headers (3.13.1)
+  - RealmSwift (3.13.1):
+    - Realm (= 3.13.1)
+  - SDWebImage (4.4.5):
+    - SDWebImage/Core (= 4.4.5)
+  - SDWebImage/Core (4.4.5)
   - SnapKit (4.2.0)
   - SwiftyJSON (4.1.0)
   - TransitionButton (0.5.2)
 
 DEPENDENCIES:
   - Alamofire
-  - BarcodeScanner (~> 4.1.3)
-  - Charts
+  - BarcodeScanner (= 4.1.3)
+  - Charts (= 3.2.1)
   - Crashlytics
-  - EFColorPicker (~> 1.1.0)
-  - ExpyTableView (~> 1.0.0)
+  - EFColorPicker (= 1.1.1)
+  - ExpyTableView (= 1.0.0)
   - Fabric
-  - IQKeyboardManagerSwift (~> 6.0.2)
-  - JGProgressHUD (~> 2.0.3)
+  - Firebase/Core
+  - Firebase/Messaging
+  - IQKeyboardManagerSwift
   - JLStickerTextView (from `https://github.com/luiyezheng/JLStickerTextView.git`)
   - lottie-ios
-  - NXDrawKit (~> 0.6.1)
+  - NXDrawKit (= 0.7.1)
+  - ReachabilitySwift
   - RealmSwift
-  - SDWebImage (~> 4.4.1)
+  - SDWebImage
   - SnapKit
-  - SwiftyJSON (~> 4.1.0)
+  - SwiftyJSON
   - TransitionButton (from `https://github.com/AladinWay/TransitionButton.git`)
 
 SPEC REPOS:
@@ -54,10 +117,20 @@ SPEC REPOS:
     - EFColorPicker
     - ExpyTableView
     - Fabric
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseAnalyticsInterop
+    - FirebaseCore
+    - FirebaseInstanceID
+    - FirebaseMessaging
+    - GoogleAppMeasurement
+    - GoogleUtilities
     - IQKeyboardManagerSwift
-    - JGProgressHUD
     - lottie-ios
+    - nanopb
     - NXDrawKit
+    - Protobuf
+    - ReachabilitySwift
     - Realm
     - RealmSwift
     - SDWebImage
@@ -79,25 +152,35 @@ CHECKOUT OPTIONS:
     :git: https://github.com/AladinWay/TransitionButton.git
 
 SPEC CHECKSUMS:
-  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
   BarcodeScanner: fce1ad2b3f28286b1ab5091fe0979789618bee27
   Charts: f122fb70b19847fa5817d018b77d6c5a2296ab25
-  Crashlytics: ca7ab4bc304aa216bdc2e4c1a96389ee77252203
+  Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   EFColorPicker: 36c4d1e4dc446352085056c029a79056a0d16d9d
   ExpyTableView: 75fe6494d4613fd3dc4bd965cce6e14cec7e2223
-  Fabric: 43ed7bac010f588f63ee23ab1a0276b296db5e17
-  IQKeyboardManagerSwift: c14eca30f6001457d6ddf25e313f23fb6578c41c
-  JGProgressHUD: 12b20a8f4ffe05258f8635c1ab92816e451f904d
+  Fabric: f988e33c97f08930a413e08123064d2e5f68d655
+  Firebase: 749a8ff4962f9d8c79dda1966de20f6f77583d67
+  FirebaseAnalytics: d35d47c03c50c73c14a7fd31463c5775843e78a9
+  FirebaseAnalyticsInterop: e5f21be9af6548372e2f0815834ff909bff395a2
+  FirebaseCore: ea2d1816723ef21492b8e9113303e1350db5e08c
+  FirebaseInstanceID: 97ea7a5dca9afd72c79bfcdddb7a44aa1cbb42a1
+  FirebaseMessaging: acbd51fe1a172bf29abaaa6e93a60f98bbf8e4f9
+  GoogleAppMeasurement: 621f3bc6211d5ba548debe01fafad30cf5ab6859
+  GoogleUtilities: 111a012f4c3a29c9e7c954c082fafd6ee3c999c0
+  IQKeyboardManagerSwift: b07ccf9d8cafe993dcd6cb794eb4ba34611a0c4e
   JLStickerTextView: 99158380c95dc5455568892beb81d0529f3a547d
   lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
-  NXDrawKit: a287045ea335673d6e1e693d80d44073d8726514
-  Realm: 037c5919b9ceb59d6beed5d3b031096856b119b3
-  RealmSwift: c9580133e73ef40ed340401af2dbc9a5790dfea7
-  SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
+  nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  NXDrawKit: 0d5d4df2e518416aa5df9c0724d9f2a366e0dcaf
+  Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
+  ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
+  Realm: 50071da38fe079e0735e47c9f2eae738c68c5996
+  RealmSwift: 8a1e6a02b7a08cd17a31e3115143fb69fe5f3fb9
+  SDWebImage: ecc03494e973b93b80213649d32175f8d2d17d4d
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   TransitionButton: fb271583d9c9e4bb116b97103047e5157653f233
 
-PODFILE CHECKSUM: fab922284b96debaa06d72320ac9a683092d3495
+PODFILE CHECKSUM: 6b4a5d71de71f992fe4e06bb4a04341ae4357001
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.0.beta.2

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="ipad9_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -294,7 +294,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oxk-dg-zr9">
-                                        <rect key="frame" x="508" y="10" width="60" height="60"/>
+                                        <rect key="frame" x="518" y="10" width="60" height="60"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="60" id="4oL-df-1xv"/>
                                             <constraint firstAttribute="width" constant="60" id="jKq-CZ-Toq"/>
@@ -305,9 +305,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x2y-bb-dWB">
-                                        <rect key="frame" x="358" y="10" width="120" height="60"/>
+                                        <rect key="frame" x="388" y="10" width="100" height="60"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="120" id="E5i-Wv-zRd"/>
+                                            <constraint firstAttribute="width" constant="100" id="E5i-Wv-zRd"/>
                                             <constraint firstAttribute="height" constant="60" id="Mj7-xl-iLu"/>
                                         </constraints>
                                         <state key="normal" image="JBS_UIkit-design-Drow-button_OFF.png"/>
@@ -316,9 +316,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VKL-lj-KdH">
-                                        <rect key="frame" x="208" y="10" width="120" height="60"/>
+                                        <rect key="frame" x="258" y="10" width="100" height="60"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="120" id="BkD-gn-PAe"/>
+                                            <constraint firstAttribute="width" constant="100" id="BkD-gn-PAe"/>
                                             <constraint firstAttribute="height" constant="60" id="DUi-A3-feZ"/>
                                         </constraints>
                                         <state key="normal" image="JBS_UIkit-design-Extinguish-button_OFF.png"/>
@@ -327,7 +327,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vgf-ZO-DPm">
-                                        <rect key="frame" x="598" y="10" width="60" height="60"/>
+                                        <rect key="frame" x="608" y="10" width="60" height="60"/>
                                         <color key="backgroundColor" red="1" green="0.79607843140000001" blue="0.76078431369999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="60" id="Rmu-Rz-k0O"/>
@@ -339,23 +339,48 @@
                                             <action selector="onSave:" destination="u5X-KX-pPI" eventType="touchUpInside" id="Rfb-62-ePg"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="O2D-9T-pdR">
+                                        <rect key="frame" x="175" y="36" width="60" height="30"/>
+                                        <color key="backgroundColor" red="1" green="0.8980392157" blue="0.88235294119999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="60" id="IWR-St-Tib"/>
+                                            <constraint firstAttribute="height" constant="30" id="Vyv-j4-qOg"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <state key="normal" title="ペンシル">
+                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="onDrawingModeChange:" destination="u5X-KX-pPI" eventType="touchUpInside" id="hX9-ej-PNq"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="描画モード" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z5o-ZE-kfQ">
+                                        <rect key="frame" x="171.5" y="10" width="66.5" height="16"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" red="0.41556185480000002" green="0.210675478" blue="0.07637829334" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="x2y-bb-dWB" firstAttribute="centerY" secondItem="oxk-dg-zr9" secondAttribute="centerY" id="2Vw-1J-76W"/>
                                     <constraint firstItem="vgf-ZO-DPm" firstAttribute="leading" secondItem="oxk-dg-zr9" secondAttribute="trailing" constant="30" id="4BP-Jo-KpR"/>
+                                    <constraint firstItem="VKL-lj-KdH" firstAttribute="leading" secondItem="Z5o-ZE-kfQ" secondAttribute="trailing" constant="20" id="Bvs-Fj-Jnd"/>
                                     <constraint firstItem="ifw-Ia-qyM" firstAttribute="leading" secondItem="RLf-GO-XnI" secondAttribute="leading" constant="20" id="Cb6-PF-xpc"/>
                                     <constraint firstItem="uae-aL-jkZ" firstAttribute="centerY" secondItem="ifw-Ia-qyM" secondAttribute="centerY" id="F2N-hk-IKl"/>
                                     <constraint firstItem="ifw-Ia-qyM" firstAttribute="top" secondItem="RLf-GO-XnI" secondAttribute="top" constant="10" id="H1o-9P-KK5"/>
                                     <constraint firstItem="uae-aL-jkZ" firstAttribute="leading" secondItem="ifw-Ia-qyM" secondAttribute="trailing" constant="20" id="WSo-xg-hLi"/>
                                     <constraint firstItem="oxk-dg-zr9" firstAttribute="centerY" secondItem="0iM-gb-IL0" secondAttribute="centerY" id="Y13-x7-lXx"/>
-                                    <constraint firstItem="0iM-gb-IL0" firstAttribute="leading" secondItem="vgf-ZO-DPm" secondAttribute="trailing" constant="30" id="bhp-c8-RXy"/>
+                                    <constraint firstItem="O2D-9T-pdR" firstAttribute="top" secondItem="Z5o-ZE-kfQ" secondAttribute="bottom" constant="10" id="Z3I-kR-t97"/>
+                                    <constraint firstItem="0iM-gb-IL0" firstAttribute="leading" secondItem="vgf-ZO-DPm" secondAttribute="trailing" constant="20" id="bhp-c8-RXy"/>
                                     <constraint firstItem="0iM-gb-IL0" firstAttribute="centerY" secondItem="RLf-GO-XnI" secondAttribute="centerY" id="cDQ-BV-Wgh"/>
                                     <constraint firstItem="oxk-dg-zr9" firstAttribute="leading" secondItem="x2y-bb-dWB" secondAttribute="trailing" constant="30" id="cr5-0p-nMB"/>
+                                    <constraint firstItem="O2D-9T-pdR" firstAttribute="centerX" secondItem="Z5o-ZE-kfQ" secondAttribute="centerX" id="d3V-JQ-h2R"/>
                                     <constraint firstItem="x2y-bb-dWB" firstAttribute="leading" secondItem="VKL-lj-KdH" secondAttribute="trailing" constant="30" id="dfO-T3-dyu"/>
                                     <constraint firstItem="vgf-ZO-DPm" firstAttribute="centerY" secondItem="RLf-GO-XnI" secondAttribute="centerY" id="eQ7-sb-fek"/>
                                     <constraint firstAttribute="trailing" secondItem="0iM-gb-IL0" secondAttribute="trailing" constant="20" id="es6-S3-A7s"/>
                                     <constraint firstItem="VKL-lj-KdH" firstAttribute="centerY" secondItem="x2y-bb-dWB" secondAttribute="centerY" id="mJF-T3-bKj"/>
+                                    <constraint firstItem="Z5o-ZE-kfQ" firstAttribute="top" secondItem="VKL-lj-KdH" secondAttribute="top" id="n6g-0N-4OO"/>
                                     <constraint firstAttribute="height" constant="80" id="uHq-B6-PFX"/>
                                 </constraints>
                             </view>
@@ -467,6 +492,7 @@
                         <outlet property="btnComplete" destination="0iM-gb-IL0" id="REI-Tu-pPf"/>
                         <outlet property="btnEraser" destination="oxk-dg-zr9" id="G65-LQ-xah"/>
                         <outlet property="btnPen" destination="x2y-bb-dWB" id="hpy-7G-9oM"/>
+                        <outlet property="btnPenMode" destination="O2D-9T-pdR" id="slR-oa-bbe"/>
                         <outlet property="btnRedo" destination="uae-aL-jkZ" id="uBh-7J-KfX"/>
                         <outlet property="btnSave" destination="vgf-ZO-DPm" id="Caw-M2-cyS"/>
                         <outlet property="btnUndo" destination="ifw-Ia-qyM" id="oP1-Td-WNb"/>
@@ -625,7 +651,7 @@
                                         </constraints>
                                     </imageView>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Y82-Ow-Rle" customClass="MySlider" customModule="ABCarte2" customModuleProvider="target">
-                                        <rect key="frame" x="118" y="472" width="492" height="30"/>
+                                        <rect key="frame" x="118" y="471" width="492" height="31"/>
                                         <color key="minimumTrackTintColor" red="0.80392156859999997" green="0.4823529412" blue="0.27450980390000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="maximumTrackTintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <userDefinedRuntimeAttributes>
@@ -1038,7 +1064,7 @@ DESIGN</string>
         <image name="btn_jbrow_practice.png" width="591" height="213"/>
         <image name="redoIcon.png" width="93" height="122"/>
         <image name="saveIcon.png" width="128" height="128"/>
-        <image name="slideIcon.png" width="30" height="30"/>
+        <image name="slideIcon.png" width="20" height="20"/>
         <image name="undoIcon.png" width="93" height="123"/>
     </resources>
 </document>

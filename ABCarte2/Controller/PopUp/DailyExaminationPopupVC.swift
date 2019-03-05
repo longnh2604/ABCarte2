@@ -8,7 +8,6 @@
 
 import UIKit
 import RealmSwift
-import JGProgressHUD
 import SDWebImage
 
 protocol DailyExaminationPopupVCDelegate: class {
@@ -43,6 +42,8 @@ class DailyExaminationPopupVC: UIViewController {
     @IBOutlet weak var viewOutside: UIView!
     @IBOutlet weak var btnCounselling: RoundButton!
     @IBOutlet weak var btnConsent: RoundButton!
+    @IBOutlet weak var imvLockCounselling: UIImageView!
+    @IBOutlet weak var imvLockConsent: UIImageView!
     
     //exam
     @IBOutlet weak var tblExamDoc: UITableView!
@@ -59,11 +60,8 @@ class DailyExaminationPopupVC: UIViewController {
     
     func loadData() {
         
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
         //remove before get new
         consentData.removeAll()
@@ -80,9 +78,7 @@ class DailyExaminationPopupVC: UIViewController {
         onGetDocumentsTemplate { (success) in
             if success {
                 
-                guard let cartID = self.carteID else {
-                    return
-                }
+                guard let cartID = self.carteID else { return }
                 //get document carte if exist
                 getCustomerCartesWithDocument(carteID: cartID) { (success) in
                     if success {
@@ -113,18 +109,16 @@ class DailyExaminationPopupVC: UIViewController {
                         //set Type
                         self.type = 1
                         
-                        hud.dismiss()
-                        
                         self.resetLoadDocument()
                         
                     } else {
-                        showAlert(message: kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
-                        hud.dismiss()
+                        showAlert(message: MSG_ALERT.kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
                     }
+                    SVProgressHUD.dismiss()
                 }
             } else {
-                showAlert(message: kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
-                hud.dismiss()
+                showAlert(message: MSG_ALERT.kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
+                SVProgressHUD.dismiss()
             }
         }
     }
@@ -161,6 +155,14 @@ class DailyExaminationPopupVC: UIViewController {
         imvDoc.layer.borderWidth = 1
         imvDoc.layer.borderColor = UIColor.white.cgColor
         imvDoc.layer.cornerRadius = 5
+        
+        if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kCounselling.rawValue) {
+            imvLockCounselling.isHidden = true
+        }
+        
+        if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kConsent.rawValue) {
+            imvLockConsent.isHidden = true
+        }
     }
     
     func onResetButton() {
@@ -196,13 +198,13 @@ class DailyExaminationPopupVC: UIViewController {
     //*****************************************************************
     
     @IBAction func onAddDocumentFromTemplate(_ sender: UIButton) {
-        guard let index = cellIndex else {
+        
+        if !GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kConsent.rawValue) || !GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kCounselling.rawValue) {
+            showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
             return
         }
         
-        guard let cartID = carteID else {
-            return
-        }
+        guard let index = cellIndex, let cartID = carteID else { return }
         
         //check customer data has exist document or not
         switch type {
@@ -210,7 +212,7 @@ class DailyExaminationPopupVC: UIViewController {
             for i in 0 ..< self.consentData.count {
                 if self.consentTempData[index].sub_type == self.consentData[i].sub_type {
                     //data has exist
-                    showAlert(message: kALERT_SAME_TYPE_DOCUMENT, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_SAME_TYPE_DOCUMENT, view: self)
                     return
                 }
             }
@@ -218,7 +220,7 @@ class DailyExaminationPopupVC: UIViewController {
             for i in 0 ..< self.counsellingData.count {
                 if self.counsellingTempData[index].sub_type == self.counsellingData[i].sub_type {
                     //data has exist
-                    showAlert(message: kALERT_SAME_TYPE_DOCUMENT, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_SAME_TYPE_DOCUMENT, view: self)
                     return
                 }
             }
@@ -238,13 +240,13 @@ class DailyExaminationPopupVC: UIViewController {
     }
     
     @IBAction func onEditDocument(_ sender: UIButton) {
-        guard let index = cellIndex else {
+        
+        if !GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kConsent.rawValue) || !GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kCounselling.rawValue) {
+            showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
             return
         }
         
-        guard let cartID = carteID else {
-            return
-        }
+        guard let index = cellIndex,let cartID = carteID else { return }
         
         if type == 1 {
             dismiss(animated: true) {
@@ -266,9 +268,7 @@ class DailyExaminationPopupVC: UIViewController {
         newPopup.modalPresentationStyle = UIModalPresentationStyle.formSheet
         newPopup.preferredContentSize = CGSize(width: 700, height: 900)
         
-        guard let index = cellIndex else {
-            return
-        }
+        guard let index = cellIndex else { return }
         
         if tableIndex == 1 {
             if type == 1 {
@@ -290,22 +290,22 @@ class DailyExaminationPopupVC: UIViewController {
     }
     
     @IBAction func onDocumentSelect(_ sender: UIButton) {
+        
         onResetButton()
         
         switch sender.tag {
         case 1:
             type = 1
-            btnCounselling.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            btnCounselling.backgroundColor = COLOR_SET.kBLUE
         case 2:
- 
             type = 2
-            btnConsent.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            btnConsent.backgroundColor = COLOR_SET.kBLUE
         default:
             break
         }
         
+        imvDoc.image = UIImage(named: "nophotoIcon")
         cellIndex = nil
-        
         resetLoadDocument()
     }
 }
@@ -362,6 +362,8 @@ extension DailyExaminationPopupVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         //reset all selection
         if cellIndex != nil {
             let indexP = IndexPath.init(row: cellIndex!, section: 0)
@@ -372,12 +374,6 @@ extension DailyExaminationPopupVC: UITableViewDelegate, UITableViewDataSource {
                 tblCusDoc.deselectRow(at: indexP, animated: false)
             }
         }
-        
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
         
         cellIndex = indexPath.row
         tableIndex = tableView.tag
@@ -409,11 +405,8 @@ extension DailyExaminationPopupVC: UITableViewDelegate, UITableViewDataSource {
                     if (error != nil) {
                         //Failure code here
                         showAlert(message: "写真の読み込みに失敗しました。ネットワークの状態を確認してください。", view: self)
-                        hud.dismiss()
-                    } else {
-                        
-                        hud.dismiss()
                     }
+                    SVProgressHUD.dismiss()
                 }
                 
                 showPageNumberAndDate(pageNo: consentTempData[indexPath.row].document_pages.count,showCreate: false,createdTime: consentTempData[indexPath.row].created_at)
@@ -432,11 +425,8 @@ extension DailyExaminationPopupVC: UITableViewDelegate, UITableViewDataSource {
                     if (error != nil) {
                         //Failure code here
                         showAlert(message: "写真の読み込みに失敗しました。ネットワークの状態を確認してください。", view: self)
-                        hud.dismiss()
-                    } else {
-                        
-                        hud.dismiss()
                     }
+                    SVProgressHUD.dismiss()
                 }
                 
                 showPageNumberAndDate(pageNo: counsellingTempData[indexPath.row].document_pages.count,showCreate: false,createdTime: counsellingTempData[indexPath.row].created_at)
@@ -458,11 +448,8 @@ extension DailyExaminationPopupVC: UITableViewDelegate, UITableViewDataSource {
                     if (error != nil) {
                         //Failure code here
                         showAlert(message: "写真の読み込みに失敗しました。ネットワークの状態を確認してください。", view: self)
-                        hud.dismiss()
-                    } else {
-                        
-                        hud.dismiss()
                     }
+                    SVProgressHUD.dismiss()
                 }
                 
                 showPageNumberAndDate(pageNo: consentData[indexPath.row].document_pages.count,showCreate: true,createdTime: consentData[indexPath.row].created_at)
@@ -481,11 +468,8 @@ extension DailyExaminationPopupVC: UITableViewDelegate, UITableViewDataSource {
                     if (error != nil) {
                         //Failure code here
                         showAlert(message: "写真の読み込みに失敗しました。ネットワークの状態を確認してください。", view: self)
-                        hud.dismiss()
-                    } else {
-                        
-                        hud.dismiss()
                     }
+                    SVProgressHUD.dismiss()
                 }
                 
                 showPageNumberAndDate(pageNo: counsellingData[indexPath.row].document_pages.count,showCreate: true,createdTime: counsellingData[indexPath.row].created_at)

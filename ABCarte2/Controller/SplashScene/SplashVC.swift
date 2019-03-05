@@ -23,8 +23,24 @@ class SplashVC: UIViewController {
         //lock Screen orientation
         AppUtility.lockOrientation(.portrait)
         
+        var animationString = ""
+        //load splash image
+        #if SERMENT
+        animationString = "floral_loading_animation"
+        wallpaper.image = UIImage(named: "serment_splash.jpg")
+        #elseif SHISEI
+        animationString = "floral_loading_animation"
+        wallpaper.image = UIImage(named: "SHISEI_splash.png")
+        #elseif AIMB
+        animationString = "floral_loading_animation"
+        wallpaper.image = UIImage(named: "AIMB_splash.png")
+        #else
+        animationString = "material_wave_loading"
+        wallpaper.image = UIImage(named: "JBS_attender_splash.jpg")
+        #endif
+        
         // Create Loading Animation
-        let loadAnimation = LOTAnimationView(name: "material_wave_loading")
+        let loadAnimation = LOTAnimationView(name: animationString)
         
         // Set view to full screen, aspectFill
         loadAnimation.frame = CGRect(x: 0, y: 0, width: 60, height: 60)
@@ -32,6 +48,8 @@ class SplashVC: UIViewController {
         loadAnimation.contentMode = .scaleAspectFill
         loadAnimation.play(fromFrame: 1, toFrame: 60) { (success) in
             if success {
+                self.goToLoginView()
+            } else {
                 self.goToLoginView()
             }
         }
@@ -46,10 +64,7 @@ class SplashVC: UIViewController {
     
     //Go To Login View
     func goToLoginView() {
-        
-        guard let loginPageView = self.storyboard?.instantiateViewController(withIdentifier: "LoginVC") as? LoginVC else {
-            return
-        }
+        guard let loginPageView = self.storyboard?.instantiateViewController(withIdentifier: "LoginVC") as? LoginVC else { return }
         self.present(loginPageView, animated: true, completion: nil)
     }
 

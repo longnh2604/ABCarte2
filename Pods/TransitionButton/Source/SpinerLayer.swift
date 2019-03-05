@@ -46,6 +46,7 @@ class SpinerLayer: CAShapeLayer {
         rotate.toValue = Double.pi * 2
         rotate.duration = 0.4
         rotate.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        
         rotate.repeatCount = HUGE
         rotate.fillMode = kCAFillModeForwards
         rotate.isRemovedOnCompletion = false

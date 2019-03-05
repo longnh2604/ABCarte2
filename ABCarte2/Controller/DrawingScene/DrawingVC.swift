@@ -12,7 +12,6 @@ import NXDrawKit
 import EFColorPicker
 import JLStickerTextView
 import SDWebImage
-import JGProgressHUD
 
 class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecognizerDelegate {
     
@@ -173,18 +172,14 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
     
     func setupCanvas() {
         
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
         let url = URL(string: media.url)
         image.sd_setImage(with: url) { (image, error, cachetype, url) in
             if (error != nil) {
                 //Failure code here
                 showAlert(message: "写真の読み込みに失敗しました。ネットワークの状態を確認してください。", view: self)
-                hud.dismiss()
             } else {
                 //Success code here
                 self.viewDrawing.translatesAutoresizingMaskIntoConstraints = false
@@ -198,8 +193,8 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
                 self.viewDrawing.addSubview(canvasView)
                 self.canvasView = canvasView
                 self.imageOriginal = self.saveImageEdit()
-                hud.dismiss()
             }
+            SVProgressHUD.dismiss()
         }
     }
     
@@ -231,24 +226,18 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
     }
     
     func onSaveImage(image: UIImage) {
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
 
-        self.imageConverted = UIImageJPEGRepresentation(image, 100)
+        self.imageConverted = UIImageJPEGRepresentation(image, 1)
         
         if onTemp == false {
             addMedias(cusID: self.customer.id, carteID: self.carte.id,mediaData: self.imageConverted!, completion: { (success) in
                 if success {
-                 
-                    hud.dismiss()
                 } else {
-                    hud.dismiss()
-                  
                     showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
                 }
+                SVProgressHUD.dismiss()
             })
         } else {
             //Check current date
@@ -266,13 +255,10 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
                     
                     addMedias(cusID: self.customer.id, carteID: self.cartesData[i].id,mediaData: self.imageConverted!, completion: { (success) in
                         if success {
-                           
-                            hud.dismiss()
                         } else {
-                            hud.dismiss()
-                         
                             showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
                         }
+                        SVProgressHUD.dismiss()
                     })
                     return
 
@@ -293,17 +279,12 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
                        
                         addMedias(cusID: self.customer.id, carteID: carteID,mediaData: self.imageConverted!, completion: { (success) in
                             if success {
-                               
-                                hud.dismiss()
                             } else {
-                                hud.dismiss()
-                               
                                 showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
                             }
+                            SVProgressHUD.dismiss()
                         })
-                        
                     } else {
-                  
                         showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
                     }
                 }
@@ -352,15 +333,15 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
     }
     
     func resetButtonStatus() {
-        btnPen.backgroundColor = kPENUNSELECT
-        btnEraser.backgroundColor = kPENUNSELECT
-        btnSave.backgroundColor = kPENUNSELECT
-        btnPickColor.backgroundColor = kPENUNSELECT
-        btnPalette.backgroundColor = kPENUNSELECT
-        btnLine.backgroundColor = kPENUNSELECT
-        btnText.backgroundColor = kPENUNSELECT
-        btnStamp.backgroundColor = kPENUNSELECT
-        btnMosaic.backgroundColor = kPENUNSELECT
+        btnPen.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnEraser.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnSave.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnPickColor.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnPalette.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnLine.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnText.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnStamp.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnMosaic.backgroundColor = COLOR_SET.kPENUNSELECT
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -507,47 +488,6 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
         })
     }
     
-    func mergeTwoUIImage(topImage:UIImage,bottomImage:UIImage)->UIImage {
-        let botImg = bottomImage
-        let topImg = topImage
-        
-        let size = CGSize(width: self.view.frame.width, height: self.view.frame.height)
-        UIGraphicsBeginImageContext(size)
-        
-        let areaSize = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        botImg.draw(in: areaSize)
-        
-        topImg.draw(in: areaSize, blendMode: .normal, alpha: 1)
-        
-        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        return newImage
-    }
-    
-    func printUrl(_ url: URL) {
-        guard (UIPrintInteractionController.canPrint(url)) else {
-            Swift.print("Unable to print: \(url)")
-            return
-        }
-        
-        showPrintInteraction(url)
-    }
-    
-    func showPrintInteraction(_ url: URL) {
-        let controller = UIPrintInteractionController.shared
-        controller.printingItem = url
-        controller.printInfo = printerInfo(url.lastPathComponent)
-        controller.present(animated: true, completionHandler: nil)
-    }
-    
-    func printerInfo(_ jobName: String) -> UIPrintInfo {
-        let printInfo = UIPrintInfo.printInfo()
-        printInfo.outputType = .general
-        printInfo.jobName = jobName
-        Swift.print("Printing: \(jobName)")
-        return printInfo
-    }
-    
     func pixellated() {
         // 1.
         let filter = CIFilter(name: "CIPixellate")!
@@ -634,15 +574,15 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
         case 0:
            
             resetButtonStatus()
-            self.canvasView?.setDrawingMode(mode: 1)
-            btnPen.backgroundColor = kPENSELECT
+//            self.canvasView?.setDrawingMode(mode: 1)
+            btnPen.backgroundColor = COLOR_SET.kPENSELECT
             imvSticker.isUserInteractionEnabled = false
             break
         case 1:
         
             resetButtonStatus()
-            self.canvasView?.setDrawingMode(mode: 4)
-            btnEraser.backgroundColor = kPENSELECT
+//            self.canvasView?.setDrawingMode(mode: 4)
+            btnEraser.backgroundColor = COLOR_SET.kPENSELECT
             imvSticker.isUserInteractionEnabled = false
             break
         case 2:
@@ -654,36 +594,36 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
             let imgS = imv.asImage()
             let imgD = viewDrawing.asImage()
             
-            onSaveImage(image: mergeTwoUIImage(topImage: imgS, bottomImage: imgD))
+            onSaveImage(image: mergeTwoUIImage(topImage: imgS, bottomImage: imgD, width: self.view.frame.width,height: self.view.frame.height))
             break
         case 3:
       
             resetButtonStatus()
-            self.canvasView?.setDrawingMode(mode: 3)
-            btnPickColor.backgroundColor = kPENSELECT
+//            self.canvasView?.setDrawingMode(mode: 3)
+            btnPickColor.backgroundColor = COLOR_SET.kPENSELECT
             imvSticker.isUserInteractionEnabled = false
             break
         case 4:
         
             resetButtonStatus()
-            self.canvasView?.setDrawingMode(mode: 5)
+//            self.canvasView?.setDrawingMode(mode: 5)
             showPaletteView(sender: sender)
-            btnPalette.backgroundColor = kPENSELECT
+            btnPalette.backgroundColor = COLOR_SET.kPENSELECT
             imvSticker.isUserInteractionEnabled = false
             break
         case 5:
         
             resetButtonStatus()
-            self.canvasView?.setDrawingMode(mode: 6)
-            btnLine.backgroundColor = kPENSELECT
+//            self.canvasView?.setDrawingMode(mode: 6)
+            btnLine.backgroundColor = COLOR_SET.kPENSELECT
             imvSticker.isUserInteractionEnabled = false
             break
         case 6:
            
             if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kTextSticker.rawValue) {
                 resetButtonStatus()
-                self.canvasView?.setDrawingMode(mode: 5)
-                btnText.backgroundColor = kPENSELECT
+//                self.canvasView?.setDrawingMode(mode: 5)
+                btnText.backgroundColor = COLOR_SET.kPENSELECT
                 
                 if onText == false {
                     setView(view: viewTextEx, hidden: false)
@@ -693,16 +633,16 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
                     onText = false
                 }
             } else {
-                showAlert(message: "このアカウントはこの機能にアクセスできません", view: self)
+                showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
             }
          
             break
         case 7:
        
             resetButtonStatus()
-            self.canvasView?.setDrawingMode(mode: 5)
+//            self.canvasView?.setDrawingMode(mode: 5)
             btnText.setImage(UIImage(named: "selectIcon"), for: .normal)
-            btnText.backgroundColor = kPENSELECT
+            btnText.backgroundColor = COLOR_SET.kPENSELECT
             imvSticker.isUserInteractionEnabled = true
             setView(view: viewTextEx, hidden: true)
             onText = false
@@ -710,9 +650,9 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
         case 8:
        
             resetButtonStatus()
-            self.canvasView?.setDrawingMode(mode: 5)
+//            self.canvasView?.setDrawingMode(mode: 5)
             btnText.setImage(UIImage(named: "textIcon"), for: .normal)
-            btnText.backgroundColor = kPENSELECT
+            btnText.backgroundColor = COLOR_SET.kPENSELECT
             imvSticker.isUserInteractionEnabled = true
             imvSticker.addLabel()
             imvSticker.textColor = currentBrush.color
@@ -724,8 +664,8 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
         case 9:
         
             resetButtonStatus()
-            self.canvasView?.setDrawingMode(mode: 5)
-            btnStamp.backgroundColor = kPENSELECT
+//            self.canvasView?.setDrawingMode(mode: 5)
+            btnStamp.backgroundColor = COLOR_SET.kPENSELECT
             
             if let vc = self.storyboard?.instantiateViewController(withIdentifier:"StickerPopupVC") as? StickerPopupVC {
                 vc.modalTransitionStyle   = .crossDissolve
@@ -736,7 +676,7 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
             imvSticker.isUserInteractionEnabled = true
         case 10:
             pixellated()
-            btnMosaic.backgroundColor = kPENSELECT
+            btnMosaic.backgroundColor = COLOR_SET.kPENSELECT
             imvSticker.isUserInteractionEnabled = false
         case 11:
           
@@ -745,7 +685,7 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
                 
                 printUrl(urlPath)
             } else {
-                showAlert(message: "このアカウントはこの機能にアクセスできません", view: self)
+                showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
             }
             
         default:
@@ -759,7 +699,7 @@ class DrawingVC: UIViewController, UIPopoverControllerDelegate, UIGestureRecogni
         lblPenSize.text = "\(value) pt"
         currentBrush.width = CGFloat(sender.value)
         
-        self.canvasView?.setBrushWidth(width: CGFloat(sender.value))
+//        self.canvasView?.setBrushWidth(width: CGFloat(sender.value))
     }
     
     @IBAction func onOpacityChange(_ sender: UISlider) {
@@ -799,10 +739,6 @@ extension DrawingVC: EFColorSelectionViewControllerDelegate {
 //*****************************************************************
 
 extension DrawingVC: CanvasDelegate{
-    func returnPoints(allPoints: [CGPoint]) {
-        
-    }
-    
     func brush() -> Brush? {
         return currentBrush
     }
@@ -811,10 +747,10 @@ extension DrawingVC: CanvasDelegate{
         updateToolBarButtonStatus(canvas)
     }
     
-    func updateNewColor(color: UIColor) {
+    func updatingNewColor(color: UIColor) {
         viewCurColor.backgroundColor = color
         viewCurPenSize.backgroundColor = color
-        self.paletteView?.setNewColorPick(newColor: color)
+//        self.paletteView?.setNewColorPick(newColor: color)
         currentBrush.color = color
     }
 }

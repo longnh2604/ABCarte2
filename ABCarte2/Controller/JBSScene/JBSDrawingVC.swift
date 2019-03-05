@@ -27,6 +27,7 @@ class JBSDrawingVC: UIViewController {
     @IBOutlet weak var viewBrushSize: UIView!
     @IBOutlet weak var slideBWidth: MySlider!
     @IBOutlet weak var lblBrushSize: UILabel!
+    @IBOutlet weak var btnPenMode: UIButton!
     
     @IBOutlet weak var btnLock: UIButton!
     @IBOutlet weak var btnUnlock: UIButton!
@@ -47,6 +48,7 @@ class JBSDrawingVC: UIViewController {
     var drawMode: Int? = 0
     var imageOriginal: UIImage? = nil
     var arrBFace = ["JBS_selectA1.png","JBS_selectB2.png","JBS_selectC2.png","JBS_selectD2.png","JBS_selectA2.png","JBS_selectE2.png"]
+    var penMode = 1
 
     var imageCenterXConstraint:NSLayoutConstraint = NSLayoutConstraint()
     var imageCenterYConstraint:NSLayoutConstraint = NSLayoutConstraint()
@@ -93,12 +95,17 @@ class JBSDrawingVC: UIViewController {
         viewDrawing.translatesAutoresizingMaskIntoConstraints = false
         
         let canvasView = Canvas.init(canvasId: "photo", backgroundImage: UIImage(named:imgSelected!))
-        canvasView.frame = CGRect(x:0,y:0, width: self.viewDrawing.frame.width, height: self.viewDrawing.frame.height)
+        canvasView.frame = CGRect(x:0,y:0, width: self.view.frame.width, height: self.view.frame.height)
         canvasView.delegate = self
         canvasView.clipsToBounds = true
         viewDrawing.addSubview(canvasView)
         self.canvasView = canvasView
         imageOriginal = saveImageEdit()
+        currentBrush.width = 1.0
+        
+        self.canvasView?.penMode = self.penMode
+        self.btnPenMode.backgroundColor = COLOR_SET.kPENSELECT
+        self.canvasView?.isUserInteractionEnabled = false
     }
     
     func setupPallet() {
@@ -222,11 +229,11 @@ class JBSDrawingVC: UIViewController {
     @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
         
         if error == nil {
-            let ac = UIAlertController(title: "保存しました", message: "画像はカメラロールに保存しています", preferredStyle: .alert)
+            let ac = UIAlertController(title: "保存しました", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             present(ac, animated: true, completion: nil)
         } else {
-            let ac = UIAlertController(title: "エラー", message: error?.localizedDescription, preferredStyle: .alert)
+            let ac = UIAlertController(title: "エラー", message: "写真のアクセス許可を確認してください。", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             present(ac, animated: true, completion: nil)
         }
@@ -259,32 +266,29 @@ class JBSDrawingVC: UIViewController {
         lblBrushSize.text = "\(string)"
         
         let floatNo = (string as NSString).floatValue
-       
         self.canvasView?.setBrushWidth(width: CGFloat(floatNo))
     }
     
     @IBAction func onToolSelect(_ sender: UIButton) {
         if lockStatus {
-            showAlert(message: "Please unlock to draw", view: self)
+            showAlert(message: MSG_ALERT.kALERT_UNLOCK_BEFORE_DRAWING, view: self)
         } else {
+            self.canvasView?.isUserInteractionEnabled = true
+            self.btnPenMode.backgroundColor = COLOR_SET.kPENUNSELECT
+            
             switch sender.tag {
             case 1:
-              
                 self.canvasView?.setDrawingMode(mode: 1)
                 drawMode = 1
             case 2:
-           
                 self.canvasView?.setDrawingMode(mode: 4)
                 drawMode = 4
             case 3:
-      
                 self.canvasView?.setDrawingMode(mode: 2)
                 drawMode = 2
             case 4:
-           
                 self.canvasView?.undo()
             case 5:
-            
                 self.canvasView?.redo()
             default:
                 return
@@ -313,6 +317,39 @@ class JBSDrawingVC: UIViewController {
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         UIImageWriteToSavedPhotosAlbum(image!, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
+    
+    @IBAction func onDrawingModeChange(_ sender: UIButton) {
+        
+        let alert = UIAlertController(title: "描画モードを選択してください", message: nil, preferredStyle: .actionSheet)
+        let pencil = UIAlertAction(title: "ペンシル", style: .default) { UIAlertAction in
+            self.canvasView?.isUserInteractionEnabled = false
+            self.drawMode = 7
+            self.updateDrawButtonStatus()
+            self.canvasView?.penMode = 1
+            self.penMode = 1
+            self.btnPenMode.setTitle("ペンシル", for: .normal)
+            self.btnPenMode.backgroundColor = COLOR_SET.kPENSELECT
+        }
+        let finger = UIAlertAction(title: "指", style: .default) { UIAlertAction in
+            self.canvasView?.isUserInteractionEnabled = false
+            self.drawMode = 7
+            self.updateDrawButtonStatus()
+            self.canvasView?.penMode = 0
+            self.penMode = 0
+            self.btnPenMode.setTitle("指", for: .normal)
+            self.btnPenMode.backgroundColor = COLOR_SET.kPENSELECT
+        }
+        
+        alert.addAction(pencil)
+        alert.addAction(finger)
+        
+        alert.popoverPresentationController?.sourceView = self.btnPenMode
+        alert.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection.down
+        alert.popoverPresentationController?.sourceRect = self.btnPenMode.bounds
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     //*****************************************************************
@@ -378,7 +415,7 @@ extension JBSDrawingVC: CanvasDelegate{
         updateToolBarButtonStatus(canvas)
     }
     
-    func updateNewColor(color: UIColor) {
+    func updatingNewColor(color: UIColor) {
         self.paletteView?.setNewColorPick(newColor: color)
     }
 }

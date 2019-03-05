@@ -59,15 +59,15 @@
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nCB-kZ-jLx" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
                     <rect key="frame" x="250" y="840" width="200" height="60"/>
-                    <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" red="0.70588235290000001" green="0.86274509799999999" blue="0.87843137250000003" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="200" id="X6U-sp-qLz"/>
                         <constraint firstAttribute="height" constant="60" id="kAS-4l-88O"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="150" maxY="0.0"/>
-                    <inset key="imageEdgeInsets" minX="5" minY="5" maxX="150" maxY="5"/>
-                    <state key="normal" title="カルテ代表画像設定" image="btn_add_carte_photo.png">
+                    <inset key="imageEdgeInsets" minX="0.0" minY="5" maxX="150" maxY="5"/>
+                    <state key="normal" title="カルテ代表画像設定" image="icon_carte_representative_black.png">
                         <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                     </state>
                     <userDefinedRuntimeAttributes>
@@ -102,7 +102,7 @@
         </view>
     </objects>
     <resources>
-        <image name="btn_add_carte_photo.png" width="512" height="512"/>
         <image name="closeIcon_blue.png" width="662" height="663"/>
+        <image name="icon_carte_representative_black.png" width="200" height="200"/>
     </resources>
 </document>

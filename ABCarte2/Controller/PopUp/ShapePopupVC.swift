@@ -10,6 +10,7 @@ import UIKit
 
 protocol ShapePopupVCDelegate: class {
     func didShapeSelect(index:Int)
+    func didShapeClose()
 }
 
 class ShapePopupVC: UIViewController {
@@ -45,7 +46,9 @@ class ShapePopupVC: UIViewController {
     //*****************************************************************
     
     @IBAction func onClose(_ sender: UIButton) {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true) {
+            self.delegate?.didShapeClose()
+        }
     }
 }
 

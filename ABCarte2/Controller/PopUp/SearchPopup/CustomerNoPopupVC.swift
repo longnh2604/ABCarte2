@@ -40,7 +40,7 @@ class CustomerNoPopupVC: UIViewController {
         }
         
         if text.isEmpty {
-            showAlert(message: kALERT_INPUT_DATA, view: self)
+            showAlert(message: MSG_ALERT.kALERT_INPUT_DATA, view: self)
             return
         }
         

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import JGProgressHUD
 
 class SecretMemoSettingPopupVC: UIViewController {
 
@@ -36,12 +35,6 @@ class SecretMemoSettingPopupVC: UIViewController {
     
     @IBAction func onSave(_ sender: UIButton) {
         
-        //add loading view
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        
 //        if isNew == true {
 //            hud.show(in: self.view)
 //
@@ -65,24 +58,24 @@ class SecretMemoSettingPopupVC: UIViewController {
                 showAlert(message: "同じパスワードで更新はできません。", view: self)
             } else {
                 
-                hud.show(in: self.view)
-                
-                getAccessSecretMemo(password: tfCurrPassword.text!) { (success) in
+                SVProgressHUD.show(withStatus: "読み込み中")
+                SVProgressHUD.setDefaultMaskType(.clear)
+            
+                getAccessSecretMemo(password: tfCurrPassword.text!) { (success, msg) in
                     if success {
                         updateAccountSecretMemoPass(password: self.tfNewPassword.text!) { (success) in
                             if success {
-                                showAlert(message: "シークレットメモのパスワードを更新しました。", view: self)
+                                showAlert(message: msg, view: self)
                                 UserDefaults.standard.set(self.tfNewPassword.text, forKey: "secret_pass")
-                                hud.dismiss()
                             } else {
-                                showAlert(message: "シークレットメモのパスワード更新に失敗しました。", view: self)
-                                hud.dismiss()
+                                showAlert(message: msg, view: self)
                             }
+                            SVProgressHUD.dismiss()
                         }
                     } else {
-                        showAlert(message: "パスワードが間違っています。正しいパスワードを入力してください。", view: self)
-                        hud.dismiss()
+                        showAlert(message: msg, view: self)
                     }
+                    SVProgressHUD.dismiss()
                 }
             }
 //        }

@@ -116,8 +116,12 @@ extension CameraController {
         }
     }
     
-    func displayPreview(on view: UIView) throws {
-        guard let captureSession = self.captureSession, captureSession.isRunning else { throw CameraControllerError.captureSessionIsMissing }
+    func displayPreview(view: UIView,completion:@escaping(Bool) -> ()) {
+        guard let captureSession = self.captureSession, captureSession.isRunning else {
+//            CameraControllerError.captureSessionIsMissing
+            completion(false)
+            return
+        }
         
         self.previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         self.previewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
@@ -125,7 +129,19 @@ extension CameraController {
         
         view.layer.insertSublayer(self.previewLayer!, at: 0)
         self.previewLayer?.frame = view.frame
+        completion(true)
     }
+    
+//    func displayPreview(on view: UIView) throws {
+//        guard let captureSession = self.captureSession, captureSession.isRunning else { throw CameraControllerError.captureSessionIsMissing }
+//        
+//        self.previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+//        self.previewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
+//        self.previewLayer?.connection?.videoOrientation = .portrait
+//        
+//        view.layer.insertSublayer(self.previewLayer!, at: 0)
+//        self.previewLayer?.frame = view.frame
+//    }
     
     func changeEV(value:Float) throws {
 //        guard let currentCameraPosition = currentCameraPosition, let captureSession = self.captureSession, captureSession.isRunning else { throw CameraControllerError.captureSessionIsMissing }

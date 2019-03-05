@@ -9,7 +9,6 @@
 import UIKit
 import RealmSwift
 import SDWebImage
-import JGProgressHUD
 import EFColorPicker
 import JLStickerTextView
 
@@ -28,7 +27,6 @@ class NewDrawingVC: UIViewController {
     var imvStamp = UIImageView()
     let imvDraw = UIImageView()
     var onTemp: Bool = false
-    var hud = JGProgressHUD(style: .dark)
     var imageData: Data?
     var toolSelected: Int?
     var imgSticker = UIImageView()
@@ -65,9 +63,6 @@ class NewDrawingVC: UIViewController {
     @IBOutlet weak var btnPen: RoundButton!
     @IBOutlet weak var btnStamp: RoundButton!
     @IBOutlet weak var btnMosaic: RoundButton!
-    @IBOutlet weak var imv_lock_text: UIImageView!
-    @IBOutlet weak var imv_lock_mosaic: UIImageView!
-    @IBOutlet weak var imv_lock_printer: UIImageView!
     
     //Bottom View
     @IBOutlet weak var viewTool: UIView!
@@ -87,6 +82,7 @@ class NewDrawingVC: UIViewController {
     @IBOutlet weak var viewFav3: RoundButton!
     @IBOutlet weak var viewFav4: RoundButton!
     @IBOutlet weak var viewFav5: RoundButton!
+    @IBOutlet weak var lblTitleOpacity: UILabel!
     
     //Font View
     @IBOutlet weak var viewFont: UIView!
@@ -123,42 +119,56 @@ class NewDrawingVC: UIViewController {
         let barButton = UIBarButtonItem(customView: btnLeftMenu)
         self.navigationItem.leftBarButtonItem = barButton
         
-        //pen select from first
-//        btnPen.backgroundColor = kPENSELECT
-//        toolSelected = 1
-        
         //resize select from first
-        btnResize.backgroundColor = kPENSELECT
+        btnResize.backgroundColor = COLOR_SET.kPENSELECT
         toolSelected = 11
+        btnFavoriteColor.isEnabled = false
         //focus on resize
         viewPenEx.isHidden = true
-        btnPenShowHide.isUserInteractionEnabled = false
+        viewPen.isHidden = true
+        btnPenShowHide.isHidden = true
         
         btnPenShowHide.layer.cornerRadius = 10
         btnPenShowHide.clipsToBounds = true
         
         viewFont.isHidden = true
         
+        updateTopView()
+        updateBottomView()
+        
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kDrawingPrinter.rawValue) {
-            imv_lock_printer.isHidden = true
+            btnPrinter.isHidden = false
         } else {
-            imv_lock_printer.isHidden = false
+            btnPrinter.isHidden = true
         }
         
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kTextSticker.rawValue) {
-            imv_lock_text.isHidden = true
+            btnText.isHidden = false
         } else {
-            imv_lock_text.isHidden = false
+            btnText.isHidden = true
         }
         
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kMosaic.rawValue) {
-            imv_lock_mosaic.isHidden = true
+            btnMosaic.isHidden = false
         } else {
-            imv_lock_mosaic.isHidden = false
+            btnMosaic.isHidden = true
+        }
+    
+        if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kEyeDrop.rawValue) {
+            btnEyedrop.isHidden = false
+        } else {
+            btnEyedrop.isHidden = true
         }
         
-        updateTopView()
-        updateBottomView()
+        if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kOpacity.rawValue) {
+            lblTitleOpacity.isHidden = false
+            lblOpacity.isHidden = false
+            sliderPenOpacity.isHidden = false
+        } else {
+            lblTitleOpacity.isHidden = true
+            lblOpacity.isHidden = true
+            sliderPenOpacity.isHidden = true
+        }
     }
     
     func updateTopView() {
@@ -194,12 +204,12 @@ class NewDrawingVC: UIViewController {
         
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kPenSize.rawValue) {
             sliderPenSize.minimumValue = 0.5
-            sliderPenSize.maximumValue = 50
-            sliderPenSize.value = 15
+            sliderPenSize.maximumValue = 30
+            sliderPenSize.value = 5
         } else {
             sliderPenSize.minimumValue = 5
             sliderPenSize.maximumValue = 20
-            sliderPenSize.value = 10
+            sliderPenSize.value = 5
         }
         lblPenSize.text = "\(Int(sliderPenSize.value))pt"
         
@@ -224,6 +234,9 @@ class NewDrawingVC: UIViewController {
     
     func setupCanvas() {
         
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
+        
         guard let url = URL(string: media.url) as URL? else { fatalError("URL not found") }
         
         imvDraw.sd_setImage(with: url, completed: {(image, err, cacheType, url) in
@@ -234,14 +247,17 @@ class NewDrawingVC: UIViewController {
             
             let imageS = self.saveImageEditN(viewMake: imageV)
             
+            self.sketchView?.frame = CGRect(x: (self.sketchView?.frame.origin.x)!, y: (self.sketchView?.frame.origin.y)!, width: self.view.frame.width, height: self.view.frame.height)
             self.sketchView?.sketchViewDelegate = self
             self.sketchView?.loadImage(image: imageS)
+            self.sketchView?.lineWidth = 5.0
             
             self.viewDrawing.addGestureRecognizer(self.panGesture)
             self.viewDrawing.addGestureRecognizer(self.pinchGesture)
             
             self.checkUndoRedoStatus()
             
+            SVProgressHUD.dismiss()
         })
         
         imvSticker.isUserInteractionEnabled = false
@@ -267,34 +283,32 @@ class NewDrawingVC: UIViewController {
     }
     
     func resetAllButton() {
-        btnPen.backgroundColor = kPENUNSELECT
-        btnShape.backgroundColor = kPENUNSELECT
-        btnEraser.backgroundColor = kPENUNSELECT
-        btnText.backgroundColor = kPENUNSELECT
-        btnStamp.backgroundColor = kPENUNSELECT
-        btnMosaic.backgroundColor = kPENUNSELECT
-        btnEyedrop.backgroundColor = kPENUNSELECT
-        btnPalette.backgroundColor = kPENUNSELECT
-        btnResize.backgroundColor = kPENUNSELECT
-        btnPrinter.backgroundColor = kPENUNSELECT
-        btnSave.backgroundColor = kPENUNSELECT
+        btnPen.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnShape.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnEraser.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnText.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnStamp.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnMosaic.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnEyedrop.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnPalette.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnResize.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnPrinter.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnSave.backgroundColor = COLOR_SET.kPENUNSELECT
     }
     
     func checkUndoRedoStatus() {
-        guard let undo = sketchView?.canUndo() as Bool? else {
+        guard let undo = sketchView?.canUndo() as Bool?,let redo = sketchView?.canRedo() as Bool? else {
             btnUndo.isEnabled = false
+            btnRedo.isEnabled = false
             return
         }
+        
         if undo == true {
             btnUndo.isEnabled = true
         } else {
             btnUndo.isEnabled = false
         }
         
-        guard let redo = sketchView?.canRedo() as Bool? else {
-            btnRedo.isEnabled = false
-            return
-        }
         if redo == true {
             btnRedo.isEnabled = true
         } else {
@@ -354,7 +368,7 @@ class NewDrawingVC: UIViewController {
             
             updateAccountFavoriteColors(accountID: self.accounts[0].id, favColors: stringColors, completion: { (success) in
                 if success {
-                    showAlert(message: "U好きな色を更新しました", view: self)
+                    showAlert(message: "好きな色を更新しました", view: self)
                 } else {
                     showAlert(message: "好きな色を更新に失敗しました", view: self)
                 }
@@ -377,7 +391,7 @@ class NewDrawingVC: UIViewController {
         
         let cancelAction = UIAlertAction(title: "キャンセル", style: .default) { _ in }
         
-        let alertController = UIAlertController(title: "好きな色所を選択してください", message: nil, preferredStyle: .alert)
+        let alertController = UIAlertController(title: MSG_ALERT.kALERT_SELECT_FAVORITE_COLOR, message: nil, preferredStyle: .alert)
         alertController.addAction(option1)
         alertController.addAction(option2)
         alertController.addAction(option3)
@@ -419,9 +433,9 @@ class NewDrawingVC: UIViewController {
             self.sketchView?.drawTool = .star
         }
         // Cancel
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default) { _ in }
+        let cancelAction = UIAlertAction(title: "取消", style: .default) { _ in }
         
-        let alertController = UIAlertController(title: "Please select a figure", message: nil, preferredStyle: .alert)
+        let alertController = UIAlertController(title: MSG_ALERT.kALERT_CHOOSE_FIGURE_TO_DRAW, message: nil, preferredStyle: .alert)
         alertController.addAction(lineAction)
         alertController.addAction(arrowAction)
         alertController.addAction(rectAction)
@@ -439,45 +453,12 @@ class NewDrawingVC: UIViewController {
         sketchView?.drawTool = .stamp
     }
     
-    //printer function
-    func printUrl(_ url: URL) {
-        guard (UIPrintInteractionController.canPrint(url)) else {
-            Swift.print("Unable to print: \(url)")
-            return
-        }
-        
-        showPrintInteraction(url)
-    }
-    
-    func showPrintInteraction(_ url: URL) {
-        let controller = UIPrintInteractionController.shared
-        controller.printingItem = url
-        controller.printInfo = printerInfo(url.lastPathComponent)
-        controller.present(animated: true, completionHandler: nil)
-    }
-    
-    func printerInfo(_ jobName: String) -> UIPrintInfo {
-        let printInfo = UIPrintInfo.printInfo()
-        printInfo.outputType = .general
-        printInfo.jobName = jobName
-        Swift.print("Printing: \(jobName)")
-        return printInfo
-    }
-    
-    //add loading view
-    func loadingView() {
-        hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
-    }
-    
     //Save Image
     func onSaveImage(image: UIImage) {
-        loadingView()
+        SVProgressHUD.showProgress(0.3, status: "サーバーにアップロード中:30%")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
-        self.imageData = UIImageJPEGRepresentation(image, 100)
+        self.imageData = UIImageJPEGRepresentation(image, 1)
         
         if onTemp == false {
             addMedias(cusID: self.customer.id, carteID: self.carte.id,mediaData: self.imageData!, completion: { (success) in
@@ -488,13 +469,10 @@ class NewDrawingVC: UIViewController {
                     if self.isEdited == true {
                         self.isEdited = false
                     }
-                    
-                    self.hud.dismiss()
                 } else {
-                    self.hud.dismiss()
-                  
                     showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
                 }
+                SVProgressHUD.dismiss()
             })
         } else {
             //Check current date
@@ -507,29 +485,24 @@ class NewDrawingVC: UIViewController {
                 let isSame = date.isInSameDay(date: today)
                 
                 if isSame {
-                   
+                    
                     isAdded = true
                     
                     addMedias(cusID: self.customer.id, carteID: self.cartesData[i].id,mediaData: self.imageData!, completion: { (success) in
                         if success {
-                          
+                            
                             showAlert(message: "画像の保存しました。", view: self)
                             
                             if self.isEdited == true {
                                 self.isEdited = false
                             }
-                            
-                            self.hud.dismiss()
                         } else {
-                            self.hud.dismiss()
-                       
                             showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
                         }
+                        SVProgressHUD.dismiss()
                     })
                     return
-                    
                 } else {
-                  
                     isAdded = false
                 }
             }
@@ -545,27 +518,22 @@ class NewDrawingVC: UIViewController {
                         
                         addMedias(cusID: self.customer.id, carteID: carteID,mediaData: self.imageData!, completion: { (success) in
                             if success {
-                              
+                                
                                 if self.isEdited == true {
                                     self.isEdited = false
                                 }
-                                
-                                self.hud.dismiss()
                             } else {
-                                self.hud.dismiss()
-                       
                                 showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
                             }
+                            SVProgressHUD.dismiss()
                         })
-                        
                     } else {
-                       
                         showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
                     }
+                    SVProgressHUD.dismiss()
                 }
             }
         }
-        
     }
     
     func saveImageEditN(viewMake:UIView)->UIImage {
@@ -575,23 +543,6 @@ class NewDrawingVC: UIViewController {
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image!
-    }
-    
-    func mergeTwoUIImage(topImage:UIImage,bottomImage:UIImage)->UIImage {
-        let botImg = bottomImage
-        let topImg = topImage
-        
-        let size = CGSize(width: self.view.frame.width, height: self.view.frame.height)
-        UIGraphicsBeginImageContext(size)
-        
-        let areaSize = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-        botImg.draw(in: areaSize)
-        
-        topImg.draw(in: areaSize, blendMode: .normal, alpha: 1)
-        
-        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        return newImage
     }
     
     //show palette view
@@ -625,9 +576,6 @@ class NewDrawingVC: UIViewController {
     
     func setColorToAccFavorite(index:Int) {
         GlobalVariables.sharedManager.accFavoriteColors[index] = (sketchView?.lineColor.hexString)!
-        #if DEBUG
-        print(GlobalVariables.sharedManager.accFavoriteColors)
-        #endif
     }
     
     //add Color Font
@@ -716,7 +664,7 @@ class NewDrawingVC: UIViewController {
     func checkPhotoEditOrNot(completion:@escaping(Bool) -> ()) {
         
         if isEdited == true {
-            let alert = UIAlertController(title: "画像描画", message: kALERT_SAVE_PHOTO_NOTIFICATION, preferredStyle: UIAlertControllerStyle.alert)
+            let alert = UIAlertController(title: "画像描画", message: MSG_ALERT.kALERT_SAVE_PHOTO_NOTIFICATION, preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "はい", style: .default, handler:{ (UIAlertAction) in
                 completion(false)
             }))
@@ -779,23 +727,24 @@ class NewDrawingVC: UIViewController {
     
     @IBAction func onUndoRedo(_ sender: UIButton) {
         
-        loadingView()
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
+        
         switch sender.tag {
         case 0:
             print("Undo")
             sketchView?.undo {
                 self.checkUndoRedoStatus()
-                self.hud.dismiss()
             }
         case 1:
             print("Redo")
             sketchView?.redo {
                 self.checkUndoRedoStatus()
-                self.hud.dismiss()
             }
         default:
             break
         }
+        SVProgressHUD.dismiss()
     }
     
     @IBAction func onToolSelect(_ sender: UIButton) {
@@ -805,12 +754,14 @@ class NewDrawingVC: UIViewController {
         imvSticker.isUserInteractionEnabled = false
         changeGestureStatus(status: false)
         viewFont.isHidden = true
-        
+        viewPenEx.isHidden = false
+        viewPen.isHidden = false
+        btnPenShowHide.isHidden = false
         onToolSelected(index: sender.tag)
     }
     
     func onToolSelected(index: Int) {
-        
+        btnFavoriteColor.isEnabled = true
         //remove border of stamp
         for subview in imvSticker.subviews {
             //check if it's sticker textview
@@ -829,18 +780,14 @@ class NewDrawingVC: UIViewController {
             }
         }
         
-        //release pen ex
-        viewPenEx.isHidden = false
-        btnPenShowHide.isUserInteractionEnabled = true
-        
         switch index {
         case 1:
-            btnPen.backgroundColor = kPENSELECT
-
+            btnPen.backgroundColor = COLOR_SET.kPENSELECT
+            
             sketchView?.drawTool = .pen
         case 2:
-            btnShape.backgroundColor = kPENSELECT
-      
+            btnShape.backgroundColor = COLOR_SET.kPENSELECT
+            
             if let vc = self.storyboard?.instantiateViewController(withIdentifier:"ShapePopupVC") as? ShapePopupVC {
                 vc.modalTransitionStyle   = .crossDissolve
                 vc.modalPresentationStyle = .overCurrentContext
@@ -849,15 +796,15 @@ class NewDrawingVC: UIViewController {
             }
             
         case 3:
-            btnEraser.backgroundColor = kPENSELECT
+            btnEraser.backgroundColor = COLOR_SET.kPENSELECT
             sketchView?.drawTool = .eraser
         case 4:
             if !GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kTextSticker.rawValue) {
-                showAlert(message: "このアカウントはこの機能にアクセスできません", view: self)
+                showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
                 return
             }
             
-            btnText.backgroundColor = kPENSELECT
+            btnText.backgroundColor = COLOR_SET.kPENSELECT
             sketchView?.isUserInteractionEnabled = false
             imvSticker.isUserInteractionEnabled = true
             btnColorFont.backgroundColor = UIColor.black
@@ -871,7 +818,7 @@ class NewDrawingVC: UIViewController {
             imvSticker.currentlyEditingLabel.rotateView?.image = UIImage(named: "rotate")
             viewFont.isHidden = true
         case 5:
-            btnStamp.backgroundColor = kPENSELECT
+            btnStamp.backgroundColor = COLOR_SET.kPENSELECT
             sketchView?.isUserInteractionEnabled = false
             imvSticker.isUserInteractionEnabled = true
             
@@ -883,59 +830,55 @@ class NewDrawingVC: UIViewController {
             }
         case 6:
             if !GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kMosaic.rawValue) {
-                showAlert(message: "このアカウントはこの機能にアクセスできません", view: self)
+                showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
                 return
             }
-            btnMosaic.backgroundColor = kPENSELECT
+            btnMosaic.backgroundColor = COLOR_SET.kPENSELECT
             sketchView?.drawTool = .rectanglePixel
         case 7:
-            btnEyedrop.backgroundColor = kPENSELECT
-
+            btnEyedrop.backgroundColor = COLOR_SET.kPENSELECT
             sketchView?.drawTool = .eyedrop
         case 8:
-            btnPalette.backgroundColor = kPENSELECT
+            btnPalette.backgroundColor = COLOR_SET.kPENSELECT
             showPaletteView(sender: btnPalette)
             sketchView?.isUserInteractionEnabled = false
         case 9:
-            btnPrinter.backgroundColor = kPENSELECT
+            btnPrinter.backgroundColor = COLOR_SET.kPENSELECT
             
-            if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kDrawingPrinter.rawValue) {
-                
-                let urlPath: URL
-                guard let imv = imvSticker else {
-                    urlPath = saveImageToLocal(imageDownloaded: (sketchView?.image)!, name: customer.customer_no)
-                    printUrl(urlPath)
-                    return
-                }
-                let imgS = imv.asImage()
+            let urlPath: URL
+            if imvSticker.subviews.count > 0 {
+                let imgS = imvSticker.asImage()
                 let imgD = sketchView?.image!
                 
-                urlPath = saveImageToLocal(imageDownloaded: mergeTwoUIImage(topImage: imgS, bottomImage: imgD!), name: customer.customer_no)
+                urlPath = saveImageToLocal(imageDownloaded: mergeTwoUIImage(topImage: imgS, bottomImage: imgD!,width: self.view.frame.width, height: self.view.frame.height ), name: customer.customer_no)
                 
                 printUrl(urlPath)
             } else {
-                showAlert(message: "このアカウントはこの機能にアクセスできません", view: self)
+                urlPath = saveImageToLocal(imageDownloaded: (sketchView?.image)!, name: customer.customer_no)
+                printUrl(urlPath)
             }
             sketchView?.isUserInteractionEnabled = false
         case 10:
-            btnSave.backgroundColor = kPENSELECT
+            btnSave.backgroundColor = COLOR_SET.kPENSELECT
             
-            guard let imv = imvSticker else {
+            if imvSticker.subviews.count > 0 {
+                let imgS = imvSticker.asImage()
+                let imgD = sketchView?.image
+                
+                onSaveImage(image: mergeTwoUIImage(topImage: imgS, bottomImage: imgD!,width: self.view.frame.width,height: self.view.frame.height))
+                sketchView?.isUserInteractionEnabled = false
+            } else {
                 onSaveImage(image: (sketchView?.image)!)
-                return
             }
-            let imgS = imv.asImage()
-            let imgD = sketchView?.image
-            
-            onSaveImage(image: mergeTwoUIImage(topImage: imgS, bottomImage: imgD!))
-            sketchView?.isUserInteractionEnabled = false
         case 11:
-            btnResize.backgroundColor = kPENSELECT
+            btnResize.backgroundColor = COLOR_SET.kPENSELECT
             sketchView?.isUserInteractionEnabled = false
             changeGestureStatus(status: true)
             //focus on resize
             viewPenEx.isHidden = true
-            btnPenShowHide.isUserInteractionEnabled = false
+            viewPen.isHidden = true
+            btnPenShowHide.isHidden = true
+            btnFavoriteColor.isEnabled = false
         default:
             break
         }
@@ -1026,7 +969,7 @@ extension NewDrawingVC: EFColorSelectionViewControllerDelegate {
 extension NewDrawingVC: SketchViewDelegate {
     
     func drawView(_ view: SketchView, undo: NSMutableArray, didEndDrawUsingTool tool: AnyObject) {
-       
+        
         if isEdited == false {
             isEdited = true
         }
@@ -1053,14 +996,14 @@ extension NewDrawingVC: StickerPopupVCDelegate {
         
         stickNo += 1
         
-        imgSticker  = UIImageView(frame: CGRect.init(x: 0.0, y: 0.0, width: 150, height: 150))
+        imgSticker  = UIImageView(frame: CGRect.init(x: 0.0, y: 0.0, width: 300, height: 300))
         imgSticker.center = view.center
         imgSticker.image = UIImage(named: imv)
-        imgSticker.contentMode = UIViewContentMode.scaleAspectFill
+        imgSticker.contentMode = UIViewContentMode.scaleAspectFit
         imgSticker.isUserInteractionEnabled = true
         imgSticker.tag = stickNo
         
-        let rect = CGRect.init(origin: CGPoint.init(x: 0, y: 0), size: CGSize.init(width: 150, height: 150))
+        let rect = CGRect.init(origin: CGPoint.init(x: 0, y: 0), size: CGSize.init(width: 300, height: 300))
         let layer = CAShapeLayer.init()
         let path = UIBezierPath(roundedRect: rect, cornerRadius: 8)
         layer.path = path.cgPath
@@ -1105,12 +1048,28 @@ extension NewDrawingVC: StickerPopupVCDelegate {
     
     @objc func handlePanGestureSticker(recognizer:UIPanGestureRecognizer) {
         
-        if recognizer.state == .began || recognizer.state == .changed {
-            
-            let translation = recognizer.translation(in: self.view)
-            // note: 'view' is optional and need to be unwrapped
-            recognizer.view!.center = CGPoint(x: recognizer.view!.center.x + translation.x, y: recognizer.view!.center.y + translation.y)
-            recognizer.setTranslation(CGPoint.zero, in: self.view)
+//        if recognizer.state == .began || recognizer.state == .changed {
+//
+//            let translation = recognizer.translation(in: self.view)
+//            // note: 'view' is optional and need to be unwrapped
+//            recognizer.view!.center = CGPoint(x: recognizer.view!.center.x + translation.x, y: recognizer.view!.center.y + translation.y)
+//            recognizer.setTranslation(CGPoint.zero, in: self.view)
+//        }
+        
+        if recognizer.state == .began || recognizer.state == .changed
+        {
+            let point = recognizer.location(in: self.imvSticker)
+            if let superview = self.imvSticker
+            {
+                let restrictByPoint : CGFloat = 50.0
+                let superBounds = CGRect(x: superview.bounds.origin.x + restrictByPoint, y: superview.bounds.origin.y + restrictByPoint, width: superview.bounds.size.width - restrictByPoint, height: superview.bounds.size.height - restrictByPoint)
+                if (superBounds.contains(point))
+                {
+                    let translation = recognizer.translation(in: self.imvSticker)
+                    recognizer.view!.center = CGPoint(x: recognizer.view!.center.x + translation.x, y: recognizer.view!.center.y + translation.y)
+                    recognizer.setTranslation(CGPoint.zero, in: self.imvSticker)
+                }
+            }
         }
     }
     
@@ -1136,6 +1095,10 @@ extension NewDrawingVC: StickerPopupVCDelegate {
 //*****************************************************************
 
 extension NewDrawingVC: ShapePopupVCDelegate {
+    func didShapeClose() {
+        sketchView?.isUserInteractionEnabled = false
+        imvSticker.isUserInteractionEnabled = false
+    }
     
     func didShapeSelect(index: Int) {
         switch index {

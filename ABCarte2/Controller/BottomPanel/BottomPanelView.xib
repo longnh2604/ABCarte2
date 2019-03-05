@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VXg-vU-Q5f" customClass="BottomPanelView" customModule="ABCarte2" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eGB-8A-R40" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                    <rect key="frame" x="728" y="15" width="30" height="30"/>
+                    <color key="backgroundColor" red="0.92549019607843142" green="0.47058823529411764" blue="0.48627450980392156" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="9Oc-FK-dmc"/>
+                        <constraint firstAttribute="width" constant="30" id="ISg-1N-yhC"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                    <state key="normal" image="icon_info_white.png"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="15"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="tapInfoButton:" destination="VXg-vU-Q5f" eventType="touchUpInside" id="PXq-68-oON"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iev-dp-nba">
+                    <rect key="frame" x="30" y="0.0" width="60" height="60"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="Dx3-0u-lZF"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <inset key="titleEdgeInsets" minX="0.0" minY="30" maxX="55" maxY="0.0"/>
+                    <inset key="imageEdgeInsets" minX="13" minY="5" maxX="13" maxY="25"/>
+                    <state key="normal" title="ログアウト" image="icon_logout_black.png">
+                        <color key="titleColor" red="0.066666666669999999" green="0.1647058824" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </state>
+                    <connections>
+                        <action selector="tapLogoutButton:" destination="VXg-vU-Q5f" eventType="touchUpInside" id="Hg1-0V-ZqA"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S2V-D0-dL4">
+                    <rect key="frame" x="120" y="0.0" width="60" height="60"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="R3M-gx-Ieq"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <inset key="titleEdgeInsets" minX="0.0" minY="30" maxX="40" maxY="0.0"/>
+                    <inset key="imageEdgeInsets" minX="10" minY="5" maxX="10" maxY="20"/>
+                    <state key="normal" title="設定" image="icon_setting_black.png">
+                        <color key="titleColor" red="0.066666666669999999" green="0.1647058824" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </state>
+                    <connections>
+                        <action selector="tapSettingButton:" destination="VXg-vU-Q5f" eventType="touchUpInside" id="vHa-9Y-bK4"/>
+                    </connections>
+                </button>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EVG-cg-KVl">
+                    <rect key="frame" x="638" y="0.0" width="60" height="60"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="1YC-6e-T1A"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <inset key="titleEdgeInsets" minX="0.0" minY="35" maxX="45" maxY="0.0"/>
+                    <inset key="imageEdgeInsets" minX="10" minY="5" maxX="10" maxY="20"/>
+                    <state key="normal" title="書類" image="icon_document_black.png">
+                        <color key="titleColor" red="0.066666666669999999" green="0.1647058824" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </state>
+                    <connections>
+                        <action selector="tapDocumentButton:" destination="VXg-vU-Q5f" eventType="touchUpInside" id="giw-Qe-uUP"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="0.70588235294117641" green="0.86274509803921573" blue="0.8784313725490196" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="eGB-8A-R40" firstAttribute="leading" secondItem="EVG-cg-KVl" secondAttribute="trailing" constant="30" id="5rr-UH-fgk"/>
+                <constraint firstItem="S2V-D0-dL4" firstAttribute="top" secondItem="VXg-vU-Q5f" secondAttribute="top" id="9Pj-Bo-vj2"/>
+                <constraint firstItem="iev-dp-nba" firstAttribute="leading" secondItem="VXg-vU-Q5f" secondAttribute="leading" constant="30" id="Bof-V3-jDy"/>
+                <constraint firstAttribute="bottom" secondItem="S2V-D0-dL4" secondAttribute="bottom" id="BsY-U1-rb4"/>
+                <constraint firstAttribute="bottom" secondItem="EVG-cg-KVl" secondAttribute="bottom" id="ELI-sf-w0l"/>
+                <constraint firstItem="S2V-D0-dL4" firstAttribute="leading" secondItem="iev-dp-nba" secondAttribute="trailing" constant="30" id="S1M-1d-eRi"/>
+                <constraint firstItem="EVG-cg-KVl" firstAttribute="centerY" secondItem="VXg-vU-Q5f" secondAttribute="centerY" id="TLa-l4-8wZ"/>
+                <constraint firstItem="eGB-8A-R40" firstAttribute="centerY" secondItem="VXg-vU-Q5f" secondAttribute="centerY" id="a6c-NK-azc"/>
+                <constraint firstAttribute="height" constant="60" id="cid-6P-s7Z"/>
+                <constraint firstItem="EVG-cg-KVl" firstAttribute="top" secondItem="VXg-vU-Q5f" secondAttribute="top" id="gRf-vT-RDs"/>
+                <constraint firstAttribute="bottom" secondItem="iev-dp-nba" secondAttribute="bottom" id="h6G-V7-vaV"/>
+                <constraint firstAttribute="trailing" secondItem="eGB-8A-R40" secondAttribute="trailing" constant="10" id="lQx-ol-i9E"/>
+                <constraint firstItem="iev-dp-nba" firstAttribute="top" secondItem="VXg-vU-Q5f" secondAttribute="top" id="m9j-QF-qvv"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="WNl-CA-RvI"/>
+            <connections>
+                <outlet property="btnDocument" destination="EVG-cg-KVl" id="zw8-ep-nac"/>
+                <outlet property="btnInfo" destination="eGB-8A-R40" id="EoF-cQ-TKE"/>
+                <outlet property="btnLogout" destination="iev-dp-nba" id="Jqo-gB-WoP"/>
+                <outlet property="btnSetting" destination="S2V-D0-dL4" id="EfG-mg-oYU"/>
+            </connections>
+            <point key="canvasLocation" x="994" y="-151"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="icon_document_black.png" width="52" height="52"/>
+        <image name="icon_info_white.png" width="663" height="662"/>
+        <image name="icon_logout_black.png" width="90" height="90"/>
+        <image name="icon_setting_black.png" width="100" height="100"/>
+    </resources>
+</document>

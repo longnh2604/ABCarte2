@@ -21,10 +21,13 @@ class StartingVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = false
         //set gradient navigation bar
-        var colors = [UIColor]()
-        colors.append(UIColor(red: 69/255, green: 13/255, blue: 1/255, alpha: 1))
-        colors.append(UIColor(red: 166/255, green: 123/255, blue: 89/255, alpha: 1))
-        navigationController?.navigationBar.apply(gradient: colors)
+        guard let navi = navigationController else { return }
+        
+        if let set = UserDefaults.standard.integer(forKey: "colorset") as Int? {
+            addNavigationBarColor(navigation: navi,type: set)
+        } else {
+            addNavigationBarColor(navigation: navi,type: 0)
+        }
         
         let btnLeftMenu: UIButton = UIButton()
         btnLeftMenu.setImage(UIImage(named: "icon_back_white.png"), for: UIControlState())

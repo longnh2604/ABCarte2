@@ -8,7 +8,6 @@
 
 import UIKit
 import SDWebImage
-import JGProgressHUD
 import Vision
 
 class FaceAnalyseVC: UIViewController {
@@ -62,23 +61,19 @@ class FaceAnalyseVC: UIViewController {
         scrPhoto.minimumZoomScale = 0.5
         scrPhoto.maximumZoomScale = 5.0
         scrPhoto.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
+
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
         imvPhoto.sd_setImage(with: URL(string: media.url)) { (image, error, cache, url) in
             if (error != nil) {
                 showAlert(message: "写真の読み込みに失敗しました。ネットワークの状態を確認してください。", view: self)
-                hud.dismiss()
             } else {
                 let imageNew = image
                 self.imageN = imageNew
                 self.onFaceAnalyze()
-                hud.dismiss()
             }
+            SVProgressHUD.dismiss()
         }
     }
     

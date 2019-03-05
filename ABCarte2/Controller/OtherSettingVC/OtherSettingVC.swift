@@ -8,7 +8,6 @@
 
 import UIKit
 import RealmSwift
-import JGProgressHUD
 
 class OtherSettingVC: UIViewController {
     //Variable
@@ -28,13 +27,13 @@ class OtherSettingVC: UIViewController {
     var keyIndex: Int?
     var textField: UITextField?
     var categoryID: Int?
-    let hud = JGProgressHUD(style: .dark)
     
     //IBOutlet
     @IBOutlet weak var btnStampReg: RoundButton!
     @IBOutlet weak var tblMemo: UITableView!
     @IBOutlet weak var btnCreate: RoundButton!
     @IBOutlet weak var btnDelete: RoundButton!
+    @IBOutlet weak var btnEdit: RoundButton!
     @IBOutlet weak var collectStampMemo: UICollectionView!
     
     override func viewDidLoad() {
@@ -54,18 +53,16 @@ class OtherSettingVC: UIViewController {
         
         setupUI()
     }
-    
-    func showLoading() {
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
-    }
 
     func loadData() {
-        showLoading()
+        
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
         //Get category title first
+        self.categoriesData.removeAll()
+        self.categoryID = nil
+        
         onGetStampCategory { (success) in
             if success {
                 
@@ -79,34 +76,28 @@ class OtherSettingVC: UIViewController {
                     self.categoriesData.append(self.categories[i])
                 }
                 
-                self.categoryID = nil
-                
                 self.tblMemo.reloadData()
-                self.hud.dismiss()
-                
-                guard let index = self.stampIndex else {
-                    return
+              
+                if let index = self.stampIndex {
+                    self.tblMemo.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: UITableViewScrollPosition.middle)
+                    self.stampIndex = index
+                    self.categoryID = self.categoriesData[index].id
+                    
+                    if let id = self.categoryID {
+                        self.loadStamp(categoryID: id)
+                    }
                 }
-                self.tblMemo.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: UITableViewScrollPosition.middle)
-                
-                self.stampIndex = index
-                self.categoryID = self.categoriesData[index].id
-                
-                guard let id = self.categoryID else {
-                    return
-                }
-                
-                self.loadStamp(categoryID: id)
-                
             } else {
-                showAlert(message: kALERT_CANT_GET_MEMO_INFO_PLEASE_CHECK_NETWORK, view: self)
-                self.hud.dismiss()
+                self.tblMemo.reloadData()
+                showAlert(message: MSG_ALERT.kALERT_CANT_GET_MEMO_INFO_PLEASE_CHECK_NETWORK, view: self)
             }
+            SVProgressHUD.dismiss()
         }
     }
     
     func loadStamp(categoryID:Int) {
-        showLoading()
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
         onGetKeyFromCategory(categoryID: categoryID) { (success) in
             if success {
@@ -118,20 +109,19 @@ class OtherSettingVC: UIViewController {
                 for i in 0 ..< self.keywords.count {
                     self.keywordsData.append(self.keywords[i])
                 }
-                
                 self.collectStampMemo.reloadData()
-                self.hud.dismiss()
             } else {
-                
-                self.hud.dismiss()
+                showAlert(message: MSG_ALERT.kALERT_CANT_GET_STAMP_INFO_PLEASE_CHECK_NETWORK, view: self)
             }
+            SVProgressHUD.dismiss()
         }
     }
     
     func setupUI() {
         //set navigation bar title
-        self.navigationItem.title = "各種設定"
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        let logo = UIImage(named: "collect-you_sermentICON-05.png")
+        let imageView = UIImageView(image:logo)
+        self.navigationItem.titleView = imageView
         
         let btnLeftMenu: UIButton = UIButton()
         btnLeftMenu.setImage(UIImage(named: "icon_back_white.png"), for: UIControlState())
@@ -152,26 +142,22 @@ class OtherSettingVC: UIViewController {
         }
     }
     
-    func openAddKeywordAlert() {
+    func openAddKeywordAlert(id:Int) {
         let alert = UIAlertController(title: "スタンプキーワード", message: "キーワードを追加してください。", preferredStyle: UIAlertControllerStyle.alert)
         alert.addTextField(configurationHandler: configurationTextField)
-        alert.addAction(UIAlertAction(title: "取消", style: .cancel, handler:nil))
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler:{ (UIAlertAction) in
-          
-            guard let id = self.categoryID else {
-                return
-            }
             
             onAddKeywords(categoryID: id, content: (self.textField?.text)!, completion: { (success) in
                 if success {
-                    showAlert(message: kALERT_ADD_KEYWORD_SUCCESS, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_ADD_KEYWORD_SUCCESS, view: self)
                     self.loadStamp(categoryID:id)
                 } else {
-                    showAlert(message: kALERT_CANT_SAVE_KEYWORD, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_CANT_SAVE_KEYWORD, view: self)
                 }
 
             })
         }))
+        alert.addAction(UIAlertAction(title: "取消", style: .default, handler:nil))
         self.present(alert, animated: true, completion: nil)
     }
     
@@ -180,21 +166,19 @@ class OtherSettingVC: UIViewController {
         alert.addTextField(configurationHandler: configurationTextField)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler:{ (UIAlertAction) in
             
-            guard let id = self.categoryID else {
-                return
-            }
+            guard let id = self.categoryID else { return }
             
             if (self.textField?.text?.isEmpty)! {
-                showAlert(message: kALERT_INPUT_TITLE, view: self)
+                showAlert(message: MSG_ALERT.kALERT_INPUT_TITLE, view: self)
             } else {
                 editStampCategoryTitle(categoryID: id, title: (self.textField?.text)!, completion: { (success) in
                     if success {
                         
                         self.loadData()
-                        showAlert(message: kALERT_UPDATE_TITLE_SUCCESS, view: self)
+                        showAlert(message: MSG_ALERT.kALERT_UPDATE_TITLE_SUCCESS, view: self)
                        
                     } else {
-                        showAlert(message: kALERT_CANT_SAVE_TITLE, view: self)
+                        showAlert(message: MSG_ALERT.kALERT_CANT_SAVE_TITLE, view: self)
                     }
                 })
             }
@@ -211,7 +195,7 @@ class OtherSettingVC: UIViewController {
     @IBAction func onEditStampCategoryTitle(_ sender: UIButton) {
         
         guard categoryID != nil else {
-            showAlert(message: kALERT_SELECT_TITLE_EDIT, view: self)
+            showAlert(message: MSG_ALERT.kALERT_SELECT_TITLE_EDIT, view: self)
             return
         }
         openEditStampCategoryTitleAlert()
@@ -219,31 +203,60 @@ class OtherSettingVC: UIViewController {
     }
     
     @IBAction func onCreateNew(_ sender: UIButton) {
-        
-        openAddKeywordAlert()
+        guard let id = self.categoryID else {
+            showAlert(message: MSG_ALERT.kALERT_SELECT_KEYWORD, view: self)
+            return
+        }
+        openAddKeywordAlert(id: id)
 
+    }
+    
+    @IBAction func onEdit(_ sender: UIButton) {
+        if keyIndex != nil {
+            let alert = UIAlertController(title: "編集内容", message: "編集内容を追加してください。", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addTextField(configurationHandler: configurationTextField)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler:{ (UIAlertAction) in
+                
+                if (self.textField?.text?.isEmpty)! {
+                    showAlert(message: MSG_ALERT.kALERT_INPUT_TITLE, view: self)
+                } else {
+                    onEditKeyword(keywordID: self.keywordsData[self.keyIndex!].id, content: (self.textField?.text)!, completion: { (success) in
+                        if success {
+                            self.loadData()
+                            showAlert(message: MSG_ALERT.kALERT_UPDATE_KEYWORD, view: self)
+                        } else {
+                            showAlert(message: MSG_ALERT.kALERT_CANT_SAVE_KEYWORD, view: self)
+                        }
+                    })
+                }
+                
+            }))
+            alert.addAction(UIAlertAction(title: "取消", style: .default, handler:nil))
+            self.present(alert, animated: true, completion: nil)
+        } else {
+            showAlert(message: MSG_ALERT.kALERT_SELECT_KEYWORD_EDIT, view: self)
+        }
     }
     
     @IBAction func onDelete(_ sender: UIButton) {
         if keyIndex != nil {
             let alert = UIAlertController(title: "このキーワードを削除しますか？", message: nil, preferredStyle: .alert)
-            let cancel = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+            let cancel = UIAlertAction(title: "取消", style: .default, handler: nil)
             let confirm = UIAlertAction(title: "OK", style: .default) { UIAlertAction in
-                self.showLoading()
+                SVProgressHUD.show(withStatus: "読み込み中")
+                SVProgressHUD.setDefaultMaskType(.clear)
                 
                 onDeleteKeywords(keywordID: self.keywordsData[self.keyIndex!].id, completion: { (success) in
                     if success {
                         
-                        guard let id = self.categoryID else {
-                            return
-                        }
+                        guard let id = self.categoryID else { return }
                         
                         self.loadStamp(categoryID: id)
-                        self.hud.dismiss()
+                        self.keyIndex = nil
                     } else {
-                        showAlert(message: kALERT_CANT_DELETE_KEYWORD, view: self)
-                        self.hud.dismiss()
+                        showAlert(message: MSG_ALERT.kALERT_CANT_DELETE_KEYWORD, view: self)
                     }
+                    SVProgressHUD.dismiss()
                 })
             }
             
@@ -257,7 +270,7 @@ class OtherSettingVC: UIViewController {
                 self.present(alert, animated: true, completion: nil)
             }
         } else {
-            showAlert(message: kALERT_SELECT_KEYWORD_DELETE, view: self)
+            showAlert(message: MSG_ALERT.kALERT_SELECT_KEYWORD_DELETE, view: self)
         }
     }
 }
@@ -290,14 +303,11 @@ extension OtherSettingVC: UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         stampIndex = indexPath.row
-        
         categoryID = categoriesData[indexPath.row].id
         
-        guard let id = categoryID else {
-            return
+        if let id = categoryID {
+            self.loadStamp(categoryID: id)
         }
-        
-        self.loadStamp(categoryID: id)
     }
 }
 
@@ -323,7 +333,6 @@ extension OtherSettingVC: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        
         keyIndex = nil
     }
 }

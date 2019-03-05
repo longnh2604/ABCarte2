@@ -8,7 +8,6 @@
 
 import UIKit
 import RealmSwift
-import JGProgressHUD
 
 protocol CustomerGalleryPopupVCDelegate: class {
     func onAddCusAvatar(image:UIImage)
@@ -49,11 +48,8 @@ class CustomerGalleryPopupVC: UIViewController {
         collectionGallery.delegate = self
         collectionGallery.dataSource = self
         
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
         let realm = try! Realm()
         try! realm.write {
@@ -77,13 +73,10 @@ class CustomerGalleryPopupVC: UIViewController {
                 self.thumbsData = self.thumbsData.sorted(by: { $0.date > $1.date })
                 
                 self.collectionGallery.reloadData()
-                
-                hud.dismiss()
-                
             } else {
                 showAlert(message: "お客様の写真がありません", view: self)
-                hud.dismiss()
             }
+            SVProgressHUD.dismiss()
         }
     }
 
@@ -141,7 +134,7 @@ extension CustomerGalleryPopupVC: UICollectionViewDelegate, UICollectionViewData
             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "SectionHeader", for: indexPath) as? SectionHeader else {
                 fatalError("Could not find proper header")
             }
-            header.sectionLabel.text = "Day \(thumbsData[indexPath.section].date)"
+            header.sectionLabel.text = "\(thumbsData[indexPath.section].date)"
             return header
             
         }

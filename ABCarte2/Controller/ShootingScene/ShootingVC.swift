@@ -10,9 +10,7 @@ import UIKit
 import AVFoundation
 import CoreMotion
 import RealmSwift
-import Photos
 import SDWebImage
-import JGProgressHUD
 
 class ShootingVC: UIViewController {
     
@@ -74,18 +72,71 @@ class ShootingVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let photos = PHPhotoLibrary.authorizationStatus()
-        if photos == .notDetermined {
-            PHPhotoLibrary.requestAuthorization({status in
-                if status == .authorized{
-
-                } else {}
-            })
-        }
-
-        loadData()
-
+        UIApplication.shared.isStatusBarHidden = true
+        
+        self.navigationController?.isNavigationBarHidden = true
+        
+        self.onSetButtonStatus(onSet: false)
+        
+        requestCameraAccess()
+        
         setupUI()
+        
+        notificationCenter()
+        
+        loadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
+    func requestCameraAccess() {
+        //request Camera Access
+        let cameraMediaType = AVMediaType.video
+        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: cameraMediaType)
+        
+        switch cameraAuthorizationStatus {
+        case .authorized: break
+        case .restricted: break
+            
+        case .denied,.notDetermined:
+            // Prompting user for the permission to use the camera.
+            AVCaptureDevice.requestAccess(for: cameraMediaType) { granted in
+                if granted {
+                    print("Granted access to \(cameraMediaType)")
+                } else {
+                    // Create Alert
+                    let alert = UIAlertController(title: "カメラ設定", message: "カメラ設定がOFFになっています。ONにしてください。", preferredStyle: .alert)
+                    
+                    // Add "OK" Button to alert, pressing it will bring you to the settings app
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                        UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!)
+                    }))
+                    // Show the alert with animation
+                    self.present(alert, animated: true)
+                }
+            }
+        }
+    }
+    
+    func notificationCenter() {
+        NotificationCenter.default.addObserver(self, selector: #selector(willResignActive), name:.UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(openedAgain), name:.UIApplicationDidBecomeActive, object: nil)
+    }
+    
+    @objc func openedAgain() {
+        configureCameraController()
+    }
+    
+    @objc func willResignActive() {
+        print("Entered background")
+        if let captureS = cameraController.captureSession {
+            let inputs = captureS.inputs
+            for oldInput:AVCaptureInput in inputs {
+                captureS.removeInput(oldInput)
+            }
+        }
     }
 
     func loadData() {
@@ -95,18 +146,12 @@ class ShootingVC: UIViewController {
         gridSet = UserDefaults.standard.integer(forKey: "gridNo")
         timerSet = UserDefaults.standard.integer(forKey: "timerNo")
         imageResolution = UserDefaults.standard.integer(forKey: "imageResolution")
-        
-        if gridSet != 0 {
-            addGridLine(noLine: gridSet!)
-        }
     }
 
     func setupUI() {
-        self.navigationController?.isNavigationBarHidden = true
-
         if customer.thumb != "" {
             let url = URL(string: customer.thumb)
-            imvCus.sd_setImage(with: url, placeholderImage: nil, options: SDWebImageOptions.continueInBackground, progress: nil, completed: nil)
+            imvCus.sd_setImage(with: url, placeholderImage: nil, options: SDWebImageOptions.cacheMemoryOnly, progress: nil, completed: nil)
         } else {
             imvCus.image = UIImage(named: "nophotoIcon")
         }
@@ -124,7 +169,6 @@ class ShootingVC: UIViewController {
         configureCameraController()
 
         setupSliderEV()
-        checkTranmissionImage()
 
         viewCountDown.delegate = self
     }
@@ -169,7 +213,7 @@ class ShootingVC: UIViewController {
             tranmissionView.sd_setImage(with: url, placeholderImage: nil, options: SDWebImageOptions.continueInBackground, progress: nil, completed: nil)
             tranmissionView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
 
-            tranmissionView.contentMode = UIViewContentMode.scaleAspectFill
+            tranmissionView.contentMode = UIViewContentMode.scaleAspectFit
             tranmissionView.alpha = 0.3
             sliderTranmissionView.layer.cornerRadius = 10
             sliderTranmissionView.clipsToBounds = true
@@ -189,8 +233,8 @@ class ShootingVC: UIViewController {
         sliderEVView.layer.cornerRadius = 25
         sliderEVView.clipsToBounds = true
 
-        sliderEV.minimumValue = -8
-        sliderEV.maximumValue = 8
+        sliderEV.minimumValue = -4
+        sliderEV.maximumValue = 2
         sliderEV.value = 0
 
         do {
@@ -206,10 +250,20 @@ class ShootingVC: UIViewController {
                 print(error)
             }
 
-            try? self.cameraController.displayPreview(on: self.cameraView)
-            
-            delay(1.0, closure: {
-                self.btnCapture.isEnabled = true
+            self.cameraController.displayPreview(view: self.cameraView, completion: { (success) in
+                if success {
+                    //do nothing
+                    self.onSetButtonStatus(onSet: true)
+                    
+                    if self.gridSet != 0 {
+                        self.addGridLine(noLine: self.gridSet!)
+                    }
+                    
+                    self.checkTranmissionImage()
+                } else {
+                    self.btnBack.isEnabled = true
+                    showAlert(message: MSG_ALERT.kALERT_CHECK_CAMERA_CONNECTION, view: self)
+                }
             })
         }
     }
@@ -316,83 +370,78 @@ class ShootingVC: UIViewController {
 
     }
 
-    override func viewWillLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        if initialOrientation {
-            initialOrientation = false
-            if view.frame.width > view.frame.height {
-                isInPortrait = false
-            } else {
-                isInPortrait = true
-            }
-            orientationWillChange()
-        } else {
-            if view.orientationHasChanged(&isInPortrait) {
-                orientationWillChange()
-            }
-        }
-    }
-    func orientationWillChange() {
-        // capture the old frame values here, storing in class variables
-        orientationDidChange = true
-    }
+    //for device orientation
+//    override func viewWillLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        if initialOrientation {
+//            initialOrientation = false
+//            if view.frame.width > view.frame.height {
+//                isInPortrait = false
+//            } else {
+//                isInPortrait = true
+//            }
+//            orientationWillChange()
+//        } else {
+//            if view.orientationHasChanged(&isInPortrait) {
+//                orientationWillChange()
+//            }
+//        }
+//    }
+//
+//    func orientationWillChange() {
+//        // capture the old frame values here, storing in class variables
+//        orientationDidChange = true
+//    }
+//
+//    override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        if orientationDidChange {
+//            updateLayerView()
+//            // change frame for mask and reposition
+//            orientationDidChange = false
+//        } else {
+//
+//        }
+//    }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        if orientationDidChange {
-            print("did change")
-            updateLayerView()
-            // change frame for mask and reposition
-            orientationDidChange = false
-        } else {
-            
-        }
-    }
-
-    func updateLayerView() {
-        if let connection = self.cameraController.previewLayer?.connection {
-
-            let currentDevice: UIDevice = UIDevice.current
-
-            let orientation: UIDeviceOrientation = currentDevice.orientation
-
-            let previewLayerConnection : AVCaptureConnection = connection
-
-            if previewLayerConnection.isVideoOrientationSupported {
-
-                switch (orientation) {
-                case .portrait: updatePreviewLayer(layer: previewLayerConnection, orientation: .portrait)
-
-                    break
-
-                case .landscapeRight: updatePreviewLayer(layer: previewLayerConnection, orientation: .landscapeLeft)
-
-                    break
-
-                case .landscapeLeft: updatePreviewLayer(layer: previewLayerConnection, orientation: .landscapeRight)
-
-                    break
-
-                case .portraitUpsideDown: updatePreviewLayer(layer: previewLayerConnection, orientation: .portraitUpsideDown)
-
-                    break
-
-                default: updatePreviewLayer(layer: previewLayerConnection, orientation: .portrait)
-
-                    break
-                }
-            }
-        }
-    }
+//    func updateLayerView() {
+//        if let connection = self.cameraController.previewLayer?.connection {
+//
+//            let currentDevice: UIDevice = UIDevice.current
+//
+//            let orientation: UIDeviceOrientation = currentDevice.orientation
+//
+//            let previewLayerConnection : AVCaptureConnection = connection
+//
+//            if previewLayerConnection.isVideoOrientationSupported {
+//
+//                switch (orientation) {
+//                case .portrait: updatePreviewLayer(layer: previewLayerConnection, orientation: .portrait)
+//
+//                    break
+//
+//                case .landscapeRight: updatePreviewLayer(layer: previewLayerConnection, orientation: .landscapeLeft)
+//
+//                    break
+//
+//                case .landscapeLeft: updatePreviewLayer(layer: previewLayerConnection, orientation: .landscapeRight)
+//
+//                    break
+//
+//                case .portraitUpsideDown: updatePreviewLayer(layer: previewLayerConnection, orientation: .portraitUpsideDown)
+//
+//                    break
+//
+//                default: updatePreviewLayer(layer: previewLayerConnection, orientation: .portrait)
+//
+//                    break
+//                }
+//            }
+//        }
+//    }
 
     func startRunningCaptureSession() {
         captureSession.startRunning()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-       
-        UIApplication.shared.isStatusBarHidden = true
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -415,7 +464,7 @@ class ShootingVC: UIViewController {
         let botImg = bottomImage
         let topImg = topImage
 
-        let size = CGSize(width: 768, height: 1024)
+        let size = CGSize(width: botImg.size.width, height: botImg.size.height)
         UIGraphicsBeginImageContext(size)
 
         let areaSize = CGRect(x: 0, y: 0, width: size.width, height: size.height)
@@ -429,33 +478,27 @@ class ShootingVC: UIViewController {
     }
 
     @objc func takePhotoAction() {
-        cameraController.captureImage {(image, error) in
-            guard let image = image else {
+        
+        self.cameraController.captureImage {(image, error) in
+            guard let image = image,let img = self.imageResolution else {
                 print(error ?? "Image capture error")
                 return
             }
             
-            guard let img = self.imageResolution else {
-                return
-            }
+            SVProgressHUD.showProgress(0.2, status: "サーバーにアップロード中:20%")
+            SVProgressHUD.setDefaultMaskType(.clear)
             
             var newImage = UIImage.init()
             switch img {
             case 0:
                 newImage = imageWithImage(sourceImage: image, scaledToWidth:768)
             case 1:
-                newImage = imageWithImage(sourceImage: image, scaledToWidth:1152)
+                newImage = imageWithImage(sourceImage: image, scaledToWidth:1469)
             case 2:
-                newImage = imageWithImage(sourceImage: image, scaledToWidth:1536)
+                newImage = imageWithImage(sourceImage: image, scaledToWidth:2448)
             default:
                 break
             }
-            
-            let hud = JGProgressHUD(style: .dark)
-            hud.vibrancyEnabled = true
-            hud.textLabel.text = "LOADING"
-            hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-            hud.show(in: self.view)
             
             //for rotation problem
             let imgRotated = newImage.updateImageOrientionUpSide()
@@ -464,7 +507,7 @@ class ShootingVC: UIViewController {
             //check tranmission first
             if self.tranmissionToSave! {
                 if self.tranmissionView.image != nil {
-                    imageNew = self.mergeTwoUIImage(topImage: self.tranmissionView.image!, bottomImage: imgRotated!, alpha: self.tranmissionView.alpha)
+                    imageNew = self.mergeTwoUIImage(topImage: self.tranmissionView.asImage(), bottomImage: imgRotated!, alpha: self.tranmissionView.alpha)
                 } else {
                     imageNew = imgRotated!
                 }
@@ -485,27 +528,28 @@ class ShootingVC: UIViewController {
             }
             
             //Convert to JPEG
-            self.imageConverted = UIImageJPEGRepresentation(imageNew, 100)
+            self.imageConverted = UIImageJPEGRepresentation(imageNew, 1)
+
+            SVProgressHUD.showProgress(0.4, status: "サーバーにアップロード中:40%")
             
             addMedias(cusID: self.customer.id, carteID: self.carte.id,mediaData: self.imageConverted!, completion: { (success) in
+                
+                SVProgressHUD.showProgress(0.9, status: "サーバーにアップロード中:90%")
+                
                 if success {
-                    print("Add media success")
                     self.loadData()
-                    hud.dismiss()
                 } else {
-                    hud.dismiss()
-                    print("Add media failed")
-                    showAlert(message: kALERT_CANT_SAVE_PHOTO, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_CANT_SAVE_PHOTO, view: self)
                 }
+                SVProgressHUD.dismiss()
+                self.onSetButtonStatus(onSet: true)
             })
-            self.onSetButtonStatus(onSet: true)
         }
     }
 
     func onSetButtonStatus(onSet:Bool) {
         btnFlash.isEnabled = onSet
         btnCameraRotation.isEnabled = onSet
-        btnSilhouette.isEnabled = onSet
         btnSetting.isEnabled = onSet
         btnCapture.isEnabled = onSet
         btnBack.isEnabled = onSet
@@ -513,6 +557,12 @@ class ShootingVC: UIViewController {
 
         sliderEVView.isUserInteractionEnabled = onSet
         sliderTranmissionView.isUserInteractionEnabled = onSet
+        
+        if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kSilhouette.rawValue) {
+            btnSilhouette.isEnabled = onSet
+        } else {
+            btnSilhouette.isEnabled = false
+        }
     }
 
     //*****************************************************************
@@ -523,7 +573,6 @@ class ShootingVC: UIViewController {
         do {
             try cameraController.changeEV(value: sender.value)
         }
-
         catch {
             print(error)
         }
@@ -559,6 +608,10 @@ class ShootingVC: UIViewController {
         if timerSet! > 0 {
             showCountDown(timer: timerSet!)
         } else {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000)) {
+//                self.showLoadingHUD()
+//            }
+            
             takePhotoAction()
         }
     }
@@ -598,10 +651,16 @@ class ShootingVC: UIViewController {
 
     @IBAction func onBack(_ sender: UIButton) {
         // Go back to the previous ViewController
+        onRemoveDataAndBack()
+    }
+    
+    func onRemoveDataAndBack() {
         self.navigationController?.isNavigationBarHidden = false
-
+        
         GlobalVariables.sharedManager.selectedImageIds.removeAll()
-
+        NotificationCenter.default.removeObserver(self, name: .UIApplicationWillResignActive, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIApplicationDidBecomeActive, object: nil)
+        
         _ = navigationController?.popViewController(animated: true)
     }
 }

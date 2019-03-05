@@ -17,7 +17,6 @@ public class JLStickerImageView: UIImageView, UIGestureRecognizerDelegate {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(JLStickerImageView.tapOutside))
         tapGesture.delegate = self
         return tapGesture
-        
     }()
     
     //MARK: -
@@ -119,7 +118,6 @@ extension JLStickerImageView {
 extension JLStickerImageView: JLStickerLabelViewDelegate {
     public func labelViewDidBeginEditing(_ label: JLStickerLabelView) {
         //labels.removeObject(label)
-        
     }
     
     public func labelViewDidClose(_ label: JLStickerLabelView) {

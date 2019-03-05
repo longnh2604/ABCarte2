@@ -12,43 +12,115 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="HistoryCell" rowHeight="100" id="KGk-i7-Jjw" customClass="HistoryCell" customModule="ABCarte2" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="400" height="100"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="HistoryCell" rowHeight="80" id="KGk-i7-Jjw" customClass="HistoryCell" customModule="ABCarte2" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="500" height="80"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="400" height="99.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="500" height="79.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FOr-5Q-3it">
-                        <rect key="frame" x="20" y="5" width="80" height="89.5"/>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FOr-5Q-3it" customClass="RoundImageView" customModule="ABCarte2" customModuleProvider="target">
+                        <rect key="frame" x="30" y="5" width="70" height="69.5"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="80" id="XKc-Fw-Ffk"/>
+                            <constraint firstAttribute="width" constant="70" id="XKc-Fw-Ffk"/>
                         </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                <color key="value" cocoaTouchSystemColor="darkTextColor"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                <real key="value" value="1"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qbn-AA-mPJ">
-                        <rect key="frame" x="150" y="32" width="200" height="36"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="200" id="ZU2-rI-gwK"/>
-                        </constraints>
-                        <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="30"/>
+                        <rect key="frame" x="130" y="5" width="250" height="24"/>
+                        <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="20"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fbk-K6-RHa" customClass="RoundUIView" customModule="ABCarte2" customModuleProvider="target">
+                        <rect key="frame" x="130" y="35" width="10" height="10"/>
+                        <color key="backgroundColor" red="0.80392156859999997" green="0.4823529412" blue="0.27450980390000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="10" id="5cl-CN-c2X"/>
+                            <constraint firstAttribute="height" constant="10" id="iVf-se-x8N"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="5"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="女性" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yOA-yL-nJF">
+                        <rect key="frame" x="160" y="31" width="220" height="18"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="連 絡 先 :" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="09Z-db-TyA">
+                        <rect key="frame" x="130" y="56.5" width="250" height="18"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jib-mU-CAV" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                        <rect key="frame" x="400" y="5" width="70" height="70"/>
+                        <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.83529411760000005" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="70" id="48F-Pg-5Vz"/>
+                            <constraint firstAttribute="height" constant="70" id="vgs-x9-IpI"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Gpo-7r-vcA"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <inset key="titleEdgeInsets" minX="0.0" minY="50" maxX="65" maxY="0.0"/>
+                        <inset key="imageEdgeInsets" minX="12" minY="2" maxX="6" maxY="15"/>
+                        <state key="normal" title="詳細・編集" image="carteEditIcon.png">
+                            <color key="titleColor" red="0.066666666669999999" green="0.1647058824" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </state>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                        <connections>
+                            <action selector="onSelectDetail:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Wcm-pE-5cM"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="qbn-AA-mPJ" firstAttribute="top" secondItem="FOr-5Q-3it" secondAttribute="top" id="0Ts-3h-gDc"/>
+                    <constraint firstItem="Fbk-K6-RHa" firstAttribute="leading" secondItem="FOr-5Q-3it" secondAttribute="trailing" constant="30" id="0yR-WY-qw7"/>
+                    <constraint firstAttribute="trailing" secondItem="Jib-mU-CAV" secondAttribute="trailing" constant="30" id="8NY-Gw-hxb"/>
+                    <constraint firstItem="Jib-mU-CAV" firstAttribute="leading" secondItem="qbn-AA-mPJ" secondAttribute="trailing" constant="20" id="AkV-AB-uOj"/>
                     <constraint firstAttribute="bottom" secondItem="FOr-5Q-3it" secondAttribute="bottom" constant="5" id="Bq1-i5-jfU"/>
-                    <constraint firstItem="qbn-AA-mPJ" firstAttribute="leading" secondItem="FOr-5Q-3it" secondAttribute="trailing" constant="50" id="G6T-le-RSz"/>
-                    <constraint firstItem="qbn-AA-mPJ" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Upr-6G-ugE"/>
+                    <constraint firstItem="qbn-AA-mPJ" firstAttribute="leading" secondItem="FOr-5Q-3it" secondAttribute="trailing" constant="30" id="G6T-le-RSz"/>
+                    <constraint firstItem="09Z-db-TyA" firstAttribute="leading" secondItem="FOr-5Q-3it" secondAttribute="trailing" constant="30" id="Ji8-mk-pnM"/>
+                    <constraint firstItem="Jib-mU-CAV" firstAttribute="leading" secondItem="09Z-db-TyA" secondAttribute="trailing" constant="20" id="OeP-uC-YNC"/>
+                    <constraint firstItem="Jib-mU-CAV" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="XV7-K2-Fwm"/>
+                    <constraint firstItem="09Z-db-TyA" firstAttribute="bottom" secondItem="FOr-5Q-3it" secondAttribute="bottom" id="b8a-Lk-zxS"/>
+                    <constraint firstItem="yOA-yL-nJF" firstAttribute="leading" secondItem="Fbk-K6-RHa" secondAttribute="trailing" constant="20" id="izv-aP-MaV"/>
+                    <constraint firstItem="yOA-yL-nJF" firstAttribute="centerY" secondItem="Fbk-K6-RHa" secondAttribute="centerY" id="paB-rT-dUG"/>
+                    <constraint firstItem="Jib-mU-CAV" firstAttribute="leading" secondItem="yOA-yL-nJF" secondAttribute="trailing" constant="20" id="qAc-pc-dOk"/>
                     <constraint firstItem="FOr-5Q-3it" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="qd8-1Y-r7k"/>
-                    <constraint firstItem="FOr-5Q-3it" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="vMd-Uv-2si"/>
+                    <constraint firstItem="FOr-5Q-3it" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="30" id="vMd-Uv-2si"/>
+                    <constraint firstItem="Fbk-K6-RHa" firstAttribute="centerY" secondItem="FOr-5Q-3it" secondAttribute="centerY" id="xeG-hQ-Eve"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="btnDetail" destination="Jib-mU-CAV" id="2Dl-7T-XZ6"/>
                 <outlet property="imvCus" destination="FOr-5Q-3it" id="CNr-aQ-mKk"/>
                 <outlet property="lblCusName" destination="qbn-AA-mPJ" id="EdC-EO-5HT"/>
+                <outlet property="lblCusPhone" destination="09Z-db-TyA" id="7rx-yf-uB0"/>
+                <outlet property="lblGender" destination="yOA-yL-nJF" id="Ekq-zB-O93"/>
+                <outlet property="viewGender" destination="Fbk-K6-RHa" id="MeR-uL-g5Z"/>
             </connections>
             <point key="canvasLocation" x="52.799999999999997" y="48.575712143928037"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="carteEditIcon.png" width="662" height="662"/>
+    </resources>
 </document>

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import JGProgressHUD
 
 class SettingPopupVC: UIViewController {
 
@@ -25,22 +24,18 @@ class SettingPopupVC: UIViewController {
             showAlert(message: "シークレットメモのパスワードを設定してください。", view: self)
         } else {
             //add loading view
-            let hud = JGProgressHUD(style: .dark)
-            hud.vibrancyEnabled = true
-            hud.textLabel.text = "LOADING"
-            hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-            hud.show(in: self.view)
+            SVProgressHUD.show(withStatus: "読み込み中")
+            SVProgressHUD.setDefaultMaskType(.clear)
             
             updateAccountSecretMemoPass(password: tfSecretPass.text!) { (success) in
                 if success {
                     showAlert(message: "シークレットメモのパスワードを更新しました。", view: self)
-                    hud.dismiss()
                     self.dismiss(animated: true, completion: nil)
                 } else {
                     showAlert(message: "シークレットメモのパスワード更新に失敗しました。", view: self)
-                    hud.dismiss()
                     self.dismiss(animated: true, completion: nil)
                 }
+                SVProgressHUD.dismiss()
             }
         }
         

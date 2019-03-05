@@ -10,6 +10,8 @@ import UIKit
 
 protocol BirthdayPopupVCDelegate: class {
     func onCustomerBirthdaySearch(date:String)
+    func onCustomerBirthdayM2MSearch(month1:String,month2:String)
+    func onCustomerBirthdayY2YSearch(year1:String,year2:String)
 }
 
 class BirthdayPopupVC: UIViewController {
@@ -25,7 +27,7 @@ class BirthdayPopupVC: UIViewController {
     @IBOutlet weak var pickerLeft: UIPickerView!
     @IBOutlet weak var pickerRight: UIPickerView!
     
-    let arrMonth = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+    let arrMonth = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
     var arrYear = [String]()
     
     var dayNo: Int = 0
@@ -46,8 +48,8 @@ class BirthdayPopupVC: UIViewController {
     }
     
     func setupUI() {
-        for i in 1930 ..< 2015 {
-            arrYear.append("\(i)年")
+        for i in 1930 ..< 2018 {
+            arrYear.append("\(i)")
         }
         
         //full birthdate
@@ -67,7 +69,7 @@ class BirthdayPopupVC: UIViewController {
         let date = dateFormatter.date(from: dateString!)
         datetimePicker.setDate(date!, animated: false)
         
-        btnDay.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+        btnDay.backgroundColor = COLOR_SET.kMEMO_HAS_CONTENT_COLOR
         btnIndex = 0
         
         viewDate.isHidden = true
@@ -113,16 +115,20 @@ class BirthdayPopupVC: UIViewController {
             }
             return
         case 1:
-            guard let left = leftIndex else { return }
-            guard let right = rightIndex else { return }
+            guard let left = leftIndex,let right = rightIndex else { return }
             
-            print("left =\(arrMonth[left]) right = \(arrMonth[right])")
+            dismiss(animated: true) {
+                self.delegate?.onCustomerBirthdayM2MSearch(month1: self.arrMonth[left], month2: self.arrMonth[right])
+            }
+            
             return
         case 2:
-            guard let left = leftIndex else { return }
-            guard let right = rightIndex else { return }
+            guard let left = leftIndex,let right = rightIndex else { return }
             
-            print("left =\(arrYear[left]) right = \(arrYear[right])")
+            dismiss(animated: true) {
+                self.delegate?.onCustomerBirthdayY2YSearch(year1: self.arrYear[left], year2: self.arrYear[right])
+            }
+            
             return
         default:
             break
@@ -135,12 +141,12 @@ class BirthdayPopupVC: UIViewController {
         
         switch sender.tag {
         case 0:
-            btnDay.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            btnDay.backgroundColor = COLOR_SET.kMEMO_HAS_CONTENT_COLOR
             btnIndex = 0
             datetimePicker.isHidden = false
             return
         case 1:
-            btnMonth.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            btnMonth.backgroundColor = COLOR_SET.kMEMO_HAS_CONTENT_COLOR
             btnIndex = 1
             viewDate.isHidden = false
             pickerLeft.reloadAllComponents()
@@ -153,7 +159,7 @@ class BirthdayPopupVC: UIViewController {
             rightIndex = 5
             return
         case 2:
-            btnYear.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            btnYear.backgroundColor = COLOR_SET.kMEMO_HAS_CONTENT_COLOR
             btnIndex = 2
             viewDate.isHidden = false
             pickerLeft.reloadAllComponents()
@@ -202,9 +208,9 @@ extension BirthdayPopupVC: UIPickerViewDataSource,UIPickerViewDelegate {
         
         switch btnIndex {
         case 1:
-            return arrMonth[row]
+            return arrMonth[row] + "月"
         case 2:
-            return arrYear[row]
+            return arrYear[row] + "年"
         default:
             break
         }

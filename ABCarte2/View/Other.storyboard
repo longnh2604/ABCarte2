@@ -10,46 +10,42 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--DocumentsVC-->
+        <!--DocumentVC-->
         <scene sceneID="3Jp-eX-1Iy">
             <objects>
-                <viewController storyboardIdentifier="DocumentsVC" id="7Mf-B8-VQL" customClass="DocumentsVC" customModule="ABCarte2" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DocumentVC" id="7Mf-B8-VQL" customClass="DocumentVC" customModule="ABCarte2" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qGe-lQ-8F5">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yh7-kX-J6e">
-                                <rect key="frame" x="0.0" y="20" width="768" height="934"/>
+                                <rect key="frame" x="0.0" y="20" width="768" height="1004"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uhb-ri-eOK" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
-                                <rect key="frame" x="698" y="884" width="50" height="50"/>
-                                <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ページ : 1/1 " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ain-ER-m1p" customClass="RoundLabel" customModule="ABCarte2" customModuleProvider="target">
+                                <rect key="frame" x="324" y="30" width="120" height="30"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="VGZ-Yr-rnf"/>
-                                    <constraint firstAttribute="width" constant="50" id="g4k-y6-jjY"/>
+                                    <constraint firstAttribute="width" constant="120" id="fGe-ey-pA2"/>
+                                    <constraint firstAttribute="height" constant="30" id="lq2-QY-y0H"/>
                                 </constraints>
-                                <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
-                                <state key="normal" image="nextpageIcon.png">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                        <real key="value" value="5"/>
+                                        <real key="value" value="10"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
-                                <connections>
-                                    <action selector="onNextPage:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="yRf-mB-TJQ"/>
-                                </connections>
-                            </button>
+                            </label>
                             <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KjS-hf-evt">
                                 <rect key="frame" x="0.0" y="954" width="768" height="70"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qaS-xW-Ufw">
-                                        <rect key="frame" x="100" y="5" width="50" height="60"/>
+                                    <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qaS-xW-Ufw">
+                                        <rect key="frame" x="210" y="10" width="40" height="50"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="50" id="bhX-1K-mHd"/>
-                                            <constraint firstAttribute="height" constant="60" id="uUe-zF-Hd8"/>
+                                            <constraint firstAttribute="width" constant="40" id="bhX-1K-mHd"/>
+                                            <constraint firstAttribute="height" constant="50" id="uUe-zF-Hd8"/>
                                         </constraints>
                                         <inset key="titleEdgeInsets" minX="0.0" minY="40" maxX="45" maxY="0.0"/>
                                         <inset key="imageEdgeInsets" minX="5" minY="0.0" maxX="5" maxY="10"/>
@@ -57,14 +53,14 @@
                                             <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
-                                            <action selector="onRedo:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="JYq-mf-wL2"/>
+                                            <action selector="onUndoRedo:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="SnK-38-XhG"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ac8-bT-519">
-                                        <rect key="frame" x="20" y="5" width="50" height="60"/>
+                                        <rect key="frame" x="150" y="10" width="40" height="50"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="50" id="7is-r2-55J"/>
-                                            <constraint firstAttribute="height" constant="60" id="hVR-Pw-wVq"/>
+                                            <constraint firstAttribute="width" constant="40" id="7is-r2-55J"/>
+                                            <constraint firstAttribute="height" constant="50" id="hVR-Pw-wVq"/>
                                         </constraints>
                                         <inset key="titleEdgeInsets" minX="0.0" minY="40" maxX="45" maxY="0.0"/>
                                         <inset key="imageEdgeInsets" minX="5" minY="0.0" maxX="5" maxY="10"/>
@@ -72,11 +68,11 @@
                                             <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
-                                            <action selector="onUndo:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="gs4-0f-2Rl"/>
+                                            <action selector="onUndoRedo:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="E87-hf-4iU"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sB7-RD-N7i" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
-                                        <rect key="frame" x="260" y="10" width="50" height="50"/>
+                                        <rect key="frame" x="280" y="10" width="50" height="50"/>
                                         <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.83529411760000005" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="QHv-SB-npd"/>
@@ -92,31 +88,11 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <action selector="onEdit:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="XKy-vc-ZNl"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7x7-ta-CJJ" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
-                                        <rect key="frame" x="698" y="10" width="50" height="50"/>
-                                        <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="50" id="bgp-X5-Sal"/>
-                                            <constraint firstAttribute="width" constant="50" id="rWk-aV-Nmt"/>
-                                        </constraints>
-                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
-                                        <state key="normal" image="icon_document_complete_black.png">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                <real key="value" value="5"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="onComplete:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="e0e-PB-dWV"/>
+                                            <action selector="onPen:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="6Cu-pK-ba5"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PQ1-gu-WXU" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
-                                        <rect key="frame" x="340" y="10" width="50" height="50"/>
+                                        <rect key="frame" x="360" y="10" width="50" height="50"/>
                                         <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.83529411760000005" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="3Qa-wG-3em"/>
@@ -132,31 +108,12 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <action selector="onEraser:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="Ep6-MW-cwa"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tkq-v8-cbj" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
-                                        <rect key="frame" x="180" y="10" width="50" height="50"/>
-                                        <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.83529411760000005" alpha="1" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="50" id="VjS-Lu-q07"/>
-                                            <constraint firstAttribute="height" constant="50" id="o9a-yG-0Tq"/>
-                                        </constraints>
-                                        <state key="normal" image="selectIcon.png">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                <real key="value" value="5"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="onTouch:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="qHR-3C-FSk"/>
+                                            <action selector="onEraser:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="brr-vr-hPx"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z37-ns-bRb" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
-                                        <rect key="frame" x="628" y="10" width="50" height="50"/>
-                                        <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <rect key="frame" x="440" y="10" width="50" height="50"/>
+                                        <color key="backgroundColor" red="1" green="0.85882352941176465" blue="0.83529411764705885" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="BeB-ag-Dl4"/>
                                             <constraint firstAttribute="width" constant="50" id="EU0-n9-J3y"/>
@@ -171,25 +128,87 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <action selector="onPrint:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="qFJ-zU-s0d"/>
+                                            <action selector="onPrint:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="n1O-Cc-Q2r"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lsX-0v-wJa" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                                        <rect key="frame" x="698" y="10" width="50" height="50"/>
+                                        <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="A2I-Sc-mCo"/>
+                                            <constraint firstAttribute="width" constant="50" id="TNQ-iM-Mng"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" image="nextpageIcon.png">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="onNext:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="I6L-he-5zl"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zm6-Ik-7eY" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                                        <rect key="frame" x="618" y="10" width="50" height="50"/>
+                                        <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="AMW-KK-A1Z"/>
+                                            <constraint firstAttribute="height" constant="50" id="I2O-I4-cag"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" image="prevpageIcon.png">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="onPrevious:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="PO0-LU-lZY"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7x7-ta-CJJ" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="15" width="100" height="40"/>
+                                        <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="bgp-X5-Sal"/>
+                                            <constraint firstAttribute="width" constant="100" id="rWk-aV-Nmt"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" title="登録">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="onAction:" destination="7Mf-B8-VQL" eventType="touchUpInside" id="23S-5k-pRB"/>
                                         </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.066666666669999999" green="0.1647058824" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstItem="7x7-ta-CJJ" firstAttribute="leading" secondItem="z37-ns-bRb" secondAttribute="trailing" constant="20" id="1mQ-v5-ZoH"/>
+                                    <constraint firstItem="lsX-0v-wJa" firstAttribute="centerY" secondItem="KjS-hf-evt" secondAttribute="centerY" id="20D-Dl-Ry0"/>
+                                    <constraint firstItem="ac8-bT-519" firstAttribute="leading" secondItem="7x7-ta-CJJ" secondAttribute="trailing" constant="30" id="43a-tX-QBo"/>
+                                    <constraint firstItem="sB7-RD-N7i" firstAttribute="leading" secondItem="qaS-xW-Ufw" secondAttribute="trailing" constant="30" id="4fz-Qc-OT3"/>
                                     <constraint firstItem="7x7-ta-CJJ" firstAttribute="centerY" secondItem="KjS-hf-evt" secondAttribute="centerY" id="4nl-7c-zGa"/>
-                                    <constraint firstItem="Tkq-v8-cbj" firstAttribute="leading" secondItem="qaS-xW-Ufw" secondAttribute="trailing" constant="30" id="5EE-6e-HeP"/>
-                                    <constraint firstItem="Tkq-v8-cbj" firstAttribute="centerY" secondItem="KjS-hf-evt" secondAttribute="centerY" id="5co-Ha-vsf"/>
                                     <constraint firstAttribute="height" constant="70" id="8Yo-kV-sPs"/>
                                     <constraint firstItem="PQ1-gu-WXU" firstAttribute="leading" secondItem="sB7-RD-N7i" secondAttribute="trailing" constant="30" id="DPS-z8-D4E"/>
-                                    <constraint firstItem="sB7-RD-N7i" firstAttribute="centerY" secondItem="Tkq-v8-cbj" secondAttribute="centerY" id="Flx-v7-5ei"/>
-                                    <constraint firstItem="qaS-xW-Ufw" firstAttribute="leading" secondItem="ac8-bT-519" secondAttribute="trailing" constant="30" id="Tdj-Mf-nlx"/>
-                                    <constraint firstAttribute="trailing" secondItem="7x7-ta-CJJ" secondAttribute="trailing" constant="20" id="Toq-ta-xG2"/>
-                                    <constraint firstItem="ac8-bT-519" firstAttribute="leading" secondItem="KjS-hf-evt" secondAttribute="leading" constant="20" id="XOf-8b-MVi"/>
-                                    <constraint firstItem="sB7-RD-N7i" firstAttribute="leading" secondItem="Tkq-v8-cbj" secondAttribute="trailing" constant="30" id="jRq-rt-gEg"/>
-                                    <constraint firstItem="PQ1-gu-WXU" firstAttribute="centerY" secondItem="Tkq-v8-cbj" secondAttribute="centerY" id="jhh-Aq-v7e"/>
-                                    <constraint firstItem="ac8-bT-519" firstAttribute="top" secondItem="qaS-xW-Ufw" secondAttribute="top" id="na2-wL-sKf"/>
+                                    <constraint firstItem="qaS-xW-Ufw" firstAttribute="centerY" secondItem="KjS-hf-evt" secondAttribute="centerY" id="GBi-YP-wUJ"/>
+                                    <constraint firstItem="Zm6-Ik-7eY" firstAttribute="centerY" secondItem="KjS-hf-evt" secondAttribute="centerY" id="PCz-Mj-39e"/>
+                                    <constraint firstItem="sB7-RD-N7i" firstAttribute="centerY" secondItem="KjS-hf-evt" secondAttribute="centerY" id="TGB-TF-6wa"/>
+                                    <constraint firstAttribute="trailing" secondItem="lsX-0v-wJa" secondAttribute="trailing" constant="20" id="bgL-Z2-mcL"/>
+                                    <constraint firstItem="lsX-0v-wJa" firstAttribute="leading" secondItem="Zm6-Ik-7eY" secondAttribute="trailing" constant="30" id="cQ9-Av-eE7"/>
+                                    <constraint firstItem="7x7-ta-CJJ" firstAttribute="leading" secondItem="KjS-hf-evt" secondAttribute="leading" constant="20" id="nwF-y5-ZkU"/>
+                                    <constraint firstItem="PQ1-gu-WXU" firstAttribute="centerY" secondItem="KjS-hf-evt" secondAttribute="centerY" id="p1A-Bc-YSI"/>
+                                    <constraint firstItem="z37-ns-bRb" firstAttribute="leading" secondItem="PQ1-gu-WXU" secondAttribute="trailing" constant="30" id="szY-8s-MmT"/>
+                                    <constraint firstItem="qaS-xW-Ufw" firstAttribute="leading" secondItem="ac8-bT-519" secondAttribute="trailing" constant="20" id="tRk-ZN-FEY"/>
                                     <constraint firstItem="z37-ns-bRb" firstAttribute="centerY" secondItem="KjS-hf-evt" secondAttribute="centerY" id="tZq-Jo-cUF"/>
                                     <constraint firstItem="ac8-bT-519" firstAttribute="centerY" secondItem="KjS-hf-evt" secondAttribute="centerY" id="z18-Pp-kdv"/>
                                 </constraints>
@@ -197,26 +216,28 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="Dw9-zQ-Ymd" firstAttribute="bottom" secondItem="Yh7-kX-J6e" secondAttribute="bottom" id="0qn-Df-QfU"/>
                             <constraint firstItem="KjS-hf-evt" firstAttribute="leading" secondItem="Dw9-zQ-Ymd" secondAttribute="leading" id="2zz-Ul-88B"/>
-                            <constraint firstItem="KjS-hf-evt" firstAttribute="top" secondItem="Yh7-kX-J6e" secondAttribute="bottom" id="4ZL-Pg-Dus"/>
+                            <constraint firstItem="ain-ER-m1p" firstAttribute="centerX" secondItem="Dw9-zQ-Ymd" secondAttribute="centerX" id="7jr-Gd-Z74"/>
                             <constraint firstItem="Yh7-kX-J6e" firstAttribute="leading" secondItem="Dw9-zQ-Ymd" secondAttribute="leading" id="CEj-1E-GNt"/>
                             <constraint firstItem="Dw9-zQ-Ymd" firstAttribute="trailing" secondItem="Yh7-kX-J6e" secondAttribute="trailing" id="Oj6-sF-vFH"/>
-                            <constraint firstItem="Dw9-zQ-Ymd" firstAttribute="trailing" secondItem="Uhb-ri-eOK" secondAttribute="trailing" constant="20" id="Rpz-pb-QsE"/>
                             <constraint firstItem="Dw9-zQ-Ymd" firstAttribute="bottom" secondItem="KjS-hf-evt" secondAttribute="bottom" id="eBa-e0-Z5r"/>
+                            <constraint firstItem="ain-ER-m1p" firstAttribute="top" secondItem="Dw9-zQ-Ymd" secondAttribute="top" constant="10" id="f2A-B7-BJv"/>
                             <constraint firstItem="Yh7-kX-J6e" firstAttribute="top" secondItem="Dw9-zQ-Ymd" secondAttribute="top" id="mpb-p2-RyM"/>
                             <constraint firstItem="Dw9-zQ-Ymd" firstAttribute="trailing" secondItem="KjS-hf-evt" secondAttribute="trailing" id="p6i-H5-rNz"/>
-                            <constraint firstItem="KjS-hf-evt" firstAttribute="top" secondItem="Uhb-ri-eOK" secondAttribute="bottom" constant="20" id="tgh-4O-Lhc"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Dw9-zQ-Ymd"/>
                     </view>
                     <connections>
-                        <outlet property="btnComplete" destination="7x7-ta-CJJ" id="0sD-D5-TLG"/>
+                        <outlet property="btnAction" destination="7x7-ta-CJJ" id="D6s-F0-yht"/>
                         <outlet property="btnEdit" destination="sB7-RD-N7i" id="WCb-Pr-Q4q"/>
                         <outlet property="btnEraser" destination="PQ1-gu-WXU" id="L8c-kq-uqJ"/>
-                        <outlet property="btnNext" destination="Uhb-ri-eOK" id="bzG-bD-WKj"/>
+                        <outlet property="btnNext" destination="lsX-0v-wJa" id="E5F-gS-cnD"/>
+                        <outlet property="btnPrev" destination="Zm6-Ik-7eY" id="2gx-gJ-6lm"/>
+                        <outlet property="btnPrinter" destination="z37-ns-bRb" id="E5K-fb-PDP"/>
                         <outlet property="btnRedo" destination="qaS-xW-Ufw" id="Ph5-7Q-1vw"/>
-                        <outlet property="btnTouch" destination="Tkq-v8-cbj" id="fO0-kH-Ycr"/>
                         <outlet property="btnUndo" destination="ac8-bT-519" id="oAB-Aq-099"/>
+                        <outlet property="lblPageNo" destination="ain-ER-m1p" id="XAd-da-lsa"/>
                         <outlet property="panGesture" destination="EnW-9F-l6k" id="nfM-lp-BWs"/>
                         <outlet property="pinchGesture" destination="yTe-Z1-GTV" id="wEd-fg-6ys"/>
                         <outlet property="viewDoc" destination="Yh7-kX-J6e" id="kwb-LW-WYg"/>
@@ -225,25 +246,271 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="08u-vB-ogU" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <pinchGestureRecognizer id="yTe-Z1-GTV">
                     <connections>
-                        <action selector="handlePinchWithRecognizer:" destination="7Mf-B8-VQL" id="erD-kI-o3f"/>
+                        <action selector="handlePinchGestureWithRecognizer:" destination="7Mf-B8-VQL" id="Are-F5-sjg"/>
                         <outlet property="delegate" destination="7Mf-B8-VQL" id="V6I-TH-c0I"/>
                     </connections>
                 </pinchGestureRecognizer>
-                <panGestureRecognizer minimumNumberOfTouches="1" id="EnW-9F-l6k">
+                <panGestureRecognizer minimumNumberOfTouches="2" id="EnW-9F-l6k">
                     <connections>
-                        <action selector="handlePanWithRecognizer:" destination="7Mf-B8-VQL" id="Xdd-kb-mLs"/>
+                        <action selector="handlePanGestureWithRecognizer:" destination="7Mf-B8-VQL" id="MCV-zt-ja6"/>
                         <outlet property="delegate" destination="7Mf-B8-VQL" id="q0s-QI-obg"/>
                     </connections>
                 </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="372.65625" y="-103.125"/>
         </scene>
+        <!--New DocumentVC-->
+        <scene sceneID="AVg-Sk-Pzl">
+            <objects>
+                <viewController storyboardIdentifier="NewDocumentVC" id="OCS-7a-BqM" customClass="NewDocumentVC" customModule="ABCarte2" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="MDZ-6d-RDy">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="02a-FF-IhP">
+                                <rect key="frame" x="0.0" y="20" width="768" height="1004"/>
+                            </scrollView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ページ : 1/1 " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fz7-Nt-Voz" customClass="RoundLabel" customModule="ABCarte2" customModuleProvider="target">
+                                <rect key="frame" x="324" y="30" width="120" height="30"/>
+                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Ht6-bg-d6R"/>
+                                    <constraint firstAttribute="width" constant="120" id="p99-v4-RPS"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </label>
+                            <view alpha="0.80000001192092896" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u1E-hZ-SyI">
+                                <rect key="frame" x="0.0" y="954" width="768" height="70"/>
+                                <subviews>
+                                    <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IG8-3G-Pxu">
+                                        <rect key="frame" x="210" y="10" width="40" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="6LT-G9-V6E"/>
+                                            <constraint firstAttribute="width" constant="40" id="ySR-NL-wCD"/>
+                                        </constraints>
+                                        <inset key="titleEdgeInsets" minX="0.0" minY="40" maxX="45" maxY="0.0"/>
+                                        <inset key="imageEdgeInsets" minX="5" minY="0.0" maxX="5" maxY="10"/>
+                                        <state key="normal" image="redoIcon.png">
+                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="onUndoRedo:" destination="OCS-7a-BqM" eventType="touchUpInside" id="gZS-H5-bEN"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="fill" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="udS-r0-3o1">
+                                        <rect key="frame" x="150" y="10" width="40" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="FX1-4z-00n"/>
+                                            <constraint firstAttribute="width" constant="40" id="NUT-9A-GEW"/>
+                                        </constraints>
+                                        <inset key="titleEdgeInsets" minX="0.0" minY="40" maxX="45" maxY="0.0"/>
+                                        <inset key="imageEdgeInsets" minX="5" minY="0.0" maxX="5" maxY="10"/>
+                                        <state key="normal" image="undoIcon.png">
+                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="onUndoRedo:" destination="OCS-7a-BqM" eventType="touchUpInside" id="VhM-N5-142"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eps-Hr-Hzd" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                                        <rect key="frame" x="280" y="10" width="50" height="50"/>
+                                        <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.83529411760000005" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="dXd-Ew-qtu"/>
+                                            <constraint firstAttribute="height" constant="50" id="pbL-QO-uTu"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                        <state key="normal" image="selectIcon.png">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="onToolSelect:" destination="OCS-7a-BqM" eventType="touchUpInside" id="ES2-7c-eud"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="70f-ST-vGA" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                                        <rect key="frame" x="360" y="10" width="50" height="50"/>
+                                        <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.83529411760000005" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="3IA-vm-3bn"/>
+                                            <constraint firstAttribute="width" constant="50" id="QX3-eF-ZTv"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                        <state key="normal" image="eraserIcon.png">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="onToolSelect:" destination="OCS-7a-BqM" eventType="touchUpInside" id="8l2-JA-F8Q"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oEE-8X-AEv" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                                        <rect key="frame" x="440" y="10" width="50" height="50"/>
+                                        <color key="backgroundColor" red="1" green="0.85882352939999995" blue="0.83529411760000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="HJP-Xa-GZ4"/>
+                                            <constraint firstAttribute="width" constant="50" id="MwS-BD-qZC"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" image="printerIcon.png">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="onToolSelect:" destination="OCS-7a-BqM" eventType="touchUpInside" id="88f-0q-4tE"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H4i-sO-iA1" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                                        <rect key="frame" x="708" y="15" width="40" height="40"/>
+                                        <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="40" id="EP6-WQ-zQ5"/>
+                                            <constraint firstAttribute="height" constant="40" id="YR9-Fa-ZTs"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" image="nextpageIcon.png">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="onNext:" destination="OCS-7a-BqM" eventType="touchUpInside" id="vj8-Wn-64B"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gog-Fj-XIE" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                                        <rect key="frame" x="638" y="15" width="40" height="40"/>
+                                        <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="VT6-Ax-4s8"/>
+                                            <constraint firstAttribute="width" constant="40" id="mVS-aF-xe5"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" image="prevpageIcon.png">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="onPrevious:" destination="OCS-7a-BqM" eventType="touchUpInside" id="BW9-9X-VgH"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qwj-R3-3oh" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="15" width="100" height="40"/>
+                                        <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="Ooe-BL-xQY"/>
+                                            <constraint firstAttribute="width" constant="100" id="t6x-0F-Kjh"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" title="登録">
+                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="onAction:" destination="OCS-7a-BqM" eventType="touchUpInside" id="ZM0-TJ-1kD"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.066666666669999999" green="0.1647058824" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="H4i-sO-iA1" secondAttribute="trailing" constant="20" id="Bpu-Kz-Sb5"/>
+                                    <constraint firstItem="IG8-3G-Pxu" firstAttribute="leading" secondItem="udS-r0-3o1" secondAttribute="trailing" constant="20" id="Cb4-ZS-eex"/>
+                                    <constraint firstItem="70f-ST-vGA" firstAttribute="centerY" secondItem="u1E-hZ-SyI" secondAttribute="centerY" id="HLy-48-Zg3"/>
+                                    <constraint firstItem="udS-r0-3o1" firstAttribute="centerY" secondItem="u1E-hZ-SyI" secondAttribute="centerY" id="KN7-pc-FuU"/>
+                                    <constraint firstItem="Qwj-R3-3oh" firstAttribute="leading" secondItem="u1E-hZ-SyI" secondAttribute="leading" constant="20" id="Kva-xW-glH"/>
+                                    <constraint firstItem="70f-ST-vGA" firstAttribute="leading" secondItem="eps-Hr-Hzd" secondAttribute="trailing" constant="30" id="Lcs-e3-2Z1"/>
+                                    <constraint firstItem="oEE-8X-AEv" firstAttribute="leading" secondItem="70f-ST-vGA" secondAttribute="trailing" constant="30" id="Lx9-qM-oH2"/>
+                                    <constraint firstItem="oEE-8X-AEv" firstAttribute="centerY" secondItem="u1E-hZ-SyI" secondAttribute="centerY" id="RSU-yg-BEw"/>
+                                    <constraint firstItem="H4i-sO-iA1" firstAttribute="centerY" secondItem="u1E-hZ-SyI" secondAttribute="centerY" id="UYA-rC-ACI"/>
+                                    <constraint firstItem="H4i-sO-iA1" firstAttribute="leading" secondItem="gog-Fj-XIE" secondAttribute="trailing" constant="30" id="XR6-cH-Mxn"/>
+                                    <constraint firstAttribute="height" constant="70" id="Zy7-s8-1Cb"/>
+                                    <constraint firstItem="eps-Hr-Hzd" firstAttribute="centerY" secondItem="u1E-hZ-SyI" secondAttribute="centerY" id="c6N-CN-don"/>
+                                    <constraint firstItem="udS-r0-3o1" firstAttribute="leading" secondItem="Qwj-R3-3oh" secondAttribute="trailing" constant="30" id="eHi-g3-Q7x"/>
+                                    <constraint firstItem="gog-Fj-XIE" firstAttribute="centerY" secondItem="u1E-hZ-SyI" secondAttribute="centerY" id="qJ0-Xg-8t7"/>
+                                    <constraint firstItem="Qwj-R3-3oh" firstAttribute="centerY" secondItem="u1E-hZ-SyI" secondAttribute="centerY" id="rPL-Ms-HCv"/>
+                                    <constraint firstItem="eps-Hr-Hzd" firstAttribute="leading" secondItem="IG8-3G-Pxu" secondAttribute="trailing" constant="30" id="x69-iw-Xs1"/>
+                                    <constraint firstItem="IG8-3G-Pxu" firstAttribute="centerY" secondItem="u1E-hZ-SyI" secondAttribute="centerY" id="zbJ-Zz-ggE"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="02a-FF-IhP" firstAttribute="top" secondItem="SMh-uX-pah" secondAttribute="top" id="F9r-D9-tKl"/>
+                            <constraint firstItem="SMh-uX-pah" firstAttribute="bottom" secondItem="u1E-hZ-SyI" secondAttribute="bottom" id="KPt-kd-gAY"/>
+                            <constraint firstItem="fz7-Nt-Voz" firstAttribute="top" secondItem="SMh-uX-pah" secondAttribute="top" constant="10" id="R7S-Ek-8Rt"/>
+                            <constraint firstItem="SMh-uX-pah" firstAttribute="trailing" secondItem="02a-FF-IhP" secondAttribute="trailing" id="XGt-wa-OJR"/>
+                            <constraint firstItem="fz7-Nt-Voz" firstAttribute="centerX" secondItem="SMh-uX-pah" secondAttribute="centerX" id="YNH-r4-SBk"/>
+                            <constraint firstItem="u1E-hZ-SyI" firstAttribute="leading" secondItem="SMh-uX-pah" secondAttribute="leading" id="fbN-HG-ozB"/>
+                            <constraint firstItem="SMh-uX-pah" firstAttribute="trailing" secondItem="u1E-hZ-SyI" secondAttribute="trailing" id="iI9-M0-rE4"/>
+                            <constraint firstItem="SMh-uX-pah" firstAttribute="bottom" secondItem="02a-FF-IhP" secondAttribute="bottom" id="j4O-0d-VEy"/>
+                            <constraint firstItem="02a-FF-IhP" firstAttribute="leading" secondItem="SMh-uX-pah" secondAttribute="leading" id="u5r-Vm-A9o"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="SMh-uX-pah"/>
+                    </view>
+                    <connections>
+                        <outlet property="btnAction" destination="Qwj-R3-3oh" id="WJo-KV-jzK"/>
+                        <outlet property="btnEdit" destination="eps-Hr-Hzd" id="aC7-mc-cnU"/>
+                        <outlet property="btnEraser" destination="70f-ST-vGA" id="V3j-rJ-ZgM"/>
+                        <outlet property="btnNext" destination="H4i-sO-iA1" id="9jc-fU-NHa"/>
+                        <outlet property="btnPrev" destination="gog-Fj-XIE" id="6oX-Pb-0lj"/>
+                        <outlet property="btnPrinter" destination="oEE-8X-AEv" id="sZg-Bq-oZc"/>
+                        <outlet property="btnRedo" destination="IG8-3G-Pxu" id="Qod-MA-bLE"/>
+                        <outlet property="btnUndo" destination="udS-r0-3o1" id="J27-cP-4v8"/>
+                        <outlet property="lblPageNo" destination="fz7-Nt-Voz" id="J2s-7N-lJB"/>
+                        <outlet property="panGesture" destination="XCz-GS-uKe" id="XeE-z6-V9x"/>
+                        <outlet property="pinchGesture" destination="RqU-Jx-Ur0" id="LFa-0I-XzR"/>
+                        <outlet property="scrollView" destination="02a-FF-IhP" id="4xQ-8v-8Ay"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="08j-US-kZ3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <pinchGestureRecognizer id="RqU-Jx-Ur0">
+                    <connections>
+                        <action selector="handlePinchWithRecognizer:" destination="OCS-7a-BqM" id="c7N-SS-kQ8"/>
+                    </connections>
+                </pinchGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="2" id="XCz-GS-uKe">
+                    <connections>
+                        <action selector="handlePanWithRecognizer:" destination="OCS-7a-BqM" id="guC-KY-Uko"/>
+                    </connections>
+                </panGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="1137" y="-103"/>
+        </scene>
     </scenes>
     <resources>
         <image name="eraserIcon.png" width="1600" height="1600"/>
-        <image name="icon_document_complete_black.png" width="100" height="100"/>
         <image name="icon_pen_black.png" width="512" height="512"/>
         <image name="nextpageIcon.png" width="256" height="256"/>
+        <image name="prevpageIcon.png" width="256" height="256"/>
         <image name="printerIcon.png" width="200" height="200"/>
         <image name="redoIcon.png" width="93" height="122"/>
         <image name="selectIcon.png" width="256" height="256"/>

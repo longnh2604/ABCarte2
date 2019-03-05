@@ -10,7 +10,6 @@ import UIKit
 import NXDrawKit
 import RealmSwift
 import SDWebImage
-import JGProgressHUD
 
 class JBSSimulationVC: UIViewController {
 
@@ -19,6 +18,8 @@ class JBSSimulationVC: UIViewController {
     var carte = CarteData()
     var media = MediaData()
     var imageConverted: Data?
+    
+    var penMode = 1
     
     //IBOutlet
     @IBOutlet weak var viewDrawing: UIView!
@@ -36,6 +37,7 @@ class JBSSimulationVC: UIViewController {
     @IBOutlet weak var slideBWidth: MySlider!
     @IBOutlet weak var lblBrushSize: UILabel!
     @IBOutlet weak var btnEyeDrop: RoundButton!
+    @IBOutlet weak var btnPenMode: UIButton!
     
     weak var canvasView: Canvas?
     weak var paletteView: Palette?
@@ -111,34 +113,33 @@ class JBSSimulationVC: UIViewController {
     }
     
     func setupCanvas() {
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
         let url = URL(string: media.url)
         image.sd_setImage(with: url) { (image, error, cachetype, url) in
             if (error != nil) {
                 //Failure code here
                 showAlert(message: "写真の読み込みに失敗しました。ネットワークの状態を確認してください。", view: self)
-                hud.dismiss()
             } else {
                 //Success code here
                 self.viewDrawing.translatesAutoresizingMaskIntoConstraints = false
                 let canvasView = Canvas.init(canvasId: "photo", backgroundImage: image)
-                canvasView.frame = CGRect(x:0,y:0, width: self.viewDrawing.frame.width, height: self.viewDrawing.frame.height)
+                canvasView.frame = CGRect(x:0,y:0, width: self.view.frame.width, height: self.view.frame.height)
                 canvasView.delegate = self
                 canvasView.clipsToBounds = true
                 
                 self.viewDrawing.addSubview(canvasView)
                 self.canvasView = canvasView
                 self.imageOriginal = self.saveImageEdit()
+                self.canvasView?.penMode = self.penMode
+                self.btnPenMode.backgroundColor = COLOR_SET.kPENSELECT
+                self.currentBrush.width = 1.0
                 
                 self.currentBrush.color = self.kEyeBrowA
-                
-                hud.dismiss()
+                self.canvasView?.isUserInteractionEnabled = false
             }
+            SVProgressHUD.dismiss()
         }
     }
     
@@ -183,6 +184,11 @@ class JBSSimulationVC: UIViewController {
             btnEraser.setImage(UIImage(named: "JBS_UIkit-design-eraser-button_ON.png"), for: .normal)
             btnEyeDrop.setImage(UIImage(named: "JBS_UIkit-design-spoit-button_OFF.png"), for: .normal)
         case 6:
+            btnPen.setImage(UIImage(named: "JBS_UIkit-design-Drow-button_OFF.png"), for: .normal)
+            btnAirBrush.setImage(UIImage(named: "JBS_UIkit-design-Extinguish-button_OFF.png"), for: .normal)
+            btnEraser.setImage(UIImage(named: "JBS_UIkit-design-eraser-button_OFF.png"), for: .normal)
+            btnEyeDrop.setImage(UIImage(named: "JBS_UIkit-design-spoit-button_OFF.png"), for: .normal)
+        case 7:
             btnPen.setImage(UIImage(named: "JBS_UIkit-design-Drow-button_OFF.png"), for: .normal)
             btnAirBrush.setImage(UIImage(named: "JBS_UIkit-design-Extinguish-button_OFF.png"), for: .normal)
             btnEraser.setImage(UIImage(named: "JBS_UIkit-design-eraser-button_OFF.png"), for: .normal)
@@ -238,7 +244,6 @@ class JBSSimulationVC: UIViewController {
             lblBrushSize.text = "1.0"
         }
         self.canvasView?.setBrushWidth(width: CGFloat(slideBWidth.value))
-        
     }
     
     func saveImageEdit()->UIImage {
@@ -251,32 +256,28 @@ class JBSSimulationVC: UIViewController {
     }
     
     func onSaveImage(image: UIImage) {
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
-        self.imageConverted = UIImageJPEGRepresentation(image, 100)
+        self.imageConverted = UIImageJPEGRepresentation(image, 1)
         
         addMedias(cusID: self.customer.id, carteID: self.carte.id,mediaData: self.imageConverted!, completion: { (success) in
             if success {
-                hud.dismiss()
             } else {
-                hud.dismiss()
                 showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
             }
+            SVProgressHUD.dismiss()
         })
     }
     
     @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
         
         if error == nil {
-            let ac = UIAlertController(title: "保存しました", message: "画像はカメラロールに保存しています", preferredStyle: .alert)
+            let ac = UIAlertController(title: "保存しました", message: nil, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             present(ac, animated: true, completion: nil)
         } else {
-            let ac = UIAlertController(title: "エラー", message: error?.localizedDescription, preferredStyle: .alert)
+            let ac = UIAlertController(title: "エラー", message: "写真のアクセス許可を確認してください。", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             present(ac, animated: true, completion: nil)
         }
@@ -291,34 +292,31 @@ class JBSSimulationVC: UIViewController {
         lblBrushSize.text = "\(string)"
         
         let floatNo = (string as NSString).floatValue
-        
         self.canvasView?.setBrushWidth(width: CGFloat(floatNo))
     }
     
     @IBAction func onToolSelect(_ sender: UIButton) {
         if lockStatus {
-            showAlert(message: "Please unlock to draw", view: self)
+            showAlert(message: MSG_ALERT.kALERT_UNLOCK_BEFORE_DRAWING, view: self)
         } else {
+            self.canvasView?.isUserInteractionEnabled = true
+            self.btnPenMode.backgroundColor = COLOR_SET.kPENUNSELECT
+            
             switch sender.tag {
             case 1:
                 self.canvasView?.setDrawingMode(mode: 1)
                 drawMode = 1
             case 2:
-     
                 self.canvasView?.setDrawingMode(mode: 4)
                 drawMode = 4
             case 3:
-       
                 self.canvasView?.setDrawingMode(mode: 2)
                 drawMode = 2
             case 4:
-          
                 self.canvasView?.undo()
             case 5:
-         
                 self.canvasView?.redo()
             case 6:
-      
                 self.canvasView?.setDrawingMode(mode: 3)
                 drawMode = 3
             default:
@@ -331,6 +329,39 @@ class JBSSimulationVC: UIViewController {
     @IBAction func onSave(_ sender: UIButton) {
         onSaveImage(image: saveImageEdit())
         showAlert(message: "写真を保存しました", view: self)
+    }
+    
+    @IBAction func onDrawingModeChange(_ sender: UIButton) {
+        
+        let alert = UIAlertController(title: "描画モードを選択してください", message: nil, preferredStyle: .actionSheet)
+        let pencil = UIAlertAction(title: "ペンシル", style: .default) { UIAlertAction in
+            self.canvasView?.isUserInteractionEnabled = false
+            self.drawMode = 7
+            self.updateDrawButtonStatus()
+            self.canvasView?.penMode = 1
+            self.penMode = 1
+            self.btnPenMode.setTitle("ペンシル", for: .normal)
+            self.btnPenMode.backgroundColor = COLOR_SET.kPENSELECT
+        }
+        let finger = UIAlertAction(title: "指", style: .default) { UIAlertAction in
+            self.canvasView?.isUserInteractionEnabled = false
+            self.drawMode = 7
+            self.updateDrawButtonStatus()
+            self.canvasView?.penMode = 0
+            self.penMode = 0
+            self.btnPenMode.setTitle("指", for: .normal)
+            self.btnPenMode.backgroundColor = COLOR_SET.kPENSELECT
+        }
+        
+        alert.addAction(pencil)
+        alert.addAction(finger)
+        
+        alert.popoverPresentationController?.sourceView = self.btnPenMode
+        alert.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection.down
+        alert.popoverPresentationController?.sourceRect = self.btnPenMode.bounds
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
     }
 }
 
@@ -348,7 +379,7 @@ extension JBSSimulationVC: CanvasDelegate{
         updateToolBarButtonStatus(canvas)
     }
     
-    func updateNewColor(color: UIColor) {
+    func updatingNewColor(color: UIColor) {
         self.paletteView?.setNewColorPick(newColor: color)
         currentBrush.color = color
         viewColor.backgroundColor = color

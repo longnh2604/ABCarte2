@@ -8,7 +8,6 @@
 
 import UIKit
 import RealmSwift
-import JGProgressHUD
 
 class PhotoCollectionVC: UIViewController {
 
@@ -23,12 +22,12 @@ class PhotoCollectionVC: UIViewController {
     
     var indexDelete : [Int] = []
     var needLoad: Bool = true
-    let hud = JGProgressHUD(style: .dark)
     
     //IBOutlet
     @IBOutlet weak var collectGallery: UICollectionView!
     @IBOutlet weak var lblNoPhoto: UILabel!
     @IBOutlet weak var btnCamera: UIButton!
+    @IBOutlet weak var viewPanelTop: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,6 +59,8 @@ class PhotoCollectionVC: UIViewController {
         
         let nib = UINib(nibName: "photoCollectCell", bundle: nil)
         collectGallery.register(nib, forCellWithReuseIdentifier: "photoCollectCell")
+        
+        setViewColorStyle(view: viewPanelTop, type: 1) 
     }
     
     func removeAllData() {
@@ -73,54 +74,66 @@ class PhotoCollectionVC: UIViewController {
         // Go back to the previous ViewController
         _ = navigationController?.popViewController(animated: true)
     }
-    
-    func showLoading() {
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
-    }
-    
+
     func loadData() {
         
         if needLoad == true {
             
-            showLoading()
+            SVProgressHUD.show(withStatus: "読み込み中")
+            SVProgressHUD.setDefaultMaskType(.clear)
             
             let realm = try! Realm()
             try! realm.write {
                 realm.delete(realm.objects(ThumbData.self))
+                realm.delete(realm.objects(CarteData.self))
             }
             
-            getCustomerMedias(cusID: customer.id) { (success) in
+            //remove before get new
+            cartesData.removeAll()
+            thumbsData.removeAll()
+            
+            getCustomerCartesWithMemos(cusID: self.customer.id) { (success) in
                 if success {
                     
-                    let realm = RealmServices.shared.realm
-                    self.thumbs = realm.objects(ThumbData.self)
+                    self.cartes = realm.objects(CarteData.self)
                     
-                    var number = 0
-                    for i in 0 ..< self.thumbs.count {
-                        self.thumbsData.append(self.thumbs[i])
-                        
-                        for _ in 0 ..< self.thumbs[i].medias.count {
-                            number += 1
-                        }
+                    for i in 0 ..< self.cartes.count {
+                        self.cartesData.append(self.cartes[i])
                     }
-                    self.thumbsData = self.thumbsData.sorted(by: { $0.date > $1.date })
-                    
-                    self.collectGallery.reloadData()
-                    
-                    self.lblNoPhoto.text = "全 :\(number)枚"
-                    self.hud.dismiss()
-                    
+             
+                    getCustomerMedias(cusID: self.customer.id) { (success) in
+                        if success {
+                            
+                            let realm = RealmServices.shared.realm
+                            self.thumbs = realm.objects(ThumbData.self)
+                            
+                            var number = 0
+                            for i in 0 ..< self.thumbs.count {
+                                self.thumbsData.append(self.thumbs[i])
+                                
+                                for _ in 0 ..< self.thumbs[i].medias.count {
+                                    number += 1
+                                }
+                            }
+                            self.thumbsData = self.thumbsData.sorted(by: { $0.date > $1.date })
+                            
+                            self.collectGallery.reloadData()
+                            
+                            self.lblNoPhoto.text = "全 :\(number)枚"
+                            
+                        } else {
+                            showAlert(message: MSG_ALERT.kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
+                            self.lblNoPhoto.text = "全 :0枚"
+                        }
+                        SVProgressHUD.dismiss()
+                    }
                 } else {
-                    showAlert(message: kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
-                    self.lblNoPhoto.text = "全 :0枚"
-                    self.hud.dismiss()
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
                 }
+                SVProgressHUD.dismiss()
             }
-            needLoad = false
-        }   
+        }
+        self.needLoad = false
     }
     
     func checkButtonStatus() {
@@ -138,7 +151,8 @@ class PhotoCollectionVC: UIViewController {
     @IBAction func onCamera(_ sender: UIButton) {
         if GlobalVariables.sharedManager.selectedImageIds.count == 1 || GlobalVariables.sharedManager.selectedImageIds.count == 0 {
             
-            showLoading()
+            SVProgressHUD.show(withStatus: "読み込み中")
+            SVProgressHUD.setDefaultMaskType(.clear)
             
             //get current date
             let currDate = Date()
@@ -178,16 +192,17 @@ class PhotoCollectionVC: UIViewController {
                                         }
                                     }
                                 }
-                                
+                            } else {
+                                showAlert(message: MSG_ALERT.kALERT_SHOOTING_TRANMISSION_NOT_ALLOW, view: self)
+                                SVProgressHUD.dismiss()
+                                return
                             }
                         }
-                        
                         self.removeAllData()
                         navigator.pushViewController(viewController, animated: true)
+                        SVProgressHUD.dismiss()
                     }
                 }
-                self.hud.dismiss()
-                
             } else {
                 
                 addCarte(cusID: customer.id, date: timeInterval) { (success) in
@@ -235,24 +250,25 @@ class PhotoCollectionVC: UIViewController {
                                                         }
                                                     }
                                                 }
-                                                
+                                            } else {
+                                                showAlert(message: MSG_ALERT.kALERT_SHOOTING_TRANMISSION_NOT_ALLOW, view: self)
+                                                SVProgressHUD.dismiss()
+                                                return
                                             }
                                         }
                                         self.removeAllData()
                                         navigator.pushViewController(viewController, animated: true)
+                                        SVProgressHUD.dismiss()
                                     }
                                 }
-                                
-                                self.hud.dismiss()
                             } else {
-                              
-                                self.hud.dismiss()
-                                showAlert(message: kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
+                                showAlert(message: MSG_ALERT.kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
+                                SVProgressHUD.dismiss()
                             }
                         }
                     } else {
-                        self.hud.dismiss()
-                        showAlert(message: kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
+                        showAlert(message: MSG_ALERT.kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
+                        SVProgressHUD.dismiss()
                     }
                 }
             }
@@ -261,23 +277,47 @@ class PhotoCollectionVC: UIViewController {
     
     @IBAction func onCompare(_ sender: UIButton) {
         if GlobalVariables.sharedManager.selectedImageIds.count == 0 {
-            showAlert(message: kALERT_PLEASE_SELECT_PHOTO, view: self)
+            showAlert(message: MSG_ALERT.kALERT_PLEASE_SELECT_PHOTO, view: self)
             return
         }
         
         if GlobalVariables.sharedManager.selectedImageIds.count > 13 {
-            showAlert(message: kALERT_CHOOSE_2_TO_12_PHOTOS, view: self)
+            showAlert(message: MSG_ALERT.kALERT_CHOOSE_2_TO_12_PHOTOS, view: self)
             return
         }
         
         if GlobalVariables.sharedManager.selectedImageIds.count == 2 {
+         
+            SVProgressHUD.show(withStatus: "読み込み中")
+            SVProgressHUD.setDefaultMaskType(.clear)
             
             let storyBoard: UIStoryboard = UIStoryboard(name: "Media", bundle: nil)
             if let viewController = storyBoard.instantiateViewController(withIdentifier: "ComparisonVC") as? ComparisonVC {
                 if let navigator = navigationController {
+                    
+                    let currDate = Date()
+                    var carte = CarteData()
+                    var statusData = false
+                    
+                    //check all carte of customer
+                    for i in 0 ..< cartesData.count {
+                        let date = Date(timeIntervalSince1970: TimeInterval(cartesData[i].select_date))
+                        let isSame = date.isInSameDay(date: currDate)
+                        if isSame {
+                            carte = cartesData[i]
+                            statusData = true
+                        }
+                    }
+                    
+                    if statusData == true {
+                        viewController.onTemp = false
+                    } else {
+                        viewController.onTemp = true
+                    }
+                    
                     viewController.customer = customer
-                    viewController.onTemp = true
                     viewController.cartesData = cartesData
+                    viewController.carte = carte
                     
                     for i in 0 ..< self.thumbsData.count {
                         
@@ -295,20 +335,44 @@ class PhotoCollectionVC: UIViewController {
                     
                     navigator.pushViewController(viewController, animated: true)
                     removeAllData()
+                    SVProgressHUD.dismiss()
                 }
             }
-            return
         }
         
         if GlobalVariables.sharedManager.selectedImageIds.count > 2 && GlobalVariables.sharedManager.selectedImageIds.count < 13 {
+            
+            SVProgressHUD.show(withStatus: "読み込み中")
+            SVProgressHUD.setDefaultMaskType(.clear)
             
             if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kMorphing.rawValue) {
                 let storyBoard: UIStoryboard = UIStoryboard(name: "Media", bundle: nil)
                 if let viewController = storyBoard.instantiateViewController(withIdentifier: "MorphingVC") as? MorphingVC {
                     if let navigator = navigationController {
+                        
+                        let currDate = Date()
+                        var carte = CarteData()
+                        var statusData = false
+                        
+                        //check all carte of customer
+                        for i in 0 ..< cartesData.count {
+                            let date = Date(timeIntervalSince1970: TimeInterval(cartesData[i].select_date))
+                            let isSame = date.isInSameDay(date: currDate)
+                            if isSame {
+                                carte = cartesData[i]
+                                statusData = true
+                            }
+                        }
+                        
+                        if statusData == true {
+                            viewController.onTemp = false
+                        } else {
+                            viewController.onTemp = true
+                        }
+                        
                         viewController.customer = customer
-                        viewController.onTemp = true
                         viewController.cartesData = cartesData
+                        viewController.carte = carte
                         
                         for i in 0 ..< GlobalVariables.sharedManager.selectedImageIds.count {
                             
@@ -325,26 +389,50 @@ class PhotoCollectionVC: UIViewController {
                         
                         navigator.pushViewController(viewController, animated: true)
                         removeAllData()
+                        SVProgressHUD.dismiss()
                     }
                 }
             } else {
-                showAlert(message: kALERT_ACCOUNT_CANT_ACCESS, view: self)
+                showAlert(message: MSG_ALERT.kALERT_SERMENT_CANT_ACCESS, view: self)
+                SVProgressHUD.dismiss()
             }
-            
-            return
         }
     }
     
     @IBAction func onDrawing(_ sender: UIButton) {
     
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
+        
         if GlobalVariables.sharedManager.selectedImageIds.count == 1 {
             
             let storyBoard: UIStoryboard = UIStoryboard(name: "Media", bundle: nil)
             if let viewController = storyBoard.instantiateViewController(withIdentifier: "NewDrawingVC") as? NewDrawingVC {
                 if let navigator = self.navigationController {
-                    viewController.customer = self.customer
-                    viewController.onTemp = true
+                    
+                    let currDate = Date()
+                    var carte = CarteData()
+                    var statusData = false
+                    
+                    //check all carte of customer
+                    for i in 0 ..< cartesData.count {
+                        let date = Date(timeIntervalSince1970: TimeInterval(cartesData[i].select_date))
+                        let isSame = date.isInSameDay(date: currDate)
+                        if isSame {
+                            carte = cartesData[i]
+                            statusData = true
+                        }
+                    }
+                    
+                    if statusData == true {
+                        viewController.onTemp = false
+                    } else {
+                        viewController.onTemp = true
+                    }
+                    
+                    viewController.customer = customer
                     viewController.cartesData = cartesData
+                    viewController.carte = carte
                     
                     for i in 0 ..< self.thumbsData.count {
                         
@@ -353,19 +441,17 @@ class PhotoCollectionVC: UIViewController {
                             if self.thumbsData[i].medias[j].media_id == GlobalVariables.sharedManager.selectedImageIds[0] {
                                 viewController.media = self.thumbsData[i].medias[j]
                             }
-                            
                         }
-                        
-                    }
-                    
+                    } 
                     navigator.pushViewController(viewController, animated: true)
                     removeAllData()
+                    SVProgressHUD.dismiss()
                 }
             }
         } else {
-            showAlert(message: kALERT_DRAWING_ACCESS_NOT_SATISFY, view: self)
+            showAlert(message: MSG_ALERT.kALERT_DRAWING_ACCESS_NOT_SATISFY, view: self)
+            SVProgressHUD.dismiss()
         }
-        return
     }
     
 }
@@ -423,14 +509,11 @@ extension PhotoCollectionVC: UICollectionViewDelegate, UICollectionViewDataSourc
             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "SectionHeader", for: indexPath) as? SectionHeader else {
                 fatalError("Could not find proper header")
             }
-            header.sectionLabel.text = "Day \(thumbsData[indexPath.section].date)"
+            header.sectionLabel.text = "\(thumbsData[indexPath.section].date)"
             return header
-            
         }
-        
         return UICollectionReusableView()
     }
-    
 }
 
 extension PhotoCollectionVC: UICollectionViewDelegateFlowLayout {

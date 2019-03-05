@@ -55,6 +55,7 @@ class CarteCell: UITableViewCell {
         hideFreeMemo()
         hideStampMemo()
         
+        btnImage.imageView?.contentMode = .scaleAspectFit
         //check carte has representative photo or not
         if carte.carte_photo.isEmpty {
             if carte.medias.count > 0 {
@@ -62,7 +63,11 @@ class CarteCell: UITableViewCell {
                 let url = URL(string: (carte.medias.last?.url)!)
                 
                 btnImage.sd_setImage(with: url, for: .normal) { (image, error, cache, url) in
-                    let img = image?.crop(to: CGSize(width: 768, height: 1004))
+                    guard let img = image else {
+                        self.btnImage.setImage(UIImage(named: "nophotoIcon"), for: .normal)
+                        return
+                    }
+                    
                     self.btnImage.setImage(img, for: .normal)
                 }
             } else {
@@ -72,10 +77,9 @@ class CarteCell: UITableViewCell {
         } else {
             lblNoImg.text = "\(carte.medias.count)"
             let url = URL(string: carte.carte_photo)
-    
+            
             btnImage.sd_setImage(with: url, for: .normal) { (image, error, cache, url) in
-                let img = image?.crop(to: CGSize(width: 768, height: 1004))
-                self.btnImage.setImage(img, for: .normal)
+                self.btnImage.setImage(image!, for: .normal)
             }
         }
    
@@ -115,6 +119,31 @@ class CarteCell: UITableViewCell {
                 }
             }
         }
+        
+        if let set = UserDefaults.standard.integer(forKey: "colorset") as Int? {
+            switch set {
+            case 0:
+                lblNoImg.backgroundColor = COLOR_SET000.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            case 1:
+                lblNoImg.backgroundColor = COLOR_SET001.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            case 2:
+                lblNoImg.backgroundColor = COLOR_SET002.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            case 3:
+                lblNoImg.backgroundColor = COLOR_SET003.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            case 4:
+                lblNoImg.backgroundColor = COLOR_SET004.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            case 5:
+                lblNoImg.backgroundColor = COLOR_SET005.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            case 6:
+                lblNoImg.backgroundColor = COLOR_SET006.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            case 7:
+                lblNoImg.backgroundColor = COLOR_SET007.kCOMMAND_BUTTON_BACKGROUND_COLOR
+            default:
+                break
+            }
+        }
+        setButtonColorStyle(button: btnEdit, type: 1)
+        setButtonColorStyle(button: btnDailyReport, type: 1)
         
         //Check account's memo limitation
         switch maxFree {
@@ -193,22 +222,22 @@ class CarteCell: UITableViewCell {
         switch position {
         case 1:
             btnMemo1.setTitle("\(title)", for: .normal)
-            btnMemo1.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            setButtonColorStyle(button: btnMemo1,type: 0)
         case 2:
             btnMemo2.setTitle("\(title)", for: .normal)
-            btnMemo2.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            setButtonColorStyle(button: btnMemo2,type: 0)
         case 3:
             btnMemo3.setTitle("\(title)", for: .normal)
-            btnMemo3.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            setButtonColorStyle(button: btnMemo3,type: 0)
         case 4:
             btnMemo4.setTitle("\(title)", for: .normal)
-            btnMemo4.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            setButtonColorStyle(button: btnMemo4,type: 0)
         case 5:
             btnMemo5.setTitle("\(title)", for: .normal)
             if content.isEmpty {
                 btnMemo5.backgroundColor = UIColor.lightGray
             } else {
-                btnMemo5.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+                setButtonColorStyle(button: btnMemo5,type: 0)
             }
             
         case 6:
@@ -216,7 +245,7 @@ class CarteCell: UITableViewCell {
             if content.isEmpty {
                 btnMemo6.backgroundColor = UIColor.lightGray
             } else {
-                btnMemo6.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+                setButtonColorStyle(button: btnMemo6,type: 0)
             }
             
         case 7:
@@ -224,7 +253,7 @@ class CarteCell: UITableViewCell {
             if content.isEmpty {
                 btnMemo7.backgroundColor = UIColor.lightGray
             } else {
-                btnMemo7.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+                setButtonColorStyle(button: btnMemo7,type: 0)
             }
            
         case 8:
@@ -232,7 +261,7 @@ class CarteCell: UITableViewCell {
             if content.isEmpty {
                 btnMemo8.backgroundColor = UIColor.lightGray
             } else {
-                btnMemo8.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+                setButtonColorStyle(button: btnMemo8,type: 0)
             }
         default:
             break

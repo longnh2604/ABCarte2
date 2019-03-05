@@ -10,7 +10,6 @@ import UIKit
 import RealmSwift
 import Alamofire
 import SDWebImage
-import JGProgressHUD
 import SwiftyJSON
 
 protocol RegCustomerPopupDelegate: class {
@@ -71,6 +70,9 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
     @IBOutlet weak var lblCusNo: UILabel!
     @IBOutlet weak var lblEmergency: UILabel!
     @IBOutlet weak var lblResponsible: UILabel!
+    @IBOutlet weak var btnUSA: UIButton!
+    @IBOutlet weak var btnChina: UIButton!
+    @IBOutlet weak var btnKorea: UIButton!
     
     //Private
     @IBOutlet weak var lblGender: UILabel!
@@ -94,7 +96,6 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
     @IBOutlet weak var lblHobby: UILabel!
     @IBOutlet weak var tvHobby: UITextView!
     @IBOutlet weak var tfAge: UITextField!
-    @IBOutlet weak var imv_lock_secret: UIImageView!
     
     //Note
     @IBOutlet weak var lblNote1: UILabel!
@@ -103,11 +104,6 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
     @IBOutlet weak var tvNote2: UITextView!
     @IBOutlet weak var tfSecretCode: UITextField!
     @IBOutlet weak var btnSecretAccess: RoundButton!
-    
-    //Lock Key
-    @IBOutlet weak var imv_lock_US: UIImageView!
-    @IBOutlet weak var imv_lock_CH: UIImageView!
-    @IBOutlet weak var imv_lock_KO: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -204,7 +200,7 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
             //Note
             tvNote1.text = customer.memo1
             tvNote2.text = customer.memo2
-            
+           
             checkCondition()
             
             enableUserInput(status: false)
@@ -216,32 +212,31 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
     func checkAccType() {
         
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kMultiLanguage.rawValue) {
-            imv_lock_US.isHidden = true
-            imv_lock_CH.isHidden = true
-            imv_lock_KO.isHidden = true
+            btnUSA.isHidden = false
+            btnChina.isHidden = false
+            btnKorea.isHidden = false
         } else {
-            imv_lock_US.isHidden = false
-            imv_lock_CH.isHidden = false
-            imv_lock_KO.isHidden = false
+            btnUSA.isHidden = true
+            btnChina.isHidden = true
+            btnKorea.isHidden = true
         }
-        
     }
     
     func checkCondition() {
         if (tfFirstName.text?.count)! > 0 && (tfLastName.text?.count)! > 0 {
-            radioName.backgroundColor = kLINE_CORRECT_COLOR
+            radioName.backgroundColor = COLOR_SET.kLINE_CORRECT_COLOR
         }
         if (tfFirstNameKana.text?.count)! > 0 && (tfLastNameKana.text?.count)! > 0 {
-            radioNameKana.backgroundColor = kLINE_CORRECT_COLOR
+            radioNameKana.backgroundColor = COLOR_SET.kLINE_CORRECT_COLOR
         }
         if (tfCusNo.text?.count)! > 0 {
-            radioCusNo.backgroundColor = kLINE_CORRECT_COLOR
+            radioCusNo.backgroundColor = COLOR_SET.kLINE_CORRECT_COLOR
         }
         if (tfEmergency.text?.count)! > 0 {
-            radioEmergency.backgroundColor = kLINE_CORRECT_COLOR
+            radioEmergency.backgroundColor = COLOR_SET.kLINE_CORRECT_COLOR
         }
         if (tfResponsible.text?.count)! > 0 {
-            radioResponsible.backgroundColor = kLINE_CORRECT_COLOR
+            radioResponsible.backgroundColor = COLOR_SET.kLINE_CORRECT_COLOR
         }
     }
     
@@ -578,11 +573,10 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
         btnSecretAccess.isEnabled = status
         
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kSecretMemo.rawValue) {
-            imv_lock_secret.isHidden = true
+            
         } else {
             tfSecretCode.isEnabled = false
             btnSecretAccess.isEnabled = false
-            imv_lock_secret.isHidden = false
         }
     }
 
@@ -596,24 +590,17 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
         switch sender.tag {
         case 0:
             btnEssential.alpha = 1
-            
             viewContent.addSubview(viewEssential)
             break
         case 1:
             btnPrivate.alpha = 1
-            
             viewContent.addSubview(viewPrivate)
             tvHobby.layer.cornerRadius = 5
             tvHobby.clipsToBounds = true
             break
         case 2:
             btnNote.alpha = 1
-            
             viewContent.addSubview(viewNote)
-            tvNote1.layer.cornerRadius = 10
-            tvNote1.clipsToBounds = true
-            tvNote2.layer.cornerRadius = 10
-            tvNote2.clipsToBounds = true
             break
         default:
             break
@@ -625,11 +612,11 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
         if onProgress == false {
             onProgress = true
             
-            let hud = JGProgressHUD(style: .dark)
-            hud.vibrancyEnabled = true
-            hud.textLabel.text = "LOADING"
-            hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-            hud.show(in: self.view)
+            //check network connection first
+            NetworkManager.isUnreachable { _ in
+                showAlert(message: MSG_ALERT.kALERT_INTERNET_NOT_CONNECTED_PLEASE_CHECK_AGAIN, view: self)
+                return
+            }
             
             //Check Popup type
             if popupType == PopUpType.AddNew.rawValue {
@@ -640,31 +627,28 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
                         } else {
                             imageConverted = UIImageJPEGRepresentation(UIImage(named: "nophotoIcon")!, 0.5)
                         }
-                                    
+                        
+                        SVProgressHUD.show(withStatus: "読み込み中")
+                        SVProgressHUD.setDefaultMaskType(.clear)
+                        
                         addCustomer(first_name: tfFirstName.text!, last_name: tfLastName.text!, first_name_kana: tfFirstNameKana.text!, last_name_kana: tfLastNameKana.text!, gender: genderSelect, bloodtype: bloodSelect,avatar_image: imageConverted!, birthday: birthDate, hobby:tvHobby.text,email: tfMail.text!, postal_code: tfPostalCode.text!, address1: tfPrefecture.text!, address2: tfCity.text!, address3: tfSubAdd.text!, responsible: tfResponsible.text!, mail_block: 0, urgent_no: tfEmergency.text!, memo1: tvNote1.text!, memo2: tvNote2.text!,cusNo:tfCusNo.text!) { (success) in
                                         if success {
-                                   
-                                            showAlert(message: kALERT_CREATE_CUSTOMER_INFO_SUCCESS, view: self)
-                                            hud.dismiss()
+                                            showAlert(message: MSG_ALERT.kALERT_CREATE_CUSTOMER_INFO_SUCCESS, view: self)
                                             self.onProgress = false
                                             self.delegate?.didConfirm(type: 1)
                                             self.dismiss(animated: true, completion: nil)
-
                                         } else {
-                                   
-                                            showAlert(message: kALERT_CANT_GET_CUSTOMER_INFO_PLEASE_CHECK_NETWORK, view: self)
-                                            hud.dismiss()
+                                            showAlert(message: MSG_ALERT.kALERT_CANT_GET_CUSTOMER_INFO_PLEASE_CHECK_NETWORK, view: self)
                                             self.onProgress = false
                                         }
+                            SVProgressHUD.dismiss()
                                     }
                     } else {
-                        showAlert(message: kALERT_INPUT_LAST_FIRST_NAME_KANA, view: self)
-                        hud.dismiss()
+                        showAlert(message: MSG_ALERT.kALERT_INPUT_LAST_FIRST_NAME_KANA, view: self)
                         onProgress = false
                     }
                 } else {
-                    showAlert(message: kALERT_INPUT_LAST_FIRST_NAME, view: self)
-                    hud.dismiss()
+                    showAlert(message: MSG_ALERT.kALERT_INPUT_LAST_FIRST_NAME, view: self)
                     onProgress = false
                 }
             }
@@ -681,63 +665,60 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
                     }
                     isEdit = true
                     enableUserInput(status: true)
-                    hud.dismiss()
                     self.onProgress = false
                 } else {
                     
                     if (tfLastName.text?.count)! > 0 && (tfFirstName.text?.count)! > 0 {
                         if (tfLastNameKana.text?.count)! > 0 && (tfFirstNameKana.text?.count)! > 0 {
                                         if imageTemp != nil {
-                                            imageConverted = UIImageJPEGRepresentation(imageTemp!, 100)
+                                            imageConverted = UIImageJPEGRepresentation(imageTemp!, 1)
+                                            
+                                            SVProgressHUD.show(withStatus: "読み込み中")
+                                            SVProgressHUD.setDefaultMaskType(.clear)
                                             
                                             editCustomerInfowAvatar(cusID:customer.id,first_name: tfFirstName.text!, last_name: tfLastName.text!, first_name_kana: tfFirstNameKana.text!, last_name_kana: tfLastNameKana.text!, gender: genderSelect, bloodtype: bloodSelect,avatar_image:imageConverted!, birthday: birthDate, hobby:tvHobby.text,email: tfMail.text!, postal_code: tfPostalCode.text!, address1: tfPrefecture.text!, address2: tfCity.text!, address3: tfSubAdd.text!, responsible: tfResponsible.text!, mail_block: 0, urgent_no: tfEmergency.text!, memo1: tvNote1.text!, memo2: tvNote2.text!,cusNo:tfCusNo.text!) { (success) in
                                                 if success {
                                             
-                                                    showAlert(message: kALERT_UPDATE_CUSTOMER_INFO_SUCCESS, view: self)
+                                                    showAlert(message: MSG_ALERT.kALERT_UPDATE_CUSTOMER_INFO_SUCCESS, view: self)
                                                     self.delegate?.didConfirm(type: 2)
                                                     self.dismiss(animated: true, completion: nil)
                                             
                                                 } else {
                                                    
-                                                    showAlert(message: kALERT_CANT_GET_CUSTOMER_INFO_PLEASE_CHECK_NETWORK, view: self)
+                                                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_CUSTOMER_INFO_PLEASE_CHECK_NETWORK, view: self)
                                                     
                                                 }
-                                                hud.dismiss()
                                                 self.onProgress = false
                                                 self.isEdit = false
                                                 self.enableUserInput(status: false)
+                                                SVProgressHUD.dismiss()
                                             }
                                         } else {
+                                            SVProgressHUD.show(withStatus: "読み込み中")
+                                            SVProgressHUD.setDefaultMaskType(.clear)
+                                            
                                             editCustomerInfo(cusID:customer.id,first_name: tfFirstName.text!, last_name: tfLastName.text!, first_name_kana: tfFirstNameKana.text!, last_name_kana: tfLastNameKana.text!,gender: genderSelect, bloodtype: bloodSelect, birthday: birthDate, hobby:tvHobby.text,email: tfMail.text!, postal_code: tfPostalCode.text!, address1: tfPrefecture.text!, address2: tfCity.text!, address3: tfSubAdd.text!, responsible: tfResponsible.text!, mail_block: 0, urgent_no: tfEmergency.text!, memo1: tvNote1.text!, memo2: tvNote2.text!,cusNo:tfCusNo.text!) { (success) in
                                                 if success {
-                                                
-                                                    showAlert(message: kALERT_UPDATE_CUSTOMER_INFO_SUCCESS, view: self)
+                                                    showAlert(message: MSG_ALERT.kALERT_UPDATE_CUSTOMER_INFO_SUCCESS, view: self)
                                                     self.delegate?.didConfirm(type: 2)
                                                     self.dismiss(animated: true, completion: nil)
-                                                
                                                 } else {
-                                           
-                                                    showAlert(message: kALERT_CANT_GET_CUSTOMER_INFO_PLEASE_CHECK_NETWORK, view: self)
-                                        
+                                                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_CUSTOMER_INFO_PLEASE_CHECK_NETWORK, view: self)
                                                 }
-                                                
-                                                hud.dismiss()
                                                 self.onProgress = false
                                                 self.isEdit = false
                                                 self.enableUserInput(status: false)
-                                                
+                                                SVProgressHUD.dismiss()
                                             }
                                         }
                         } else {
-                            showAlert(message: kALERT_INPUT_LAST_FIRST_NAME_KANA, view: self)
-                            hud.dismiss()
+                            showAlert(message: MSG_ALERT.kALERT_INPUT_LAST_FIRST_NAME_KANA, view: self)
                             self.onProgress = false
                             self.isEdit = false
                             enableUserInput(status: false)
                         }
                     } else {
-                        showAlert(message: kALERT_INPUT_LAST_FIRST_NAME, view: self)
-                        hud.dismiss()
+                        showAlert(message: MSG_ALERT.kALERT_INPUT_LAST_FIRST_NAME, view: self)
                         self.onProgress = false
                         self.isEdit = false
                         enableUserInput(status: false)
@@ -771,7 +752,7 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
             case 2:
                 print("china")
                 language = 2
-                showAlert(message: "この機能は建設中です", view: self)
+                showAlert(message: MSG_ALERT.kALERT_FUNCTION_UNDER_CONSTRUCTION, view: self)
                 break
             case 3:
                 print("korea")
@@ -782,7 +763,7 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
                 break
             }
         } else {
-            showAlert(message: kALERT_ACCOUNT_CANT_ACCESS, view: self)
+            showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
         }
     }
     
@@ -967,16 +948,13 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
         
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kSecretMemo.rawValue) {
             if popupType == PopUpType.AddNew.rawValue {
-                showAlert(message: kALERT_CREATE_CUSTOMER_FIRST_ADD_SECRET_LATER, view: self)
+                showAlert(message: MSG_ALERT.kALERT_CREATE_CUSTOMER_FIRST_ADD_SECRET_LATER, view: self)
             } else {
                 if tfSecretCode.text != "" {
-                    let hud = JGProgressHUD(style: .dark)
-                    hud.vibrancyEnabled = true
-                    hud.textLabel.text = "LOADING"
-                    hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-                    hud.show(in: self.view)
+                    SVProgressHUD.show(withStatus: "読み込み中")
+                    SVProgressHUD.setDefaultMaskType(.clear)
                     
-                    getAccessSecretMemo(password: tfSecretCode.text!) { (success) in
+                    getAccessSecretMemo(password: tfSecretCode.text!) { (success, msg) in
                         if success {
                             let newPopup = SecretPopupVC(nibName: "SecretPopupVC", bundle: nil)
                             newPopup.modalPresentationStyle = UIModalPresentationStyle.formSheet
@@ -985,18 +963,17 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
                             newPopup.authenPass = self.tfSecretCode.text!
                             newPopup.delegate = self
                             self.present(newPopup, animated: true, completion: nil)
-                            hud.dismiss()
                         } else {
-                            showAlert(message: kALERT_WRONG_PASSWORD, view: self)
-                            hud.dismiss()
+                            showAlert(message: msg, view: self)
                         }
+                        SVProgressHUD.dismiss()
                     }
                 } else {
-                    showAlert(message: kALERT_INPUT_PASSWORD, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_INPUT_PASSWORD, view: self)
                 }
             }
         } else {
-            showAlert(message: kALERT_ACCOUNT_CANT_ACCESS, view: self)
+            showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
         }
     }
     
@@ -1030,35 +1007,37 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         //add hiragana from kanji
-        if (tfLastName.text?.count)! > 0 && (tfLastNameKana.text?.count)! == 0 {
+        switch textField.tag {
+        case 1:
             tfLastNameKana.text = TextConverter.convert(tfLastName.text!, to: .hiragana)
-        }
-        if (tfFirstName.text?.count)! > 0 && (tfFirstNameKana.text?.count)! == 0 {
+        case 2:
             tfFirstNameKana.text = TextConverter.convert(tfFirstName.text!, to: .hiragana)
+        default:
+            break
         }
         
         if (tfLastName.text?.count)! > 0 && (tfFirstName.text?.count)! > 0 {
-            radioName.backgroundColor = kLINE_CORRECT_COLOR
+            radioName.backgroundColor = COLOR_SET.kLINE_CORRECT_COLOR
         } else {
             radioName.backgroundColor = UIColor.white
         }
         if (tfLastNameKana.text?.count)! > 0 && (tfFirstNameKana.text?.count)! > 0 {
-            radioNameKana.backgroundColor = kLINE_CORRECT_COLOR
+            radioNameKana.backgroundColor = COLOR_SET.kLINE_CORRECT_COLOR
         } else {
             radioNameKana.backgroundColor = UIColor.white
         }
         if (tfCusNo.text?.count)! > 0 {
-            radioCusNo.backgroundColor = kLINE_CORRECT_COLOR
+            radioCusNo.backgroundColor = COLOR_SET.kLINE_CORRECT_COLOR
         } else {
             radioCusNo.backgroundColor = UIColor.white
         }
         if (tfEmergency.text?.count)! > 0 {
-            radioEmergency.backgroundColor = kLINE_CORRECT_COLOR
+            radioEmergency.backgroundColor = COLOR_SET.kLINE_CORRECT_COLOR
         } else {
             radioEmergency.backgroundColor = UIColor.white
         }
         if (tfResponsible.text?.count)! > 0 {
-            radioResponsible.backgroundColor = kLINE_CORRECT_COLOR
+            radioResponsible.backgroundColor = COLOR_SET.kLINE_CORRECT_COLOR
         } else {
             radioResponsible.backgroundColor = UIColor.white
         }
@@ -1070,7 +1049,7 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
             case true:
                 print("Mail is valid")
             case false:
-                showAlert(message: kALERT_INPUT_EMAIL, view: self)
+                showAlert(message: MSG_ALERT.kALERT_INPUT_EMAIL, view: self)
             }
         }
         
@@ -1079,7 +1058,7 @@ class RegCustomerPopup: UIViewController,UINavigationControllerDelegate, UIImage
         
             if isPhone == true {
             } else {
-                showAlert(message: kALERT_INPUT_PHONE, view: self)
+                showAlert(message: MSG_ALERT.kALERT_INPUT_PHONE, view: self)
             }
         }
         

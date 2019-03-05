@@ -26,4 +26,5 @@ import RealmSwift
     dynamic var free_memo = List<FreeMemoData>()
     dynamic var stamp_memo = List<StampMemoData>()
     dynamic var medias = List<MediaData>()
+    dynamic var cus = List<CustomerData>()
 }

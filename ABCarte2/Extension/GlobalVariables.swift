@@ -15,6 +15,16 @@ class GlobalVariables {
     public var pageCurr: Int?
     public var totalCus: Int?
     
+    public var pageCurrTemp: Int?
+    public var pageSectionTemp: Int?
+    
+    public var alphabetSection: Int?
+    public var alphabetIndex: Int?
+    
+    //limit storage
+    public var limitSize: Int64?
+    public var currentSize: Int64?
+    
     //cell selection
     public var selectedImageIds: [String] = []
     

@@ -8,17 +8,18 @@
 
 import UIKit
 
-open class ToolBar: UIView
-{
+
+open class ToolBar: UIView {
     @objc open weak var undoButton: UIButton?
     @objc open weak var redoButton: UIButton?
     @objc open weak var saveButton: UIButton?
     @objc open weak var loadButton: UIButton?
     @objc open weak var clearButton: UIButton?
     
-    fileprivate weak var lineView: UIView?
+    private weak var lineView: UIView?
 
-    // MARK: - Public Methods
+    
+    // MARK: - Initializer
     public init() {
         super.init(frame: CGRect.zero)
         self.initialize()
@@ -28,13 +29,21 @@ open class ToolBar: UIView
         super.init(coder: aDecoder)
     }
     
-    fileprivate func initialize() {
+    private func initialize() {
         self.setupViews()
         self.setupLayout()
     }
     
+    
+    // MARK: - LifeCycle Methods
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        self.setupLayout()
+    }
+    
+
     // MARK: - Private Methods
-    fileprivate func setupViews() {
+    private func setupViews() {
         self.backgroundColor = UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
         
         let lineView = UIView()
@@ -64,7 +73,7 @@ open class ToolBar: UIView
         self.loadButton = button
     }
     
-    fileprivate func setupLayout() {
+    private func setupLayout() {
         self.lineView?.frame = CGRect(x: 0, y: self.y - 1, width: self.width, height: 1)
         
         self.undoButton?.frame = CGRect(x: 15, y: 0, width: self.height * 0.5, height: self.height * 0.5)
@@ -83,19 +92,14 @@ open class ToolBar: UIView
         self.loadButton?.center = CGPoint(x: self.width / 2.0, y: self.height / 2.0)
     }
     
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        self.setupLayout()
-    }
-    
-    fileprivate func button(_ title: String? = nil, iconName: String? = nil) -> UIButton {
+    private func button(_ title: String? = nil, iconName: String? = nil) -> UIButton {
         let button = UIButton()
         button.backgroundColor = UIColor.clear
         
         if title != nil {
             button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15 * self.multiflierForDevice())
-            button.setTitle(title, for: UIControlState())
-            button.setTitleColor(UIColor.white, for: UIControlState())
+            button.setTitle(title, for: UIControl.State())
+            button.setTitleColor(UIColor.white, for: UIControl.State())
             button.setTitleColor(UIColor.gray, for: .disabled)
         }
 
@@ -104,7 +108,7 @@ open class ToolBar: UIView
             if let bundleURL = podBundle.url(forResource: "NXDrawKit", withExtension: "bundle") {
                 if let bundle = Bundle(url: bundleURL) {
                     let image = UIImage(named: iconName!, in: bundle, compatibleWith: nil)
-                    button.setImage(image, for: UIControlState())
+                    button.setImage(image, for: UIControl.State())
                 }
             }
         }
@@ -114,7 +118,7 @@ open class ToolBar: UIView
         return button
     }
     
-    fileprivate func multiflierForDevice() -> CGFloat {
+    private func multiflierForDevice() -> CGFloat {
         if UIScreen.main.bounds.size.width <= 320 {
             return 0.75
         } else if UIScreen.main.bounds.size.width > 375 {

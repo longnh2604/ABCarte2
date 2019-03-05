@@ -22,8 +22,10 @@ class StickerPopupVC: UIViewController {
     //Variable
     weak var delegate:StickerPopupVCDelegate?
     
-    var arrPhotoB = ["JBS_stamp_01.png","JBS_stamp_02.png","JBS_stamp_03.png","JBS_stamp_04.png","JBS_stamp_05.png","JBS_stamp_06.png","JBS_stamp_07.png","JBS_stamp_08.png","JBS_stamp_09.png","JBS_stamp_10.png","JBS_stamp_11.png","JBS_stamp_12.png","JBS_stamp_13.png","JBS_stamp_14.png"]
-    var arrPhotoO = ["JBS_stamp_04.png","JBS_stamp_05.png","JBS_stamp_06.png","JBS_stamp_07.png","JBS_stamp_08.png","JBS_stamp_09.png","JBS_stamp_10.png","JBS_stamp_11.png","JBS_stamp_12.png","JBS_stamp_13.png","JBS_stamp_14.png"]
+    var arrPhotoAttender = ["JBS_stamp_01.png","JBS_stamp_02.png","JBS_stamp_03.png","JBS_stamp_04.png","JBS_stamp_05.png","JBS_stamp_06.png","JBS_stamp_07.png","JBS_stamp_08.png","JBS_stamp_09.png","JBS_stamp_10.png","JBS_stamp_11.png","JBS_stamp_12.png","JBS_stamp_13.png","JBS_stamp_14.png"]
+    var arrPhotoSerment = ["serment_stamp001.png","JBS_stamp_04.png","JBS_stamp_05.png","JBS_stamp_06.png","JBS_stamp_07.png","JBS_stamp_08.png","JBS_stamp_09.png","JBS_stamp_10.png","JBS_stamp_11.png","JBS_stamp_12.png","JBS_stamp_13.png","JBS_stamp_14.png"]
+    var arrPhotoShisei = ["SHISEI_stamp1.png","JBS_stamp_04.png","JBS_stamp_05.png","JBS_stamp_06.png","JBS_stamp_07.png","JBS_stamp_08.png","JBS_stamp_09.png","JBS_stamp_10.png","JBS_stamp_11.png","JBS_stamp_12.png","JBS_stamp_13.png","JBS_stamp_14.png"]
+    var arrPhotoDefault = ["JBS_stamp_04.png","JBS_stamp_05.png","JBS_stamp_06.png","JBS_stamp_07.png","JBS_stamp_08.png","JBS_stamp_09.png","JBS_stamp_10.png","JBS_stamp_11.png","JBS_stamp_12.png","JBS_stamp_13.png","JBS_stamp_14.png"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,9 +65,15 @@ extension StickerPopupVC: UICollectionViewDelegate, UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier:"StickerCell", for: indexPath) as! StickerCell
         
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kFullStampSticker.rawValue) {
-            cell.configure(imv: arrPhotoB[indexPath.row])
+            #if SERMENT
+            cell.configure(imv: arrPhotoSerment[indexPath.row])
+            #elseif SHISEI
+            cell.configure(imv: arrPhotoShisei[indexPath.row])
+            #else
+            cell.configure(imv: arrPhotoAttender[indexPath.row])
+            #endif
         } else {
-            cell.configure(imv: arrPhotoO[indexPath.row])
+            cell.configure(imv: arrPhotoDefault[indexPath.row])
         }
         
         return cell
@@ -74,9 +82,15 @@ extension StickerPopupVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kFullStampSticker.rawValue) {
-            return arrPhotoB.count
+            #if SERMENT
+            return arrPhotoSerment.count
+            #elseif SHISEI
+            return arrPhotoShisei.count
+            #else
+            return arrPhotoAttender.count
+            #endif
         } else {
-            return arrPhotoO.count
+            return arrPhotoDefault.count
         }
     }
     
@@ -87,9 +101,15 @@ extension StickerPopupVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kFullStampSticker.rawValue) {
-            delegate?.didStickerSelect(imv: arrPhotoB[indexPath.row])
+            #if SERMENT
+            delegate?.didStickerSelect(imv: arrPhotoSerment[indexPath.row])
+            #elseif SHISEI
+            delegate?.didStickerSelect(imv: arrPhotoShisei[indexPath.row])
+            #else
+            delegate?.didStickerSelect(imv: arrPhotoAttender[indexPath.row])
+            #endif
         } else {
-            delegate?.didStickerSelect(imv: arrPhotoO[indexPath.row])
+            delegate?.didStickerSelect(imv: arrPhotoDefault[indexPath.row])
         }
         
         dismiss(animated: true, completion: nil)

@@ -7,12 +7,18 @@
 //
 
 import UIKit
-import JGProgressHUD
+
+protocol DocumentPreviewPopupDelegate: class {
+    func onEditDocument(document: DocumentData,carteID:Int)
+}
 
 class DocumentPreviewPopup: UIViewController {
 
     //Variable
+    weak var delegate:DocumentPreviewPopupDelegate?
+    
     var documentsData = DocumentData()
+    var carteID: Int?
     var isTemp : Bool?
     var pageNo: Int?
     
@@ -21,9 +27,9 @@ class DocumentPreviewPopup: UIViewController {
     @IBOutlet weak var imvPhoto: UIImageView!
     @IBOutlet weak var btnPrev: UIButton!
     @IBOutlet weak var btnNext: UIButton!
-    @IBOutlet weak var lblTotalPage: UILabel!
     @IBOutlet weak var lblPageNo: UILabel!
     @IBOutlet weak var btnClose: RoundButton!
+    @IBOutlet weak var btnEdit: RoundButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,44 +46,26 @@ class DocumentPreviewPopup: UIViewController {
         scrollView.maximumZoomScale = 5.0
         scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
-        
-        guard let temp = isTemp else {
-            return
-        }
+        guard let temp = isTemp else { return }
         
         if temp == true {
             imvPhoto.sd_setImage(with: URL(string: documentsData.document_pages[0].url_original)) { (image, error, cache, url) in
                 if (error != nil) {
-                    showAlert(message: kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
-                    
-                } else {
-                    
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
                 }
-                hud.dismiss()
             }
         } else {
             imvPhoto.sd_setImage(with: URL(string: documentsData.document_pages[0].url_edit)) { (image, error, cache, url) in
                 if (error != nil) {
-                    showAlert(message: kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
-                    
-                } else {
-                    
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
                 }
-                hud.dismiss()
             }
         }
-        
         setupPage()
     }
     
     func setupPage() {
-        lblTotalPage.text = "合計ページ： \(documentsData.document_pages.count)"
-        lblPageNo.text = "ページ： \(pageNo ?? 1)"
+        lblPageNo.text = "ページ：\(pageNo ?? 1)/\(documentsData.document_pages.count)"
         
         if documentsData.document_pages.count > 1 {
             if pageNo == 1 {
@@ -101,6 +89,15 @@ class DocumentPreviewPopup: UIViewController {
     // MARK: - Actions
     //*****************************************************************
     
+    @IBAction func onEdit(_ sender: UIButton) {
+        guard let carteID = carteID else { return }
+        
+        dismiss(animated: true) {
+            self.delegate?.onEditDocument(document: self.documentsData, carteID: carteID)
+        }
+        
+    }
+    
     @IBAction func onClose(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
     }
@@ -112,14 +109,14 @@ class DocumentPreviewPopup: UIViewController {
         if isTemp == true {
             imvPhoto.sd_setImage(with: URL(string: documentsData.document_pages[pageNo! - 1].url_original)) { (image, error, cache, url) in
                 if (error != nil) {
-                    showAlert(message: kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
                     
                 }
             }
         } else {
             imvPhoto.sd_setImage(with: URL(string: documentsData.document_pages[pageNo! - 1].url_edit)) { (image, error, cache, url) in
                 if (error != nil) {
-                    showAlert(message: kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
                     
                 }
             }
@@ -135,15 +132,13 @@ class DocumentPreviewPopup: UIViewController {
         if isTemp == true {
             imvPhoto.sd_setImage(with: URL(string: documentsData.document_pages[pageNo! - 1].url_original)) { (image, error, cache, url) in
                 if (error != nil) {
-                    showAlert(message: kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
-                    
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
                 }
             }
         } else {
             imvPhoto.sd_setImage(with: URL(string: documentsData.document_pages[pageNo! - 1].url_edit)) { (image, error, cache, url) in
                 if (error != nil) {
-                    showAlert(message: kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
-                    
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_DOCUMENT_INFO_PLEASE_CHECK_NETWORK, view: self)
                 }
             }
         }

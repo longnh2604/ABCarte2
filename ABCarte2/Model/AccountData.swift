@@ -33,6 +33,7 @@ import RealmSwift
     dynamic var acc_name: String = ""
     dynamic var acc_limit: String = ""
     dynamic var updated_at: Int = 0
+    dynamic var pic_limit: Int = 0
 }
 
 

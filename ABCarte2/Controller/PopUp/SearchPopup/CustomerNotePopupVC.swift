@@ -15,8 +15,7 @@ protocol CustomerNotePopupVCDelegate: class {
 class CustomerNotePopupVC: UIViewController {
 
     //IBOutlet
-    @IBOutlet weak var tvNote1: UITextView!
-    @IBOutlet weak var tvNote2: UITextView!
+    @IBOutlet weak var tvNote: UITextView!
     
     //Variable
     weak var delegate:CustomerNotePopupVCDelegate?
@@ -28,10 +27,8 @@ class CustomerNotePopupVC: UIViewController {
     }
     
     func setupUI() {
-        tvNote1.layer.cornerRadius = 10
-        tvNote1.clipsToBounds = true
-        tvNote2.layer.cornerRadius = 10
-        tvNote2.clipsToBounds = true
+        tvNote.layer.cornerRadius = 10
+        tvNote.clipsToBounds = true
     }
 
     //*****************************************************************
@@ -43,13 +40,13 @@ class CustomerNotePopupVC: UIViewController {
     }
     
     @IBAction func onSearch(_ sender: UIButton) {
-        if tvNote1.text.isEmpty && tvNote2.text.isEmpty {
-            showAlert(message: kALERT_INPUT_DATA, view: self)
+        if tvNote.text.isEmpty {
+            showAlert(message: MSG_ALERT.kALERT_INPUT_DATA, view: self)
             return
         }
         
         dismiss(animated: true) {
-            self.delegate?.onCustomerNoteSearch(note1: self.tvNote1.text, note2: self.tvNote2.text)
+            self.delegate?.onCustomerNoteSearch(note1: self.tvNote.text, note2: self.tvNote.text)
         }
     }
 }

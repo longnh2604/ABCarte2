@@ -8,7 +8,6 @@
 
 import UIKit
 import NXDrawKit
-import JGProgressHUD
 import SDWebImage
 
 class DocumentsVC: UIViewController {
@@ -20,8 +19,8 @@ class DocumentsVC: UIViewController {
     @IBOutlet weak var btnUndo: UIButton!
     @IBOutlet weak var btnRedo: UIButton!
     @IBOutlet weak var btnEdit: RoundButton!
-    @IBOutlet weak var btnTouch: RoundButton!
     @IBOutlet weak var btnNext: RoundButton!
+    @IBOutlet weak var btnPrev: RoundButton!
     @IBOutlet weak var btnEraser: RoundButton!
     @IBOutlet weak var btnComplete: RoundButton!
     
@@ -36,7 +35,6 @@ class DocumentsVC: UIViewController {
     var isTouch: Bool?
     var pageNo: Int?
     var imageConverted: Data?
-    let hud = JGProgressHUD(style: .dark)
     let maxScale: CGFloat = 5.0
     let minScale: CGFloat = 1.0
     var cumulativeScale:CGFloat = 1.0
@@ -60,8 +58,9 @@ class DocumentsVC: UIViewController {
         
         setupCanvas()
         
-        isTouch = true
-        btnTouch.backgroundColor = kPENSELECT
+        isTouch = false
+        btnEdit.backgroundColor = COLOR_SET.kPENSELECT
+//        self.canvasView?.setDrawingMode(mode: 1)
         
         self.btnUndo.isEnabled = false
         self.btnRedo.isEnabled = false
@@ -109,45 +108,16 @@ class DocumentsVC: UIViewController {
         printUrl(urlPath)
     }
     
-    func printUrl(_ url: URL) {
-        guard (UIPrintInteractionController.canPrint(url)) else {
-            Swift.print("Unable to print: \(url)")
-            return
-        }
-        
-        showPrintInteraction(url)
-    }
-    
-    func showPrintInteraction(_ url: URL) {
-        let controller = UIPrintInteractionController.shared
-        controller.printingItem = url
-        controller.printInfo = printerInfo(url.lastPathComponent)
-        controller.present(animated: true, completionHandler: nil)
-    }
-    
-    func printerInfo(_ jobName: String) -> UIPrintInfo {
-        let printInfo = UIPrintInfo.printInfo()
-        printInfo.outputType = .general
-        printInfo.jobName = jobName
-        Swift.print("Printing: \(jobName)")
-        return printInfo
-    }
-    
     func resetButtonState() {
-        btnEdit.backgroundColor = kPENUNSELECT
-        btnTouch.backgroundColor = kPENUNSELECT
-        btnEraser.backgroundColor = kPENUNSELECT
-    }
-    
-    func showLoading() {
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
+        btnEdit.backgroundColor = COLOR_SET.kPENUNSELECT
+        btnEraser.backgroundColor = COLOR_SET.kPENUNSELECT
     }
     
     func setupCanvas() {
         pinchGesture.scale = 1
+        //allow gesture with finger touch only
+        panGesture.allowedTouchTypes = [UITouch.TouchType.direct.rawValue as NSNumber]
+        pinchGesture.allowedTouchTypes = [UITouch.TouchType.direct.rawValue as NSNumber]
         
         viewDoc.translatesAutoresizingMaskIntoConstraints = false
         viewDoc.addGestureRecognizer(self.panGesture)
@@ -155,7 +125,8 @@ class DocumentsVC: UIViewController {
         
         let img = UIImageView()
         
-        showLoading()
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
         var stringPath = ""
         
@@ -172,17 +143,16 @@ class DocumentsVC: UIViewController {
             if (error != nil) {
                 //Failure code here
                 showAlert(message: "写真の読み込みに失敗しました。ネットワークの状態を確認してください。", view: self)
-                self.hud.dismiss()
             } else {
                 //Success code here
                 let canvasView = Canvas.init(canvasId: "photo", backgroundImage: img.image)
                 canvasView.frame = CGRect(x:0,y:0, width: self.viewDoc.frame.width, height: self.viewDoc.frame.height)
-                canvasView.delegate = self
                 canvasView.clipsToBounds = true
+                canvasView.delegate = self
                 self.viewDoc.addSubview(canvasView)
                 self.canvasView = canvasView
-                self.hud.dismiss()
             }
+            SVProgressHUD.dismiss()
         }
     }
     
@@ -225,6 +195,9 @@ class DocumentsVC: UIViewController {
     
     func onChangePage() {
         
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
+        
         self.canvasView?.clear()
         btnUndo.isEnabled = false
         btnRedo.isEnabled = false
@@ -233,22 +206,18 @@ class DocumentsVC: UIViewController {
             subview.removeFromSuperview()
         }
         
-        showLoading()
         let img = UIImageView()
         
-        guard let pageN = pageNo else {
-            return
-        }
+        guard let pageNo = pageNo else { return }
         
         //check document is template or not
         if document.is_template == 1 {
             
-            let url = URL(string: self.document.document_pages[pageN - 1].url_original)
+            let url = URL(string: self.document.document_pages[pageNo - 1].url_original)
             img.sd_setImage(with: url) { (image, error, cachetype, url) in
                 if (error != nil) {
                     //Failure code here
                     showAlert(message: "写真の読み込みに失敗しました。ネットワークの状態を確認してください。", view: self)
-                    self.hud.dismiss()
                 } else {
                     //Success code here
                     let canvasView = Canvas.init(canvasId: "photo", backgroundImage: img.image)
@@ -257,19 +226,19 @@ class DocumentsVC: UIViewController {
                     canvasView.clipsToBounds = true
                     self.viewDoc.addSubview(canvasView)
                     self.canvasView = canvasView
-                    self.hud.dismiss()
                 }
+                SVProgressHUD.dismiss()
             }
             
         } else {
             
             var stringPath = ""
             
-            let urlEdit = URL(string: document.document_pages[pageN - 1].url_edit)
+            let urlEdit = URL(string: document.document_pages[pageNo - 1].url_edit)
             if urlEdit != nil {
-                stringPath = document.document_pages[pageN - 1].url_edit
+                stringPath = document.document_pages[pageNo - 1].url_edit
             } else {
-                stringPath = document.document_pages[pageN - 1].url_original
+                stringPath = document.document_pages[pageNo - 1].url_original
             }
             
             let url = URL(string: stringPath)
@@ -278,7 +247,6 @@ class DocumentsVC: UIViewController {
                 if (error != nil) {
                     //Failure code here
                     showAlert(message: "写真の読み込みに失敗しました。ネットワークの状態を確認してください。", view: self)
-                    self.hud.dismiss()
                 } else {
                     //Success code here
                     let canvasView = Canvas.init(canvasId: "photo", backgroundImage: img.image)
@@ -287,41 +255,23 @@ class DocumentsVC: UIViewController {
                     canvasView.clipsToBounds = true
                     self.viewDoc.addSubview(canvasView)
                     self.canvasView = canvasView
-                    self.hud.dismiss()
                 }
+                SVProgressHUD.dismiss()
             }
-        }
-        
-        if isTouch! {
-            self.canvasView?.setDrawingMode(mode: 5)
-            panGesture.isEnabled = true
-            pinchGesture.isEnabled = true
-        } else {
-            self.canvasView?.setDrawingMode(mode: 1)
-            panGesture.isEnabled = false
-            pinchGesture.isEnabled = false
         }
     }
     
     func onSaveImage(image: UIImage,completion:@escaping(Bool) -> ()) {
 
-        guard let carteID = carteID else {
+        guard let carteID = carteID,let pageNumber = pageNo else {
             completion(false)
             return
         }
         
-        guard let pageNumber = pageNo else {
-            completion(false)
-            return
-        }
-  
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
-        self.imageConverted = UIImageJPEGRepresentation(image, 1.0)
+        self.imageConverted = UIImageJPEGRepresentation(image, 1)
         
         //check document is template or not
         if document.is_template == 1 {
@@ -347,55 +297,36 @@ class DocumentsVC: UIViewController {
                         
                         editDocumentInCarte(documentPageID: self.arrDocumentPageID[pageNumber - 1], page: pageNumber, imageData: self.imageConverted!,isEdited: self.isEdited!) { (success) in
                             if success {
-                                
                                 if self.isModified == true {
                                     self.isModified = false
                                 }
-                                
                                 completion(true)
-                               
-                                hud.dismiss()
                             } else {
-                                
                                 completion(false)
-                                
-                                hud.dismiss()
-                 
                                 showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
                             }
+                            SVProgressHUD.dismiss()
                         }
                     } else {
-                        
                         completion(false)
-                        
-                        hud.dismiss()
-        
                         showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
+                        SVProgressHUD.dismiss()
                     }
                 }
             } else {
-                guard let id = self.arrDocumentPageID[pageNumber - 1] as Int? else {
-                    return
-                }
+                guard let id = self.arrDocumentPageID[pageNumber - 1] as Int? else { return }
                 
                 editDocumentInCarte(documentPageID: id, page: pageNumber, imageData: self.imageConverted!,isEdited: self.isEdited!) { (success) in
                     if success {
-                        
                         if self.isModified == true {
                             self.isModified = false
                         }
-                        
                         completion(true)
-                    
-                        hud.dismiss()
                     } else {
-                        
                         completion(false)
-                        
-                        hud.dismiss()
-                   
                         showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
                     }
+                    SVProgressHUD.dismiss()
                 }
             }
             
@@ -412,18 +343,12 @@ class DocumentsVC: UIViewController {
                     if self.isModified == true {
                         self.isModified = false
                     }
-                    
                     completion(true)
-                 
-                    hud.dismiss()
                 } else {
-                    
                     completion(false)
-                    
-                    hud.dismiss()
-          
                     showAlert(message: "画像の保存に失敗しました。ネットワークの状態を確認してください。", view: self)
                 }
+                SVProgressHUD.dismiss()
             }
         }
     }
@@ -440,7 +365,7 @@ class DocumentsVC: UIViewController {
     func checkDocumentEditOrNot(completion:@escaping(Bool) -> ()) {
         
         if isModified == true {
-            let alert = UIAlertController(title: "ドキュメント", message: kALERT_SAVE_DOCUMENT_NOTIFICATION, preferredStyle: UIAlertControllerStyle.alert)
+            let alert = UIAlertController(title: "ドキュメント", message: MSG_ALERT.kALERT_SAVE_DOCUMENT_NOTIFICATION, preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "はい", style: .default, handler:{ (UIAlertAction) in
                 completion(false)
             }))
@@ -470,12 +395,8 @@ class DocumentsVC: UIViewController {
         currentBrush.width = 1
         
         isTouch = false
-        self.canvasView?.setDrawingMode(mode: 1)
-        panGesture.isEnabled = false
-        pinchGesture.isEnabled = false
-        
         resetButtonState()
-        btnEdit.backgroundColor = kPENSELECT
+        btnEdit.backgroundColor = COLOR_SET.kPENSELECT
     }
     
     @IBAction func onUndo(_ sender: UIButton) {
@@ -488,24 +409,15 @@ class DocumentsVC: UIViewController {
     
     @IBAction func onTouch(_ sender: UIButton) {
         isTouch = true
-        self.canvasView?.setDrawingMode(mode: 5)
-        panGesture.isEnabled = true
-        pinchGesture.isEnabled = true
-        
         resetButtonState()
-        btnTouch.backgroundColor = kPENSELECT
     }
     
     @IBAction func onEraser(_ sender: UIButton) {
         currentBrush.width = 20
         
         isTouch = false
-        self.canvasView?.setDrawingMode(mode: 4)
-        panGesture.isEnabled = false
-        pinchGesture.isEnabled = false
-        
         resetButtonState()
-        btnEraser.backgroundColor = kPENSELECT
+        btnEraser.backgroundColor = COLOR_SET.kPENSELECT
     }
     
     @IBAction func onPrint(_ sender: UIButton) {
@@ -531,12 +443,7 @@ class DocumentsVC: UIViewController {
                 }
                 
                 self.isTouch = true
-                self.canvasView?.setDrawingMode(mode: 5)
-                self.panGesture.isEnabled = true
-                self.pinchGesture.isEnabled = true
-                
                 self.resetButtonState()
-                self.btnTouch.backgroundColor = kPENSELECT
             }
         }
     }
@@ -547,21 +454,16 @@ class DocumentsVC: UIViewController {
 // MARK: - Canvas Delegate
 //*****************************************************************
 
-extension DocumentsVC: CanvasDelegate{
-    
+extension DocumentsVC: CanvasDelegate {
     func brush() -> Brush? {
         return currentBrush
     }
     
     func canvas(_ canvas: Canvas, didUpdateDrawing drawing: Drawing, mergedImage image: UIImage?){
-        
         if self.isModified == false {
             self.isModified = true
         }
         
         updateToolBarButtonStatus(canvas)
-    }
-    
-    func updateNewColor(color: UIColor) {
     }
 }

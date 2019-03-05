@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CarteDocumentPopupVC" customModule="ABCarte2" customModuleProvider="target">
+            <connections>
+                <outlet property="tblConsent" destination="5zZ-hg-dRc" id="aix-vl-KsQ"/>
+                <outlet property="tblCounselling" destination="piQ-BO-9zR" id="bJ1-O1-rbv"/>
+                <outlet property="tblHandwrittingCarte" destination="meP-O3-CC2" id="X4u-ii-ibQ"/>
+                <outlet property="tblOutlineDoc" destination="IKC-ZF-SmR" id="bCh-O7-U9W"/>
+                <outlet property="view" destination="KRd-9v-pd4" id="7QK-i3-xo0"/>
+                <outlet property="viewAdditionDoc" destination="IWV-lz-pih" id="qUY-l6-MYU"/>
+                <outlet property="viewConsent" destination="efb-Ar-AIk" id="l8r-XT-vK0"/>
+                <outlet property="viewCounselling" destination="tEq-YK-bJ6" id="ERc-GR-KnR"/>
+                <outlet property="viewHandwrittingCarte" destination="xeq-A0-n9C" id="dj7-Oj-OKO"/>
+                <outlet property="viewNormallyDoc" destination="jf4-vi-tOa" id="pGs-Sk-mXM"/>
+                <outlet property="viewOutlineDoc" destination="gbq-Z8-raw" id="7z1-kY-hWk"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="KRd-9v-pd4">
+            <rect key="frame" x="0.0" y="0.0" width="800" height="900"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="yP9-i4-jB4">
+                    <rect key="frame" x="30" y="40" width="740" height="840"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="jf4-vi-tOa">
+                            <rect key="frame" x="0.0" y="0.0" width="740" height="405"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="efb-Ar-AIk" customClass="RoundUIView" customModule="ABCarte2" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="360" height="405"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="同意書" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="91z-ZF-gwp">
+                                            <rect key="frame" x="20" y="10" width="320" height="24"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="80" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="5zZ-hg-dRc">
+                                            <rect key="frame" x="20" y="54" width="320" height="331"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </tableView>
+                                    </subviews>
+                                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="5zZ-hg-dRc" secondAttribute="bottom" constant="20" id="2ZX-g6-OtJ"/>
+                                        <constraint firstAttribute="trailing" secondItem="91z-ZF-gwp" secondAttribute="trailing" constant="20" id="Jek-eD-wai"/>
+                                        <constraint firstItem="91z-ZF-gwp" firstAttribute="top" secondItem="efb-Ar-AIk" secondAttribute="top" constant="10" id="Lfy-9x-DTj"/>
+                                        <constraint firstItem="91z-ZF-gwp" firstAttribute="leading" secondItem="efb-Ar-AIk" secondAttribute="leading" constant="20" id="Mp8-Ch-Fhe"/>
+                                        <constraint firstItem="5zZ-hg-dRc" firstAttribute="top" secondItem="91z-ZF-gwp" secondAttribute="bottom" constant="20" id="Y1Z-5P-E3y"/>
+                                        <constraint firstItem="5zZ-hg-dRc" firstAttribute="leading" secondItem="efb-Ar-AIk" secondAttribute="leading" constant="20" id="nod-fa-SXS"/>
+                                        <constraint firstAttribute="trailing" secondItem="5zZ-hg-dRc" secondAttribute="trailing" constant="20" id="q2p-4H-BZP"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="10"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </view>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tEq-YK-bJ6" customClass="RoundUIView" customModule="ABCarte2" customModuleProvider="target">
+                                    <rect key="frame" x="380" y="0.0" width="360" height="405"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="質問票" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YWM-ye-ubF">
+                                            <rect key="frame" x="20" y="10" width="320" height="24"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="80" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="piQ-BO-9zR">
+                                            <rect key="frame" x="20" y="54" width="320" height="331"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </tableView>
+                                    </subviews>
+                                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstItem="piQ-BO-9zR" firstAttribute="top" secondItem="YWM-ye-ubF" secondAttribute="bottom" constant="20" id="50A-ff-XIF"/>
+                                        <constraint firstAttribute="bottom" secondItem="piQ-BO-9zR" secondAttribute="bottom" constant="20" id="Q9b-p0-vfX"/>
+                                        <constraint firstItem="piQ-BO-9zR" firstAttribute="leading" secondItem="tEq-YK-bJ6" secondAttribute="leading" constant="20" id="S42-h5-N2e"/>
+                                        <constraint firstItem="YWM-ye-ubF" firstAttribute="leading" secondItem="tEq-YK-bJ6" secondAttribute="leading" constant="20" id="bCm-st-W1i"/>
+                                        <constraint firstAttribute="trailing" secondItem="piQ-BO-9zR" secondAttribute="trailing" constant="20" id="fSR-CP-Tjk"/>
+                                        <constraint firstAttribute="trailing" secondItem="YWM-ye-ubF" secondAttribute="trailing" constant="20" id="huG-Zh-1kS"/>
+                                        <constraint firstItem="YWM-ye-ubF" firstAttribute="top" secondItem="tEq-YK-bJ6" secondAttribute="top" constant="10" id="l9o-7z-odU"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="10"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </view>
+                            </subviews>
+                        </stackView>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="IWV-lz-pih">
+                            <rect key="frame" x="0.0" y="435" width="740" height="405"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xeq-A0-n9C" customClass="RoundUIView" customModule="ABCarte2" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="360" height="405"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="手書きカルテ" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R87-zT-a25">
+                                            <rect key="frame" x="20" y="10" width="320" height="24"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="80" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="meP-O3-CC2">
+                                            <rect key="frame" x="20" y="54" width="320" height="331"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </tableView>
+                                    </subviews>
+                                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstItem="R87-zT-a25" firstAttribute="top" secondItem="xeq-A0-n9C" secondAttribute="top" constant="10" id="1cI-ei-bW4"/>
+                                        <constraint firstAttribute="trailing" secondItem="R87-zT-a25" secondAttribute="trailing" constant="20" id="4zZ-IK-K1Q"/>
+                                        <constraint firstAttribute="bottom" secondItem="meP-O3-CC2" secondAttribute="bottom" constant="20" id="6BS-8s-bZ8"/>
+                                        <constraint firstItem="meP-O3-CC2" firstAttribute="leading" secondItem="xeq-A0-n9C" secondAttribute="leading" constant="20" id="XOw-5U-6pS"/>
+                                        <constraint firstItem="meP-O3-CC2" firstAttribute="top" secondItem="R87-zT-a25" secondAttribute="bottom" constant="20" id="aA4-Bq-bmp"/>
+                                        <constraint firstAttribute="trailing" secondItem="meP-O3-CC2" secondAttribute="trailing" constant="20" id="ebJ-vR-ldk"/>
+                                        <constraint firstItem="R87-zT-a25" firstAttribute="leading" secondItem="xeq-A0-n9C" secondAttribute="leading" constant="20" id="rnV-qD-UKy"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="10"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </view>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gbq-Z8-raw" customClass="RoundUIView" customModule="ABCarte2" customModuleProvider="target">
+                                    <rect key="frame" x="380" y="0.0" width="360" height="405"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="概要書面" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FSm-Os-5SY">
+                                            <rect key="frame" x="20" y="10" width="320" height="24"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="80" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="IKC-ZF-SmR">
+                                            <rect key="frame" x="20" y="54" width="320" height="331"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </tableView>
+                                    </subviews>
+                                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="IKC-ZF-SmR" secondAttribute="bottom" constant="20" id="4pD-dA-ydQ"/>
+                                        <constraint firstItem="FSm-Os-5SY" firstAttribute="top" secondItem="gbq-Z8-raw" secondAttribute="top" constant="10" id="74C-0N-ynB"/>
+                                        <constraint firstItem="IKC-ZF-SmR" firstAttribute="top" secondItem="FSm-Os-5SY" secondAttribute="bottom" constant="20" id="9Ji-vW-9su"/>
+                                        <constraint firstItem="IKC-ZF-SmR" firstAttribute="leading" secondItem="gbq-Z8-raw" secondAttribute="leading" constant="20" id="bpN-Qw-HNQ"/>
+                                        <constraint firstAttribute="trailing" secondItem="FSm-Os-5SY" secondAttribute="trailing" constant="20" id="kcF-WJ-E7O"/>
+                                        <constraint firstAttribute="trailing" secondItem="IKC-ZF-SmR" secondAttribute="trailing" constant="20" id="sOr-xn-i9U"/>
+                                        <constraint firstItem="FSm-Os-5SY" firstAttribute="leading" secondItem="gbq-Z8-raw" secondAttribute="leading" constant="20" id="woN-LN-1G5"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="10"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </view>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                </stackView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hEI-Vq-sNr">
+                    <rect key="frame" x="765" y="5" width="30" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="ARl-t0-ZkD"/>
+                        <constraint firstAttribute="height" constant="30" id="C4U-c4-hzR"/>
+                    </constraints>
+                    <state key="normal" image="closeIcon_white.png"/>
+                    <connections>
+                        <action selector="onClose:" destination="-1" eventType="touchUpInside" id="WMc-GX-poH"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="0.066666666669999999" green="0.1647058824" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="hEI-Vq-sNr" firstAttribute="top" secondItem="KRd-9v-pd4" secondAttribute="top" constant="5" id="4Lg-8s-FUR"/>
+                <constraint firstItem="MoY-Lm-dfC" firstAttribute="bottom" secondItem="yP9-i4-jB4" secondAttribute="bottom" constant="20" id="JgO-K1-r03"/>
+                <constraint firstItem="yP9-i4-jB4" firstAttribute="leading" secondItem="MoY-Lm-dfC" secondAttribute="leading" constant="30" id="UiN-LC-Rk4"/>
+                <constraint firstItem="yP9-i4-jB4" firstAttribute="top" secondItem="MoY-Lm-dfC" secondAttribute="top" constant="20" id="Wr9-3I-ute"/>
+                <constraint firstItem="MoY-Lm-dfC" firstAttribute="trailing" secondItem="yP9-i4-jB4" secondAttribute="trailing" constant="30" id="fK1-0d-gg2"/>
+                <constraint firstItem="MoY-Lm-dfC" firstAttribute="trailing" secondItem="hEI-Vq-sNr" secondAttribute="trailing" constant="5" id="g06-Dg-pLu"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="MoY-Lm-dfC"/>
+            <point key="canvasLocation" x="353.60000000000002" y="58.47076461769116"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="closeIcon_white.png" width="256" height="256"/>
+    </resources>
+</document>

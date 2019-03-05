@@ -35,12 +35,10 @@ class ResponsiblePopupVC: UIViewController {
     }
 
     @IBAction func onSearch(_ sender: UIButton) {
-        guard let text = tfResponsible.text else {
-            return
-        }
+        guard let text = tfResponsible.text else { return }
         
         if text.isEmpty {
-            showAlert(message: kALERT_INPUT_DATA, view: self)
+            showAlert(message: MSG_ALERT.kALERT_INPUT_DATA, view: self)
             return
         }
         

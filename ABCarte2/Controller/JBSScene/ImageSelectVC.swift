@@ -13,7 +13,7 @@ class ImageSelectVC: UIViewController {
     //Variable
     var arrRealFace = ["JBS_selectA.png","JBS_selectB.png","JBS_selectC.png","JBS_selectD.png","JBS_selectA_no.png","JBS_selectE.png"]
     var arrFace = ["JBS_UIkit-02select-A.png","JBS_UIkit-02select-B.png","JBS_UIkit-02select-C.png","JBS_UIkit-02select-D.png","JBS_UIkit-02select-A_noline.png","JBS_UIkit-02select-D_noline.png"]
-    var cellSelected: Int? = nil
+    var cellSelected: Int?
     
     //IBOutlet
     @IBOutlet weak var collectionView: UICollectionView!

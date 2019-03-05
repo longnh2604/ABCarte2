@@ -19,6 +19,8 @@
                 <outlet property="btnEdit" destination="tgz-11-vbt" id="f7H-yg-HzQ"/>
                 <outlet property="btnPreview" destination="899-rM-ALr" id="xn7-fK-GnO"/>
                 <outlet property="imvDoc" destination="u2J-qv-dpn" id="WMr-gI-enz"/>
+                <outlet property="imvLockConsent" destination="xFN-st-zuy" id="aUK-bW-kmq"/>
+                <outlet property="imvLockCounselling" destination="Nov-eY-p5m" id="mmt-op-GSd"/>
                 <outlet property="lblCreated" destination="Ba7-gp-Y3b" id="wgK-V8-pXr"/>
                 <outlet property="lblTotalPage" destination="VQR-69-C48" id="6iq-gj-A6c"/>
                 <outlet property="tblCusDoc" destination="OwZ-FA-OPi" id="hgy-3m-zwp"/>
@@ -36,14 +38,14 @@
                     <rect key="frame" x="20" y="70" width="660" height="710"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nophotoIcon.png" translatesAutoresizingMaskIntoConstraints="NO" id="u2J-qv-dpn">
-                            <rect key="frame" x="320" y="51" width="330" height="440"/>
+                            <rect key="frame" x="320" y="51.5" width="330" height="440"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="440" id="N1J-j9-yzG"/>
                                 <constraint firstAttribute="width" constant="330" id="hEu-q7-48p"/>
                             </constraints>
                         </imageView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="899-rM-ALr" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
-                            <rect key="frame" x="610" y="451" width="40" height="40"/>
+                            <rect key="frame" x="610" y="451.5" width="40" height="40"/>
                             <color key="backgroundColor" red="1" green="0.71330028000000001" blue="0.67377126070000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="40" id="N67-Yu-qtP"/>
@@ -61,17 +63,18 @@
                             </connections>
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="合計ページ:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VQR-69-C48">
-                            <rect key="frame" x="320" y="511" width="330" height="21"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <rect key="frame" x="320" y="511.5" width="330" height="21.5"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tgz-11-vbt" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
-                            <rect key="frame" x="430" y="660" width="90" height="30"/>
-                            <color key="backgroundColor" red="0.4549019608" green="0.20000000000000001" blue="0.070588235289999995" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                            <rect key="frame" x="430" y="650" width="90" height="40"/>
+                            <color key="backgroundColor" red="0.58072251080000004" green="0.066734083" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="30" id="aAG-es-4Y5"/>
+                                <constraint firstAttribute="height" constant="40" id="aAG-es-4Y5"/>
                             </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
                             <state key="normal" title="編集">
                                 <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </state>
@@ -85,12 +88,13 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aGX-r9-Ges" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
-                            <rect key="frame" x="320" y="660" width="90" height="30"/>
-                            <color key="backgroundColor" red="0.0" green="0.56904578210000001" blue="0.57461684940000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <rect key="frame" x="320" y="650" width="90" height="40"/>
+                            <color key="backgroundColor" red="0.0" green="0.32852089410000002" blue="0.57488495110000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="90" id="rNf-cw-zG2"/>
-                                <constraint firstAttribute="height" constant="30" id="yTe-jt-RS8"/>
+                                <constraint firstAttribute="height" constant="40" id="yTe-jt-RS8"/>
                             </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
                             <state key="normal" title="追加">
                                 <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </state>
@@ -104,33 +108,34 @@
                             </connections>
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="テンプレート" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lh6-om-kfQ">
-                            <rect key="frame" x="0.0" y="20" width="300" height="21"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <rect key="frame" x="0.0" y="20" width="300" height="21.5"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <tableView clipsSubviews="YES" tag="2" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="OwZ-FA-OPi">
-                            <rect key="frame" x="0.0" y="362" width="300" height="328"/>
+                            <rect key="frame" x="0.0" y="363" width="300" height="327"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </tableView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="お客様データ" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8qf-3k-HZE">
-                            <rect key="frame" x="0.0" y="321" width="300" height="21"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <rect key="frame" x="0.0" y="321.5" width="300" height="21.5"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="プレビュー" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gax-02-hXu">
-                            <rect key="frame" x="320" y="20" width="87" height="21"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <rect key="frame" x="320" y="20" width="92" height="21.5"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ioP-gc-ojS" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
-                            <rect key="frame" x="540" y="660" width="90" height="30"/>
+                            <rect key="frame" x="540" y="650" width="90" height="40"/>
                             <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="30" id="udz-49-pnX"/>
+                                <constraint firstAttribute="height" constant="40" id="udz-49-pnX"/>
                             </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
                             <state key="normal" title="閉じる">
                                 <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </state>
@@ -144,15 +149,15 @@
                             </connections>
                         </button>
                         <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Voh-Pq-MjM">
-                            <rect key="frame" x="0.0" y="51" width="300" height="250"/>
+                            <rect key="frame" x="0.0" y="51.5" width="300" height="250"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="250" id="cD3-4x-nnh"/>
                             </constraints>
                         </tableView>
                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="作成日：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ba7-gp-Y3b">
-                            <rect key="frame" x="320" y="552" width="330" height="21"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <rect key="frame" x="320" y="553" width="330" height="21.5"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
@@ -194,7 +199,7 @@
                 </view>
                 <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QOd-0R-OFU" customClass="RoundButton" customModule="ABCarte2" customModuleProvider="target">
                     <rect key="frame" x="20" y="10" width="200" height="50"/>
-                    <color key="backgroundColor" red="0.0" green="0.56904578210000001" blue="0.57461684940000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" red="0.0" green="0.32852089410000002" blue="0.57488495110000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="200" id="HqA-Jq-Zko"/>
                         <constraint firstAttribute="height" constant="50" id="cUs-BE-khm"/>
@@ -239,15 +244,33 @@
                         <action selector="onDocumentSelect:" destination="-1" eventType="touchUpInside" id="4Kh-Fw-mXZ"/>
                     </connections>
                 </button>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="btn_star_pay_plan.png" translatesAutoresizingMaskIntoConstraints="NO" id="Nov-eY-p5m">
+                    <rect key="frame" x="190" y="30" width="30" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="gxH-Xq-ZZp"/>
+                        <constraint firstAttribute="width" constant="30" id="qCC-DV-MAv"/>
+                    </constraints>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="btn_star_pay_plan.png" translatesAutoresizingMaskIntoConstraints="NO" id="xFN-st-zuy">
+                    <rect key="frame" x="420" y="30" width="30" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="3BD-O1-jfK"/>
+                        <constraint firstAttribute="height" constant="30" id="YvI-3t-dim"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <color key="backgroundColor" red="0.066666666669999999" green="0.1647058824" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="pSd-eE-zGW" firstAttribute="top" secondItem="QOd-0R-OFU" secondAttribute="bottom" constant="10" id="76j-rN-rj9"/>
+                <constraint firstItem="xFN-st-zuy" firstAttribute="bottom" secondItem="Mlx-1F-h6s" secondAttribute="bottom" id="798-Qf-1VQ"/>
                 <constraint firstItem="Mlx-1F-h6s" firstAttribute="centerY" secondItem="QOd-0R-OFU" secondAttribute="centerY" id="92t-i1-JaW"/>
+                <constraint firstItem="Nov-eY-p5m" firstAttribute="bottom" secondItem="QOd-0R-OFU" secondAttribute="bottom" id="CLX-sX-Pmc"/>
                 <constraint firstItem="Mlx-1F-h6s" firstAttribute="height" secondItem="QOd-0R-OFU" secondAttribute="height" id="Fgj-FY-H90"/>
                 <constraint firstItem="Mlx-1F-h6s" firstAttribute="leading" secondItem="QOd-0R-OFU" secondAttribute="trailing" constant="30" id="Ibl-sm-6dX"/>
                 <constraint firstItem="pSd-eE-zGW" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" constant="-20" id="Kg5-Pe-DlD"/>
                 <constraint firstItem="Lh6-om-kfQ" firstAttribute="leading" secondItem="QOd-0R-OFU" secondAttribute="leading" id="Oi2-mn-ssa"/>
+                <constraint firstItem="Nov-eY-p5m" firstAttribute="trailing" secondItem="QOd-0R-OFU" secondAttribute="trailing" id="RMM-Dt-uGu"/>
+                <constraint firstItem="xFN-st-zuy" firstAttribute="trailing" secondItem="Mlx-1F-h6s" secondAttribute="trailing" id="Sw1-T7-26x"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="pSd-eE-zGW" secondAttribute="trailing" constant="20" id="VWu-Sw-B37"/>
                 <constraint firstItem="QOd-0R-OFU" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="10" id="d87-i9-W38"/>
                 <constraint firstItem="QOd-0R-OFU" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="g2P-V2-4ef"/>
@@ -260,6 +283,7 @@
         </view>
     </objects>
     <resources>
+        <image name="btn_star_pay_plan.png" width="550" height="550"/>
         <image name="icon_zoom_black.png" width="100" height="100"/>
         <image name="nophotoIcon.png" width="662" height="663"/>
     </resources>

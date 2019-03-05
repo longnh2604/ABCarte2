@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "269969EA0AB134BCCB4CA201018F51EA"
+               BlueprintIdentifier = "7C188E16A6B68030F5D93A07FC773662"
                BuildableName = "NXDrawKit.bundle"
                BlueprintName = "NXDrawKit-NXDrawKit"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "269969EA0AB134BCCB4CA201018F51EA"
+            BlueprintIdentifier = "7C188E16A6B68030F5D93A07FC773662"
             BuildableName = "NXDrawKit.bundle"
             BlueprintName = "NXDrawKit-NXDrawKit"
             ReferencedContainer = "container:Pods.xcodeproj">

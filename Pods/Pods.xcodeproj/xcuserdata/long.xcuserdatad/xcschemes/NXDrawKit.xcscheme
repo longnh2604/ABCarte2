@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "099D5CBEDED045B8F458BAA6F2A1155C"
+               BlueprintIdentifier = "B557A3DAF9E1CC2A47131B3698A9911E"
                BlueprintName = "NXDrawKit"
                ReferencedContainer = "container:Pods.xcodeproj"
                BuildableName = "NXDrawKit.framework">

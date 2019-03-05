@@ -10,7 +10,6 @@ import UIKit
 import RealmSwift
 import Alamofire
 import SDWebImage
-import JGProgressHUD
 
 class CarteListVC: UIViewController {
     
@@ -29,7 +28,7 @@ class CarteListVC: UIViewController {
     
     var indexDelete : [Int] = []
     var selectedIndexPath: NSIndexPath?
-    let hud = JGProgressHUD(style: .dark)
+    weak var bottomPanelView: BottomPanelView!
     
     //IBOutlet
     @IBOutlet weak var tblCarte: UITableView!
@@ -45,7 +44,6 @@ class CarteListVC: UIViewController {
     @IBOutlet weak var lblMobile: UILabel!
     @IBOutlet weak var lblBirthdate: UILabel!
     @IBOutlet weak var lblBloodtype: UILabel!
-    @IBOutlet weak var btnHelp: UIButton!
     @IBOutlet weak var viewTop: UIView!
     @IBOutlet weak var btnComplete: UIButton!
     @IBOutlet weak var btnAddCarte: UIButton!
@@ -56,34 +54,29 @@ class CarteListVC: UIViewController {
     @IBOutlet weak var btnSecret: RoundButton!
     @IBOutlet weak var lblLastComeTop: UILabel!
     @IBOutlet weak var btnGallery: UIButton!
-    @IBOutlet weak var imv_lock_memo_secret: UIImageView!
+    @IBOutlet weak var viewPanelTop: UIView!
+    @IBOutlet weak var cusView: GradientView!
+    @IBOutlet weak var btnEdit: RoundButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        loadData()
-        
-        setupUI()
+        loadData()  
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         needLoad = true
     }
-    
-    func showLoading() {
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
-    }
 
     func loadData() {
         if needLoad == true {
             //add loading view
-            showLoading()
+            SVProgressHUD.show(withStatus: "読み込み中")
+            SVProgressHUD.setDefaultMaskType(.clear)
             
             //remove before get new
             cartesData.removeAll()
@@ -96,7 +89,6 @@ class CarteListVC: UIViewController {
                 if success {
                     
                     //get category data
-                    let realm = RealmServices.shared.realm
                     self.categories = realm.objects(StampCategoryData.self)
                     
                     self.categoriesData.removeAll()
@@ -111,8 +103,7 @@ class CarteListVC: UIViewController {
                     
                     getCustomerCartesWithMemos(cusID: self.customer.id) { (success) in
                         if success {
-                    
-                            let realm = RealmServices.shared.realm
+               
                             self.cartes = realm.objects(CarteData.self)
                             
                             for i in 0 ..< self.cartes.count {
@@ -120,18 +111,15 @@ class CarteListVC: UIViewController {
                             }
                             
                             self.tblCarte.reloadData()
-                            
-                            self.hud.dismiss()
                         } else {
-                    
-                            showAlert(message: kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
-                            self.hud.dismiss()
+                            showAlert(message: MSG_ALERT.kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
                         }
+                        SVProgressHUD.dismiss()
                     }
                     
                 } else {
-                    showAlert(message: kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
-                    self.hud.dismiss()
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
+                    SVProgressHUD.dismiss()
                 }
             }
             needLoad = false
@@ -166,8 +154,6 @@ class CarteListVC: UIViewController {
         let barButton = UIBarButtonItem(customView: btnLeftMenu)
         self.navigationItem.leftBarButtonItem = barButton
 
-        btnHelp.layer.cornerRadius = 15
-        btnHelp.clipsToBounds = true
         viewGender.layer.cornerRadius = 5
         viewGender.clipsToBounds = true
         viewTop.layer.cornerRadius = 5
@@ -179,6 +165,50 @@ class CarteListVC: UIViewController {
         tblCarte.allowsSelection = true
 
         updateTopView()
+        
+        bottomPanelView = BottomPanelView.instanceFromNib(self)
+        view.addSubview(bottomPanelView)
+        bottomPanelView.snp.makeConstraints { (make) -> Void in
+            make.height.height.equalTo(60)
+            make.leading.equalTo(self.view).inset(0)
+            make.trailing.equalTo(self.view).inset(0)
+            make.bottom.equalTo(self.view)
+        }
+        bottomPanelView.btnLogout.isHidden = true
+        bottomPanelView.btnSetting.isHidden = true
+        
+        if let set = UserDefaults.standard.integer(forKey: "colorset") as Int? {
+            switch set {
+            case 0:
+                cusView.topColor = COLOR_SET000.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET000.kHEADER_BACKGROUND_COLOR_DOWN
+            case 1:
+                cusView.topColor = COLOR_SET001.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET001.kHEADER_BACKGROUND_COLOR_DOWN
+            case 2:
+                cusView.topColor = COLOR_SET002.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET002.kHEADER_BACKGROUND_COLOR_DOWN
+            case 3:
+                cusView.topColor = COLOR_SET003.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET003.kHEADER_BACKGROUND_COLOR_DOWN
+            case 4:
+                cusView.topColor = COLOR_SET004.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET004.kHEADER_BACKGROUND_COLOR_DOWN
+            case 5:
+                cusView.topColor = COLOR_SET005.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET005.kHEADER_BACKGROUND_COLOR_DOWN
+            case 6:
+                cusView.topColor = COLOR_SET006.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET006.kHEADER_BACKGROUND_COLOR_DOWN
+            case 7:
+                cusView.topColor = COLOR_SET007.kHEADER_BACKGROUND_COLOR_UP
+                cusView.bottomColor = COLOR_SET007.kHEADER_BACKGROUND_COLOR_DOWN
+            default:
+                break
+            }
+        }
+        setViewColorStyle(view: viewPanelTop, type: 1)
+        setButtonColorStyle(button: btnEdit, type: 1)
     }
 
     func updateTopView() {
@@ -201,10 +231,10 @@ class CarteListVC: UIViewController {
             viewGender.backgroundColor = UIColor.lightGray
         } else if customer.gender == 1 {
             lblCusGender.text = "男性"
-            viewGender.backgroundColor = kMALE_COLOR
+            viewGender.backgroundColor = COLOR_SET.kMALE_COLOR
         } else {
             lblCusGender.text = "女性"
-            viewGender.backgroundColor = kFEMALE_COLOR
+            viewGender.backgroundColor = COLOR_SET.kFEMALE_COLOR
         }
 
         lblCusNo.text = customer.customer_no
@@ -237,39 +267,36 @@ class CarteListVC: UIViewController {
         }
         
         if customer.memo1.count > 0 {
-            btnMemo1.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            setButtonColorStyle(button: btnMemo1,type: 0)
         } else {
             btnMemo1.backgroundColor = UIColor.lightGray
         }
         
         if customer.memo2.count > 0 {
-            btnMemo2.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            setButtonColorStyle(button: btnMemo2,type: 0)
         } else {
             btnMemo2.backgroundColor = UIColor.lightGray
         }
         
         if customer.onSecret == 1 {
-            btnSecret.backgroundColor = kMEMO_HAS_CONTENT_COLOR
+            setButtonColorStyle(button: btnSecret,type: 0)
         } else {
             btnSecret.backgroundColor = UIColor.lightGray
         }
         
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kSecretMemo.rawValue) {
-            imv_lock_memo_secret.isHidden = true
+            btnSecret.isHidden = false
         } else {
-            imv_lock_memo_secret.isHidden = false
+            btnSecret.isHidden = true
         }
     }
 
     @objc func back(sender: UIBarButtonItem) {
         // Go back to the previous ViewController
         showDeleteOption(status: false)
-        
         _ = navigationController?.popViewController(animated: true)
     }
     
-    
-
     @objc func dateChanged(_ datePicker: UIDatePicker) {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy年MM月dd日"
@@ -279,10 +306,6 @@ class CarteListVC: UIViewController {
     //*****************************************************************
     // MARK: - Action
     //*****************************************************************
-
-    @IBAction func onHelp(_ sender: UIButton) {
-        displayInfo(acc_name: accounts[0].acc_name, acc_id: accounts[0].account_id,view: self)
-    }
 
     @IBAction func onAddNewCarte(_ sender: UIButton) {
         if let vc = self.storyboard?.instantiateViewController(withIdentifier:"AddCartePopupVC") as? AddCartePopupVC {
@@ -321,7 +344,7 @@ class CarteListVC: UIViewController {
             }
             
         } else {
-            showAlert(message: kALERT_ACCOUNT_CANT_ACCESS, view: self)
+            showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
         }
     }
     
@@ -338,7 +361,7 @@ class CarteListVC: UIViewController {
             }
             
         } else {
-            showAlert(message: kALERT_ACCOUNT_CANT_ACCESS, view: self)
+            showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
         }
     }
     
@@ -355,7 +378,7 @@ class CarteListVC: UIViewController {
             newPopup.delegate = self
             self.present(newPopup, animated: true, completion: nil)
         } else {
-            showAlert(message: kALERT_ACCOUNT_CANT_ACCESS, view: self)
+            showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
         }
         
     }
@@ -364,7 +387,9 @@ class CarteListVC: UIViewController {
         if let viewController = storyboard?.instantiateViewController(withIdentifier: "PhotoCollectionVC") as? PhotoCollectionVC {
             if let navigator = navigationController {
                 viewController.customer = customer
-                viewController.cartesData = cartesData
+                
+                showDeleteOption(status: false)
+                
                 navigator.pushViewController(viewController, animated: true)
             }
         }
@@ -374,7 +399,7 @@ class CarteListVC: UIViewController {
         
         //check customer has exist or not
         guard let carte = cartes else {
-            showAlert(message: kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
+            showAlert(message: MSG_ALERT.kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
             return
         }
         
@@ -411,7 +436,8 @@ class CarteListVC: UIViewController {
             let confirm = UIAlertAction(title: "OK", style: .default) { UIAlertAction in
                 
                 //add loading view
-                self.showLoading()
+                SVProgressHUD.show(withStatus: "読み込み中")
+                SVProgressHUD.setDefaultMaskType(.clear)
                 
                 self.indexDelete.removeAll()
                 for carte in self.cartes.filter("selected_status = 1") {
@@ -439,15 +465,14 @@ class CarteListVC: UIViewController {
                                 }
                                 
                                 self.tblCarte.reloadData()
-                                self.hud.dismiss()
                             } else {
-                                self.hud.dismiss()
-                         
+                                showAlert(message: MSG_ALERT.kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
                             }
+                            SVProgressHUD.dismiss()
                         }
                     } else {
-            
-                        self.hud.dismiss()
+                        showAlert(message: MSG_ALERT.kALERT_CANT_DELETE_CARTE , view: self)
+                        SVProgressHUD.dismiss()
                     }
                 }
             }
@@ -458,7 +483,7 @@ class CarteListVC: UIViewController {
                 self.present(alert, animated: true, completion: nil)
             }
         } else {
-            showAlert(message: kALERT_SELECT_CARTE_2_DELETE, view: self)
+            showAlert(message: MSG_ALERT.kALERT_SELECT_CARTE_2_DELETE, view: self)
         }
     }
     
@@ -475,29 +500,46 @@ class CarteListVC: UIViewController {
     }
 }
 
+////*****************************************************************
+//// MARK: - DailyExaminationPopupVC Delegate
+////*****************************************************************
+//
+//extension CarteListVC: DailyExaminationPopupVCDelegate {
+//
+//    func onEditDocument(document: DocumentData, carteID: Int) {
+//        if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kCounselling.rawValue) {
+//
+//            guard let storyBoard: UIStoryboard = UIStoryboard(name: "Other", bundle: nil) as UIStoryboard? else { return }
+//
+//            guard let vc = storyBoard.instantiateViewController(withIdentifier: "DocumentsVC") as? DocumentsVC else { return }
+//
+//            vc.customer = customer
+//            vc.document = document
+//            vc.carteID = carteID
+//            self.navigationController?.pushViewController(vc, animated: true)
+//        } else {
+//            showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
+//        }
+//    }
+//}
+
 //*****************************************************************
-// MARK: - DailyExaminationPopupVC Delegate
+// MARK: - CarteDocumentPopupVC Delegate
 //*****************************************************************
 
-extension CarteListVC: DailyExaminationPopupVCDelegate {
+extension CarteListVC: CarteDocumentPopupVCDelegate {
     
-    func onEditDocument(document: DocumentData, carteID: Int) {
+    func onDocSelected(document: DocumentData, carteID: Int) {
         if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kCounselling.rawValue) {
             
-            guard let storyBoard: UIStoryboard = UIStoryboard(name: "Other", bundle: nil) as UIStoryboard? else {
-                return
-            }
-            
-            guard let vc = storyBoard.instantiateViewController(withIdentifier: "DocumentsVC") as? DocumentsVC else {
-                return
-            }
-            
+            guard let storyBoard: UIStoryboard = UIStoryboard(name: "Other", bundle: nil) as UIStoryboard? else { return }
+            guard let vc = storyBoard.instantiateViewController(withIdentifier: "NewDocumentVC") as? NewDocumentVC else { return }
             vc.customer = customer
             vc.document = document
             vc.carteID = carteID
             self.navigationController?.pushViewController(vc, animated: true)
         } else {
-            showAlert(message: kALERT_ACCOUNT_CANT_ACCESS, view: self)
+            showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
         }
     }
 }
@@ -554,20 +596,29 @@ extension CarteListVC: UITableViewDelegate, UITableViewDataSource {
 
 extension CarteListVC: CarteCellDelegate {
     func didDailyReportPress(tag: Int) {
-        guard let newPopup = DailyExaminationPopupVC(nibName: "DailyExaminationPopupVC", bundle: nil) as DailyExaminationPopupVC? else {
-            return
+        
+        if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kCarteDocs.rawValue) {
+            guard let newPopup = CarteDocumentPopupVC(nibName: "CarteDocumentPopupVC", bundle: nil) as CarteDocumentPopupVC? else { return }
+            
+            if GlobalVariables.sharedManager.appLimitation.contains(AppFunctions.kAdditionalDoc.rawValue) {
+                newPopup.modalPresentationStyle = UIModalPresentationStyle.pageSheet
+            } else {
+                newPopup.modalPresentationStyle = UIModalPresentationStyle.formSheet
+            }
+
+            newPopup.preferredContentSize = CGSize(width: 800, height: 700)
+            newPopup.carteID = cartesData[tag].id
+            newPopup.delegate = self
+            self.present(newPopup, animated: true, completion: nil)
+        } else {
+            showAlert(message: MSG_ALERT.kALERT_ACCOUNT_CANT_ACCESS, view: self)
         }
         
-        newPopup.modalPresentationStyle = UIModalPresentationStyle.formSheet
-        newPopup.preferredContentSize = CGSize(width: 700, height: 800)
-        newPopup.carteID = cartesData[tag].id
-        newPopup.delegate = self
-        self.present(newPopup, animated: true, completion: nil)
     }
     
     func didAvatarPress(tag: Int) {
         if cartesData.count == 0 {
-            showAlert(message: kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
+            showAlert(message: MSG_ALERT.kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
             return
         }
         
@@ -580,6 +631,7 @@ extension CarteListVC: CarteCellDelegate {
                 for i in 0 ..< cartesData.count {
                     if cartesData[i].id == tag {
                         viewController.carte = cartesData[i]
+                        viewController.accountPicLimit = accounts[0].pic_limit
                         navigator.pushViewController(viewController, animated: true)
                     }
                 }
@@ -617,11 +669,11 @@ extension CarteListVC: CarteCellDelegate {
                     viewController.customer = customer
                     
                     guard let cart = cartesData.count as Int? else {
-                        showAlert(message: kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
+                        showAlert(message: MSG_ALERT.kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
                         return
                     }
                     if cart == 0 {
-                        showAlert(message: kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
+                        showAlert(message: MSG_ALERT.kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
                         return
                     }
                     
@@ -657,7 +709,8 @@ extension CarteListVC: AddCartePopupVCDelegate {
         
         if isAllow {
             
-            showLoading()
+            SVProgressHUD.show(withStatus: "読み込み中")
+            SVProgressHUD.setDefaultMaskType(.clear)
             
             addCarte(cusID: customer.id, date: time) { (success) in
                 if success {
@@ -680,21 +733,18 @@ extension CarteListVC: AddCartePopupVCDelegate {
                             }
                             
                             self.tblCarte.reloadData()
-                            self.hud.dismiss()
                         } else {
-                   
-                            self.hud.dismiss()
-                            showAlert(message: kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
+                            showAlert(message: MSG_ALERT.kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
                         }
+                        SVProgressHUD.dismiss()
                     }
                 } else {
-    
-                    self.hud.dismiss()
-                    showAlert(message: kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
+                    showAlert(message: MSG_ALERT.kALERT_CANT_GET_CARTE_INFO_PLEASE_CHECK_NETWORK, view: self)
                 }
+                SVProgressHUD.dismiss()
             }
         } else {
-            showAlert(message: kALERT_CARTE_EXISTS_ALREADY, view: self)
+            showAlert(message: MSG_ALERT.kALERT_CARTE_EXISTS_ALREADY, view: self)
         }
     }
 }
@@ -719,9 +769,10 @@ extension CarteListVC: SecretPopupVCDelegate {
 extension CarteListVC: PasswordInputVCDelegate {
     func onPasswordInput(password: String, cusData: CustomerData) {
         
-        showLoading()
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
-        getAccessSecretMemo(password: password) { (success) in
+        getAccessSecretMemo(password: password) { (success, msg) in
             if success {
                 guard let newPopup = SecretPopupVC(nibName: "SecretPopupVC", bundle: nil) as SecretPopupVC? else {
                     return
@@ -733,11 +784,10 @@ extension CarteListVC: PasswordInputVCDelegate {
                 newPopup.authenPass = password
                 newPopup.delegate = self
                 self.present(newPopup, animated: true, completion: nil)
-                self.hud.dismiss()
             } else {
-                showAlert(message: kALERT_WRONG_PASSWORD, view: self)
-                self.hud.dismiss()
+                showAlert(message: msg, view: self)
             }
+            SVProgressHUD.dismiss()
         }
     }
 }
@@ -764,5 +814,16 @@ extension CarteListVC: RegCustomerPopupDelegate {
         default:
             break
         }
+    }
+}
+
+//*****************************************************************
+// MARK: - BottomPanelView Delegate
+//*****************************************************************
+
+extension CarteListVC: BottomPanelViewDelegate {
+
+    func tapInfo() {
+        displayInfo(acc_name: accounts[0].acc_name, acc_id: accounts[0].account_id,view: self)
     }
 }

@@ -193,12 +193,12 @@ func onEraseDeviceToken(userName:String,userPass:String,deviceID:String,token:St
             if json.intValue == 1 {
                 completion(true,"Complete")
             } else {
-                completion(false,kALERT_WRONG_PASSWORD)
+                completion(false,MSG_ALERT.kALERT_WRONG_PASSWORD)
             }
 
         case.failure(let error):
             print(error)
-            completion(false,kALERT_INTERNET_NOT_CONNECTED_PLEASE_CHECK_AGAIN)
+            completion(false,MSG_ALERT.kALERT_INTERNET_NOT_CONNECTED_PLEASE_CHECK_AGAIN)
         }
     }
 }
@@ -243,7 +243,7 @@ func getAccountInfo(completion:@escaping(Bool) -> ()) {
     }
 }
 
-//Update Account Secret Memo Pass
+//Update Account Memo Pass
 func updateAccountPass(currentP:String,newP:String,completion:@escaping(Bool) -> ()) {
     
     let url = kAPI_URL + kAPI_ACC + "/reset-password"
@@ -305,37 +305,37 @@ func updateAccountFavoriteColors(accountID:Int,favColors:String,completion:@esca
     }
 }
 
-//Access Secret Memo
-func getAccessAccount(password:String,completion:@escaping(Bool) -> ()) {
-    
-    let url = kAPI_URL + kAPI_ACC + "/secret-memo-auth"
-    
-    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
-    let bear = "Bearer " + secondTok
-    let headers = ["Authorization" : bear,"Content-Type": "application/x-www-form-urlencoded"]
-    
-    let parameters = [
-        "password": password
-    ]
-    
-    Alamofire.request(url, method: .post, parameters: parameters, encoding: URLEncoding.httpBody, headers: headers).responseJSON { (response:DataResponse<Any>) in
-        debugPrint(response)
-        
-        switch(response.result) {
-        case.success(let data):
-            let json = JSON(data)
-            let code = json["code"]
-            if code == 0 {
-                completion(false)
-            } else {
-                completion(true)
-            }
-        case.failure(let error):
-            print(error)
-            completion(false)
-        }
-    }
-}
+////Access Secret Memo
+//func getAccessAccount(password:String,completion:@escaping(Bool) -> ()) {
+//
+//    let url = kAPI_URL + kAPI_ACC + "/secret-memo-auth"
+//
+//    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
+//    let bear = "Bearer " + secondTok
+//    let headers = ["Authorization" : bear,"Content-Type": "application/x-www-form-urlencoded"]
+//
+//    let parameters = [
+//        "password": password
+//    ]
+//
+//    Alamofire.request(url, method: .post, parameters: parameters, encoding: URLEncoding.httpBody, headers: headers).responseJSON { (response:DataResponse<Any>) in
+//        debugPrint(response)
+//
+//        switch(response.result) {
+//        case.success(let data):
+//            let json = JSON(data)
+//            let code = json["code"]
+//            if code == 0 {
+//                completion(false)
+//            } else {
+//                completion(true)
+//            }
+//        case.failure(let error):
+//            print(error)
+//            completion(false)
+//        }
+//    }
+//}
 
 //Update Account Secret Memo Pass
 func updateAccountSecretMemoPass(password:String,completion:@escaping(Bool) -> ()) {
@@ -367,28 +367,6 @@ func updateAccountSecretMemoPass(password:String,completion:@escaping(Bool) -> (
 // MARK: - Customers
 //*****************************************************************
 
-//Get Customers
-func searchCustomers(completion:@escaping(Bool) -> ()) {
-    
-    let url = kAPI_URL + kAPI_CUS_SEARCH
-    
-    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
-    let bear = "Bearer " + secondTok
-    let headers = ["Authorization" : bear]
-    
-    Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
-        debugPrint(response)
-        
-        switch(response.result) {
-        case.success( _):
-            completion(true)
-        case.failure(let error):
-            print(error)
-            completion(false)
-        }
-    }
-}
-
 //View Customer
 func onViewCustomer(cusID:Int,completion:@escaping(CustomerData)->()) {
     
@@ -419,14 +397,14 @@ func onViewCustomer(cusID:Int,completion:@escaping(CustomerData)->()) {
 }
 
 //Get Customers
-func getCustomers(page:Int,completion: @escaping(Bool) -> ()) {
+func getCustomers(page:Int?,completion:@escaping(Bool) -> ()) {
 
-    var url = kAPI_URL + kAPI_CUS
-    //first call
-    if page == 1 {
-        url.append("?expand=fcSecretMemos")
+    var url = kAPI_URL + kAPI_CUS + "?expand=fcSecretMemos"
+    
+    if page != nil {
+        url.append("&page=\(page!)")
     } else {
-        url.append("?page=\(page)&expand=fcSecretMemos")
+        url.append("&page=1")
     }
     
     let secondTok: String = UserDefaults.standard.string(forKey: "token")!
@@ -436,42 +414,47 @@ func getCustomers(page:Int,completion: @escaping(Bool) -> ()) {
     Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
         debugPrint(response)
         
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
-        }
-        
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
-        }
+        onConvertHeaderResult(res: responseR)
         
         switch(response.result) {
         case.success(let data):
             let json = JSON(data)
+            
             if (json.count > 0) {
-             
+                
                 for i in 0 ..< json.count {
                     getCustomerData(data: json[i])
                 }
-                completion(true)
+                
+                //for pagination
+                if let currTemp = GlobalVariables.sharedManager.pageCurrTemp {
+                    if GlobalVariables.sharedManager.pageCurr! < currTemp {
+                        getCustomers(page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
+                    } else {
+                        completion(true)
+                    }
+                } else {
+                    completion(true)
+                }
+
             } else {
-         
                 completion(true)
             }
+                
+//                //for fetching all data in one time
+//                if GlobalVariables.sharedManager.pageCurr! < GlobalVariables.sharedManager.pageTotal! {
+//                    getCustomers(page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
+//                } else {
+//                    completion(true)
+//                }
+//            } else {
+//                completion(true)
+//            }
         case.failure(let error):
             print(error)
             completion(false)
@@ -672,16 +655,16 @@ func deleteCustomer(ids:[Int],completion:@escaping(Bool) -> ()) {
 //*****************************************************************
 
 //Get All Cartes
-func getAllCartes(page:Int?,completion:@escaping(Bool) -> ()) {
+func getAllCartesWithCustomerInfo(page:Int?,completion:@escaping(Bool) -> ()) {
     
-    var url = kAPI_URL + kAPI_CARTE
+    var url = kAPI_URL + kAPI_CARTE + "?expand=fcCustomer"
     
     let secondTok: String = UserDefaults.standard.string(forKey: "token")!
     let bear = "Bearer " + secondTok
     let headers = ["Authorization" : bear]
     
     if page != nil {
-        url.append("?page=\(page!)")
+        url.append("&page=\(page!)")
     }
     
     Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
@@ -718,12 +701,12 @@ func getAllCartes(page:Int?,completion:@escaping(Bool) -> ()) {
             if (json.count > 0) {
                 
                 for i in 0 ..< json.count {
-                    getCartesData(data: json[i])
+                    getCartesDataWithCustomer(data: json[i])
                 }
                 
                 if GlobalVariables.sharedManager.pageCurr! < GlobalVariables.sharedManager.pageTotal! {
           
-                    getAllCartes(page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
+                    getAllCartesWithCustomerInfo(page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
                 } else {
              
                     completion(true)
@@ -923,40 +906,6 @@ func deleteCarte(ids:[Int],completion:@escaping(Bool) -> ()) {
     }
 }
 
-//get documents from carte
-func onGetDocumentsFromCarte(carteID:Int,completion:@escaping(Bool) -> ()) {
-    
-    let url = kAPI_URL + kAPI_CARTE + "/\(carteID)?expand=fcDocuments"
-    
-    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
-    let bear = "Bearer " + secondTok
-    let headers = ["Authorization" : bear]
-    
-    Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
-        debugPrint(response)
-        
-        switch(response.result) {
-            
-        case.success(let data):
-            
-            let json = JSON(data)
-            
-            if (json.count > 0) {
-                
-                for i in 0 ..< json.count {
-                    getDocumentsData(data: json[i])
-                }
-                
-            }
-            completion(true)
-            
-        case.failure(let error):
-            print(error)
-            completion(false)
-        }
-    }
-}
-
 //get stamp from carte
 func onGetStampFromCarte(carteID:Int,completion:@escaping(Bool) -> ()) {
     
@@ -1080,26 +1029,30 @@ func addMedias(cusID:Int,carteID:Int,mediaData:Data,completion:@escaping(Bool) -
         "fc_customer_id": cusID
         ] as [String : Any]
     
-    Alamofire.upload(multipartFormData: { (multipartFormData) in
+    Alamofire.upload(multipartFormData: { multipartFormData in
+        multipartFormData.append(mediaData, withName: "media_files",fileName: "media.jpg", mimeType: "image/jpg")
         for (key, value) in parameters {
-            multipartFormData.append("\(value)".data(using: String.Encoding.utf8)!, withName: key as String)
-        }
-        
-        multipartFormData.append(mediaData, withName: "media_files", fileName: "media.jpg", mimeType: "image/jpg")
-        
-    }, usingThreshold: UInt64.init(),to: url, method: .post, headers: headers) { (result) in
+            multipartFormData.append("\(value)".data(using: String.Encoding.utf8)!, withName: key)
+        } //Optional for extra parameters
+    }, to:url,method: .post, headers: headers) { result in
         switch result {
         case .success(let upload, _, _):
             upload.responseJSON { response in
+                
                 switch(response.result) {
-                    case .success(let data):
+                case .success(let data):
                     let json = JSON(data)
                     
                     if (json.count > 0) {
                         let data = json[0]
                         let id = data["id"].intValue
                         
+                        SVProgressHUD.showProgress(0.6, status: "サーバーにアップロード中:60%")
+                        
                         addMediaIntoCarte(carteID: carteID, mediaID: id, completion: { (success) in
+                            
+                            SVProgressHUD.showProgress(0.8, status: "サーバーにアップロード中:80%")
+                            
                             if success {
                                 completion(true)
                             } else {
@@ -1109,7 +1062,7 @@ func addMedias(cusID:Int,carteID:Int,mediaData:Data,completion:@escaping(Bool) -
                     } else {
                         completion(false)
                     }
-                    case.failure(let error):
+                case.failure(let error):
                     print(error)
                     completion(false)
                 }
@@ -1119,6 +1072,51 @@ func addMedias(cusID:Int,carteID:Int,mediaData:Data,completion:@escaping(Bool) -
             completion(false)
         }
     }
+    
+//    Alamofire.upload(multipartFormData: { (multipartFormData) in
+//        for (key, value) in parameters {
+//            multipartFormData.append("\(value)".data(using: String.Encoding.utf8)!, withName: key as String)
+//        }
+//        multipartFormData.append(mediaData, withName: "media_files", fileName: "media.jpg", mimeType: "image/jpg")
+//
+//    }, usingThreshold: UInt64.init(),to: url, method: .post, headers: headers) { (result) in
+//        switch result {
+//        case .success(let upload, _, _):
+//            upload.responseJSON { response in
+//
+//                switch(response.result) {
+//                    case .success(let data):
+//                    let json = JSON(data)
+//
+//                    if (json.count > 0) {
+//                        let data = json[0]
+//                        let id = data["id"].intValue
+//
+//                        SVProgressHUD.showProgress(0.6, status: "読み込み中")
+//
+//                        addMediaIntoCarte(carteID: carteID, mediaID: id, completion: { (success) in
+//
+//                            SVProgressHUD.showProgress(0.8, status: "読み込み中")
+//
+//                            if success {
+//                                completion(true)
+//                            } else {
+//                                completion(false)
+//                            }
+//                        })
+//                    } else {
+//                        completion(false)
+//                    }
+//                    case.failure(let error):
+//                    print(error)
+//                    completion(false)
+//                }
+//            }
+//        case .failure(let error):
+//            print("Error in upload: \(error.localizedDescription)")
+//            completion(false)
+//        }
+//    }
 }
 
 //updateMediaIntoCarte
@@ -1179,87 +1177,43 @@ func deleteMedias(ids:[Int],completion:@escaping(Bool) -> ()) {
 // MARK: - Memos
 //*****************************************************************
 
-//Get Memos
-func getCarteMemos(carteID:Int,completion:@escaping(Bool) -> ()) {
-    let url = kAPI_URL + kAPI_CARTE + "/\(carteID)?expand=fcFreeMemos,fcStampMemos"
-    
-    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
-    let bear = "Bearer " + secondTok
-    let headers = ["Authorization" : bear]
-    
-    let realm = try! Realm()
-    try! realm.write {
-        realm.delete(realm.objects(MemoData.self))
-    }
-    
-    Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
-        debugPrint(response)
-        
-        switch(response.result) {
-            
-        case.success(let data):
-            let json = JSON(data)
-            
-            if (json.count > 0) {
-                
-                let fm = json["fcFreeMemos"]
-                for i in 0 ..< fm.count {
-                    getFreeMemosData(data: fm[i])
-                }
-                
-                let sm = json["fcStampMemos"]
-                for i in 0 ..< sm.count {
-                    getStampMemosData(data: sm[i])
-                }
-                
-                completion(true)
-            } else {
-                completion(false)
-            }
-        case.failure(let error):
-            print(error)
-            completion(false)
-        }
-    }
-}
-
-//Get Memos
-func addCarteMemos(cusID:Int,carteID:Int,title:String,content:String,position:Int,type:Int,completion:@escaping(Bool) -> ()) {
-    
-    let url = kAPI_URL + kAPI_MEMO
-    
-    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
-    let bear = "Bearer " + secondTok
-    let headers = ["Authorization" : bear]
-    
-    let parameters = [
-        "fc_customer_id": cusID,
-        "fc_customer_carte_id": carteID,
-        "title": title,
-        "content": content,
-        "position": position,
-        "type": type
-        ] as [String : Any]
-    
-    Alamofire.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
-        debugPrint(response)
-        
-        switch(response.result) {
-            
-        case.success(let data):
-            let json = JSON(data)
-            
-            if (json.count > 0) {
-                completion(true)
-            } else {
-                completion(false)
-            }
-        case.failure(let error):
-            print(error)
-            completion(false)
-        }
-    }
-}
+////Get Memos
+//func addCarteMemos(cusID:Int,carteID:Int,title:String,content:String,position:Int,type:Int,completion:@escaping(Bool) -> ()) {
+//
+//    let url = kAPI_URL + kAPI_MEMO
+//
+//    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
+//    let bear = "Bearer " + secondTok
+//    let headers = ["Authorization" : bear]
+//
+//    let parameters = [
+//        "fc_customer_id": cusID,
+//        "fc_customer_carte_id": carteID,
+//        "title": title,
+//        "content": content,
+//        "position": position,
+//        "type": type
+//        ] as [String : Any]
+//
+//    Alamofire.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
+//        debugPrint(response)
+//
+//        switch(response.result) {
+//
+//        case.success(let data):
+//            let json = JSON(data)
+//
+//            if (json.count > 0) {
+//                completion(true)
+//            } else {
+//                completion(false)
+//            }
+//        case.failure(let error):
+//            print(error)
+//            completion(false)
+//        }
+//    }
+//}
 
 //Edit Carte Memo
 func editCarteMemos(memoID:Int,title:String,content:String,completion:@escaping(Bool) -> ()) {
@@ -1286,6 +1240,28 @@ func editCarteMemos(memoID:Int,title:String,content:String,completion:@escaping(
             } else {
                 completion(false)
             }
+        case.failure(let error):
+            print(error)
+            completion(false)
+        }
+    }
+}
+
+//delete carte free memo
+func deleteCarteFreeMemo(memoID:Int,completion:@escaping(Bool) -> ()) {
+    
+    let url = kAPI_URL + kAPI_FREE_MEMO + "/\(memoID)"
+    
+    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
+    let bear = "Bearer " + secondTok
+    let headers = ["Content-Type": "application/x-www-form-urlencoded","Authorization" : bear]
+    
+    Alamofire.request(url, method: .delete, parameters: nil, encoding:  URLEncoding.httpBody, headers: headers).responseJSON { (response:DataResponse<Any>) in
+        
+        switch(response.result) {
+            
+        case.success( _):
+            completion(true)
         case.failure(let error):
             print(error)
             completion(false)
@@ -1328,28 +1304,12 @@ func onSearchSyllabary(characters:[String],page:Int?,completion:@escaping(Bool) 
         
         debugPrint(response)
         
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
-        }
-        
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
-        }
+        onConvertHeaderResult(res: responseR)
         
         switch(response.result) {
             
@@ -1367,7 +1327,6 @@ func onSearchSyllabary(characters:[String],page:Int?,completion:@escaping(Bool) 
                 } else {
                     completion(true)
                 }
-        
             } else {
                 completion(true)
             }
@@ -1449,28 +1408,12 @@ func onSearchName(LName1:String,FName1:String,LNameKana1:String,FNameKana1:Strin
         
         debugPrint(response)
         
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
-        }
-        
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
-        }
+        onConvertHeaderResult(res: responseR)
   
         switch(response.result) {
             
@@ -1487,12 +1430,9 @@ func onSearchName(LName1:String,FName1:String,LNameKana1:String,FNameKana1:Strin
                
                     onSearchName(LName1: LName1, FName1: FName1, LNameKana1: LNameKana1, FNameKana1: FNameKana1, LName2: LName2, FName2: FName2, LNameKana2: LNameKana2, FNameKana2: FNameKana2, LName3: LName3, FName3: FName3, LNameKana3: LNameKana3, FNameKana3: FNameKana3, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
                 } else {
-           
                     completion(true)
                 }
-                
             } else {
-           
                 completion(true)
             }
         case.failure(let error):
@@ -1532,28 +1472,12 @@ func onSearchMobile(mobileNo:[String], page:Int?, completion:@escaping(Bool) -> 
     Alamofire.request(encodedURL!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
         debugPrint(response)
         
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
-        }
-        
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
-        }
+        onConvertHeaderResult(res: responseR)
         
         switch(response.result) {
             
@@ -1567,15 +1491,11 @@ func onSearchMobile(mobileNo:[String], page:Int?, completion:@escaping(Bool) -> 
                 }
                 
                 if GlobalVariables.sharedManager.pageCurr! < GlobalVariables.sharedManager.pageTotal! {
-                  
                     onSearchMobile(mobileNo: mobileNo, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
                 } else {
-            
                     completion(true)
                 }
-            
             } else {
-         
                 completion(true)
             }
         case.failure(let error):
@@ -1602,29 +1522,13 @@ func onSearchDate(params:String,page:Int?,completion:@escaping(Bool) -> ()) {
     
     Alamofire.request(encodedURL!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
         debugPrint(response)
-        
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+ 
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
-        }
-        
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
-        }
+        onConvertHeaderResult(res: responseR)
         
         switch(response.result) {
             
@@ -1641,11 +1545,9 @@ func onSearchDate(params:String,page:Int?,completion:@escaping(Bool) -> ()) {
                
                     onSearchDate(params: params, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
                 } else {
-           
                     completion(true)
                 }
             } else {
-          
                 completion(false)
             }
         case.failure(let error):
@@ -1668,27 +1570,16 @@ func onSearchSelectedDate(params:String,completion:@escaping(Bool) -> ()) {
     Alamofire.request(encodedURL!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
         debugPrint(response)
         
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
-        }
+        onConvertHeaderResult(res: responseR)
         
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
+        let realm = try! Realm()
+        try! realm.write {
+            realm.delete(realm.objects(CustomerData.self))
         }
         
         switch(response.result) {
@@ -1703,7 +1594,6 @@ func onSearchSelectedDate(params:String,completion:@escaping(Bool) -> ()) {
                 }
                 completion(true)
             } else {
-        
                 completion(true)
             }
         case.failure(let error):
@@ -1727,47 +1617,25 @@ func onSearchFrequency(params:String,completion:@escaping(Bool) -> ()) {
     Alamofire.request(encodedURL!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
         debugPrint(response)
         
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
-        }
-        
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
-        }
-        
+        onConvertHeaderResult(res: responseR)
+    
         switch(response.result) {
             
         case.success(let data):
             let json = JSON(data)
             
             if (json.count > 0) {
-             
-                let realm = try! Realm()
-                try! realm.write {
-                    realm.delete(realm.objects(CustomerData.self))
-                }
                 
                 for i in 0 ..< json.count {
                     getCustomerData(data: json[i])
                 }
                 completion(true)
             } else {
-       
                 completion(false)
             }
         case.failure(let error):
@@ -1830,15 +1698,11 @@ func onSearchInterval(params:String,page:Int?,completion:@escaping(Bool) -> ()) 
                 }
                 
                 if GlobalVariables.sharedManager.pageCurr! < GlobalVariables.sharedManager.pageTotal! {
-                
                     onSearchInterval(params: params, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
                 } else {
-                 
                     completion(true)
                 }
-          
             } else {
-             
                 completion(true)
             }
         case.failure(let error):
@@ -1864,28 +1728,12 @@ func onSearchGender(gender:Int,page:Int?,completion:@escaping(Bool) -> ()) {
     Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
         debugPrint(response)
         
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
-        }
-        
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
-        }
+        onConvertHeaderResult(res: responseR)
         
         switch(response.result) {
             
@@ -1903,12 +1751,9 @@ func onSearchGender(gender:Int,page:Int?,completion:@escaping(Bool) -> ()) {
                 
                     onSearchGender(gender: gender, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
                 } else {
-                  
                     completion(true)
                 }
-            
             } else {
-            
                 completion(true)
             }
         case.failure(let error):
@@ -1936,28 +1781,12 @@ func onSearchCustomerNumber(customerNo:String,page:Int?,completion:@escaping(Boo
     Alamofire.request(encodedURL!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
         debugPrint(response)
         
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
-        }
-        
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
-        }
+        onConvertHeaderResult(res: responseR)
         
         switch(response.result) {
             
@@ -1975,12 +1804,9 @@ func onSearchCustomerNumber(customerNo:String,page:Int?,completion:@escaping(Boo
            
                     onSearchCustomerNumber(customerNo: customerNo, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
                 } else {
-                
                     completion(true)
                 }
-                
             } else {
-             
                 completion(true)
             }
         case.failure(let error):
@@ -2008,28 +1834,12 @@ func onSearchResponsiblePerson(name:String,page:Int?,completion:@escaping(Bool) 
     Alamofire.request(encodedURL!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
         debugPrint(response)
         
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
-        }
-        
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
-        }
+        onConvertHeaderResult(res: responseR)
         
         switch(response.result) {
             
@@ -2047,12 +1857,9 @@ func onSearchResponsiblePerson(name:String,page:Int?,completion:@escaping(Bool) 
               
                     onSearchResponsiblePerson(name: name, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
                 } else {
-                
                     completion(true)
                 }
-                
             } else {
-        
                 completion(true)
             }
         case.failure(let error):
@@ -2080,28 +1887,12 @@ func onSearchCustomerNote(memo1:String,memo2:String,page:Int?,completion:@escapi
     Alamofire.request(encodedURL!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
         debugPrint(response)
         
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
-        }
-        
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
-        }
+        onConvertHeaderResult(res: responseR)
         
         switch(response.result) {
             
@@ -2119,12 +1910,9 @@ func onSearchCustomerNote(memo1:String,memo2:String,page:Int?,completion:@escapi
                     
                     onSearchCustomerNote(memo1: memo1, memo2: memo2, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
                 } else {
-                    
                     completion(true)
                 }
-                
             } else {
-                
                 completion(true)
             }
         case.failure(let error):
@@ -2152,28 +1940,64 @@ func onSearchCustomerBirthday(day:String,page:Int?,completion:@escaping(Bool) ->
     Alamofire.request(encodedURL!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
         debugPrint(response)
         
-        let keyValues = response.response?.allHeaderFields.map { (String(describing: $0.key).lowercased(), String(describing: $0.value)) }
-        
-        // Now filter the array, searching for your header-key, also lowercased
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Page-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.pageTotal = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageTotal = 1
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get total customer
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Total-Count".lowercased() }).first {
-            GlobalVariables.sharedManager.totalCus = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.totalCus = 0
+        onConvertHeaderResult(res: responseR)
+        
+        switch(response.result) {
+            
+        case.success(let data):
+            
+            let json = JSON(data)
+            
+            if (json.count > 0) {
+                
+                for i in 0 ..< json.count {
+                    getCustomerData(data: json[i])
+                }
+                
+                if GlobalVariables.sharedManager.pageCurr! < GlobalVariables.sharedManager.pageTotal! {
+                    onSearchCustomerBirthday(day: day, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
+                } else {
+                    completion(true)
+                }
+            } else {
+                completion(true)
+            }
+        case.failure(let error):
+            print(error)
+            completion(false)
+        }
+    }
+}
+
+//Search Customer Birthday Month 2 Month
+func onSearchCustomerBirthdayM2M(month1:String,month2:String,page:Int?,completion:@escaping(Bool) -> ()) {
+    
+    var url = kAPI_URL + kAPI_CUS + "/new-search?" + "search_by_birth_month=true&from_month=\(month1)&to_month=\(month2)"
+    
+    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
+    let bear = "Bearer " + secondTok
+    let headers = ["Authorization" : bear]
+    
+    if page != nil {
+        url.append("&page=\(page!)")
+    }
+    
+    let encodedURL = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+    
+    Alamofire.request(encodedURL!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
+        debugPrint(response)
+        
+        guard let responseR = response.response else {
+            completion(false)
+            return
         }
         
-        //get current page
-        if let myHeaderValue = keyValues?.filter({ $0.0 == "X-Pagination-Current-Page".lowercased() }).first {
-            GlobalVariables.sharedManager.pageCurr = Int(myHeaderValue.1)
-        } else {
-            GlobalVariables.sharedManager.pageCurr = 1
-        }
+        onConvertHeaderResult(res: responseR)
         
         switch(response.result) {
             
@@ -2189,14 +2013,116 @@ func onSearchCustomerBirthday(day:String,page:Int?,completion:@escaping(Bool) ->
                 
                 if GlobalVariables.sharedManager.pageCurr! < GlobalVariables.sharedManager.pageTotal! {
                     
-                    onSearchCustomerBirthday(day: day, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
+                    onSearchCustomerBirthdayM2M(month1: month1, month2: month2, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
                 } else {
-                    
                     completion(true)
                 }
-                
             } else {
+                completion(true)
+            }
+        case.failure(let error):
+            print(error)
+            completion(false)
+        }
+    }
+}
+
+//Search Customer Birthday Year 2 Year
+func onSearchCustomerBirthdayY2Y(year1:String,year2:String,page:Int?,completion:@escaping(Bool) -> ()) {
+    
+    var url = kAPI_URL + kAPI_CUS + "/new-search?" + "search_by_birth_year=true&from_year=\(year1)&to_year=\(year2)"
+    
+    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
+    let bear = "Bearer " + secondTok
+    let headers = ["Authorization" : bear]
+    
+    if page != nil {
+        url.append("&page=\(page!)")
+    }
+    
+    let encodedURL = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
+    
+    Alamofire.request(encodedURL!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
+        debugPrint(response)
+       
+        guard let responseR = response.response else {
+            completion(false)
+            return
+        }
+        
+        onConvertHeaderResult(res: responseR)
+        
+        switch(response.result) {
+            
+        case.success(let data):
+            
+            let json = JSON(data)
+            
+            if (json.count > 0) {
                 
+                for i in 0 ..< json.count {
+                    getCustomerData(data: json[i])
+                }
+                
+                if GlobalVariables.sharedManager.pageCurr! < GlobalVariables.sharedManager.pageTotal! {
+                    
+                    onSearchCustomerBirthdayY2Y(year1: year1, year2: year2, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
+                } else {
+                    completion(true)
+                }
+            } else {
+                completion(true)
+            }
+        case.failure(let error):
+            print(error)
+            completion(false)
+        }
+    }
+}
+
+//Search Customer Address
+func onSearchCustomerAddress(address:String,page:Int?,completion:@escaping(Bool) -> ()) {
+    
+    var url = kAPI_URL + kAPI_CUS + "/new-search?" + "full_address=\(address)"
+    
+    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
+    let bear = "Bearer " + secondTok
+    let headers = ["Authorization" : bear]
+    
+    if page != nil {
+        url.append("&page=\(page!)")
+    }
+    
+    guard let encodedURL = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed) else { return }
+    
+    Alamofire.request(encodedURL, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
+        debugPrint(response)
+        
+        guard let responseR = response.response else {
+            completion(false)
+            return
+        }
+        
+        onConvertHeaderResult(res: responseR)
+        
+        switch(response.result) {
+            
+        case.success(let data):
+            
+            let json = JSON(data)
+            
+            if (json.count > 0) {
+                
+                for i in 0 ..< json.count {
+                    getCustomerData(data: json[i])
+                }
+                
+                if GlobalVariables.sharedManager.pageCurr! < GlobalVariables.sharedManager.pageTotal! {
+                    onSearchCustomerAddress(address: address, page: GlobalVariables.sharedManager.pageCurr! + 1, completion: completion)
+                } else {
+                    completion(true)
+                }
+            } else {
                 completion(true)
             }
         case.failure(let error):
@@ -2230,10 +2156,8 @@ func editCarteStampMemo(stampID:Int,content:String,completion:@escaping(Bool) ->
             let json = JSON(data)
             
             if (json.count > 0) {
-            
                 completion(true)
             } else {
-             
                 completion(false)
             }
         case.failure(let error):
@@ -2264,13 +2188,10 @@ func onAddNewStampCategory(name:String,completion:@escaping(Bool) -> ()) {
             let json = JSON(data)
             
             if ((json.dictionary?.count) != nil) {
-          
                 completion(true)
             } else {
-      
                 completion(false)
             }
-            
         case.failure(let error):
             print(error)
             completion(false)
@@ -2310,42 +2231,6 @@ func onGetStampCategory(completion:@escaping(Bool) -> ()) {
             } else {
             
                 completion(true)
-            }
-        case.failure(let error):
-            print(error)
-            completion(false)
-        }
-    }
-}
-
-//Add keyword to stamp
-func addKeywordToStamp(carteID:Int,cusID:Int,content:String,position:Int,completion:@escaping(Bool) -> ()) {
-    let url = kAPI_URL + kAPI_STAMP_MEMO
-    
-    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
-    let bear = "Bearer " + secondTok
-    let headers = ["Authorization" : bear]
-    
-    let parameters = [
-        "fc_customer_carte_id":carteID,
-        "fc_customer_id":cusID,
-        "position":position,
-        "content":content
-        ] as [String : Any]
-    
-    Alamofire.request(url, method: .put, parameters: parameters, encoding: URLEncoding.httpBody, headers: headers).responseJSON { (response:DataResponse<Any>) in
-        debugPrint(response)
-        
-        switch(response.result) {
-        case.success(let data):
-            let json = JSON(data)
-            
-            if (json.count > 0) {
-         
-                completion(true)
-            } else {
-         
-                completion(false)
             }
         case.failure(let error):
             print(error)
@@ -2449,32 +2334,6 @@ func onGetKeyFromCategory(categoryID: Int,completion:@escaping(Bool) -> ()) {
     }
 }
 
-//get stamp data
-func onGetStampData(completion:@escaping(Bool) -> ()) {
-    
-    let url = kAPI_URL + kAPI_STAMP
-    
-    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
-    let bear = "Bearer " + secondTok
-    let headers = ["Authorization" : bear]
-    
-    let encodedURL = url.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
-    
-    Alamofire.request(encodedURL!, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
-        debugPrint(response)
-        
-        switch(response.result) {
-            
-        case.success(let data):
-            _ = JSON(data)
-            
-        case.failure(let error):
-            print(error)
-            completion(false)
-        }
-    }
-}
-
 //add stamp keyword data
 func onAddKeywords(categoryID:Int,content:String,completion:@escaping(Bool) -> ()) {
 
@@ -2504,6 +2363,38 @@ func onAddKeywords(categoryID:Int,content:String,completion:@escaping(Bool) -> (
                 completion(false)
             }
 
+        case.failure(let error):
+            print(error)
+            completion(false)
+        }
+    }
+}
+
+//edit stamp keyword data
+func onEditKeyword(keywordID:Int,content:String,completion:@escaping(Bool) -> ()) {
+    
+    let url = kAPI_URL + kAPI_KEYWORD + "/\(keywordID)"
+    
+    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
+    let bear = "Bearer " + secondTok
+    let headers = ["Content-Type": "application/x-www-form-urlencoded","Authorization" : bear]
+    
+    let parameters = [
+        "content": content
+        ] as [String : Any]
+    
+    Alamofire.request(url, method: .put, parameters: parameters, encoding:  URLEncoding.httpBody, headers: headers).responseJSON { (response:DataResponse<Any>) in
+        
+        switch(response.result) {
+            
+        case.success(let data):
+            let json = JSON(data)
+            
+            if ((json.dictionary?.count) != nil) {
+                completion(true)
+            } else {
+                completion(false)
+            }
         case.failure(let error):
             print(error)
             completion(false)
@@ -2606,45 +2497,45 @@ func onAddNewFreeMemo(carteID:Int,cusID:Int,title:String,content:String,position
 }
 
 
-//Edit Stamp
-func onEditFreeMemo(memoID:Int,content:String,completion:@escaping(Bool) -> ()) {
-    let url = kAPI_URL + kAPI_FREE_MEMO + "/\(memoID)"
-    
-    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
-    let bear = "Bearer " + secondTok
-    let headers = ["Content-Type": "application/x-www-form-urlencoded","Authorization" : bear]
-    
-    let parameters = [
-        "content":content
-        ] as [String : Any]
-    
-    Alamofire.request(url, method: .put, parameters: parameters, encoding: URLEncoding.httpBody, headers: headers).responseJSON { (response:DataResponse<Any>) in
-        debugPrint(response)
-        
-        switch(response.result) {
-        case.success(let data):
-            let json = JSON(data)
-            
-            if (json.count > 0) {
-              
-                completion(true)
-            } else {
-            
-                completion(false)
-            }
-        case.failure(let error):
-            print(error)
-            completion(false)
-        }
-    }
-}
+////Edit Stamp
+//func onEditFreeMemo(memoID:Int,content:String,completion:@escaping(Bool) -> ()) {
+//    let url = kAPI_URL + kAPI_FREE_MEMO + "/\(memoID)"
+//
+//    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
+//    let bear = "Bearer " + secondTok
+//    let headers = ["Content-Type": "application/x-www-form-urlencoded","Authorization" : bear]
+//
+//    let parameters = [
+//        "content":content
+//        ] as [String : Any]
+//
+//    Alamofire.request(url, method: .put, parameters: parameters, encoding: URLEncoding.httpBody, headers: headers).responseJSON { (response:DataResponse<Any>) in
+//        debugPrint(response)
+//
+//        switch(response.result) {
+//        case.success(let data):
+//            let json = JSON(data)
+//
+//            if (json.count > 0) {
+//
+//                completion(true)
+//            } else {
+//
+//                completion(false)
+//            }
+//        case.failure(let error):
+//            print(error)
+//            completion(false)
+//        }
+//    }
+//}
 
 //*****************************************************************
 // MARK: - Secret Memo
 //*****************************************************************
 
 //Access Secret Memo
-func getAccessSecretMemo(password:String,completion:@escaping(Bool) -> ()) {
+func getAccessSecretMemo(password:String,completion: @escaping StringCompletion) {
     
     let url = kAPI_URL + kAPI_ACC + "/secret-memo-auth"
     
@@ -2664,13 +2555,13 @@ func getAccessSecretMemo(password:String,completion:@escaping(Bool) -> ()) {
             let json = JSON(data)
             let code = json["code"]
             if code == 0 {
-                completion(false)
+                completion(false,MSG_ALERT.kALERT_WRONG_PASSWORD)
             } else {
-                completion(true)
+                completion(true,MSG_ALERT.kALERT_UPDATE_SECRET_PASSWORD_SUCCESS)
             }
         case.failure(let error):
             print(error)
-            completion(false)
+            completion(false,MSG_ALERT.kALERT_INTERNET_NOT_CONNECTED_PLEASE_CHECK_AGAIN)
         }
     }
 }
@@ -2843,40 +2734,40 @@ func onGetDocumentsTemplate(completion:@escaping(Bool) -> ()) {
     }
 }
 
-//get
-func onGetDocumentOnEdit(docID:Int,completion:@escaping(Bool) -> ()) {
-    
-    let url = kAPI_URL + kAPI_DOCUMENTS + "/\(docID)"
-    
-    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
-    let bear = "Bearer " + secondTok
-    let headers = ["Authorization" : bear]
-    
-    Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
-        debugPrint(response)
-        
-        switch(response.result) {
-            
-        case.success(let data):
-            
-            let json = JSON(data)
-            
-            if (json.count > 0) {
-                
-                for i in 0 ..< json.count {
-                    getDocumentsData(data: json[i])
-                }
-                
-            }
-            
-            completion(true)
-            
-        case.failure(let error):
-            print(error)
-            completion(false)
-        }
-    }
-}
+////get
+//func onGetDocumentOnEdit(docID:Int,completion:@escaping(Bool) -> ()) {
+//
+//    let url = kAPI_URL + kAPI_DOCUMENTS + "/\(docID)"
+//
+//    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
+//    let bear = "Bearer " + secondTok
+//    let headers = ["Authorization" : bear]
+//
+//    Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response:DataResponse<Any>) in
+//        debugPrint(response)
+//
+//        switch(response.result) {
+//
+//        case.success(let data):
+//
+//            let json = JSON(data)
+//
+//            if (json.count > 0) {
+//
+//                for i in 0 ..< json.count {
+//                    getDocumentsData(data: json[i])
+//                }
+//
+//            }
+//
+//            completion(true)
+//
+//        case.failure(let error):
+//            print(error)
+//            completion(false)
+//        }
+//    }
+//}
 
 //Add Documents to Carte
 func addDocumentIntoCarte(documentID:Int,carteID:Int,completion:@escaping ArrayCompletion) {
@@ -3026,6 +2917,94 @@ func addDocumentIntoCustomer(cusID:Int,documentType:Int,pageNo:Int,urlD:String,c
 }
 
 //Edit Documents Page
+func editDocumentInCarteFromNew(documentIDs:[Int],imageData: [Data],page:Int,isEdited:Int,completion:@escaping(Bool) -> ()) {
+    let url = kAPI_URL + kAPI_DOCUMENT_PAGE + "/update-two/\(documentIDs[page - 1])"
+    
+    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
+    let bear = "Bearer " + secondTok
+    let headers = ["Content-Type": "application/x-www-form-urlencoded","Authorization" : bear]
+    
+    let parameters = [
+        "page": page,
+        "is_edited":isEdited
+        ] as [String : Any]
+    
+    Alamofire.upload(multipartFormData: { (multipartFormData) in
+        for (key, value) in parameters {
+            multipartFormData.append("\(value)".data(using: String.Encoding.utf8)!, withName: key as String)
+        }
+        
+        multipartFormData.append(imageData[page - 1], withName: "media_file", fileName: "doc.jpg", mimeType: "image/jpg")
+        
+    }, usingThreshold: UInt64.init(),to: url, method: .post, headers: headers) { (result) in
+        switch result{
+        case .success(let upload, _, _):
+            upload.responseJSON { response in
+                
+                if let err = response.error{
+                    
+                    print(err)
+                    completion(false)
+                }
+                
+                if page < documentIDs.count {
+                    editDocumentInCarteFromNew(documentIDs:documentIDs,imageData: imageData,page: page + 1, isEdited: isEdited, completion: completion)
+                } else {
+                    completion(true)
+                }
+            }
+        case .failure(let error):
+            print("Error in upload: \(error.localizedDescription)")
+            completion(false)
+        }
+    }
+}
+
+//Edit Documents Page
+func editDocumentInCarteNew(document:DocumentData,imageData: [Data],page:Int,isEdited:Int,completion:@escaping(Bool) -> ()) {
+    let url = kAPI_URL + kAPI_DOCUMENT_PAGE + "/update-two/\(document.document_pages[page - 1].id)"
+    
+    let secondTok: String = UserDefaults.standard.string(forKey: "token")!
+    let bear = "Bearer " + secondTok
+    let headers = ["Content-Type": "application/x-www-form-urlencoded","Authorization" : bear]
+    
+    let parameters = [
+        "page": page,
+        "is_edited":isEdited
+        ] as [String : Any]
+    
+    Alamofire.upload(multipartFormData: { (multipartFormData) in
+        for (key, value) in parameters {
+            multipartFormData.append("\(value)".data(using: String.Encoding.utf8)!, withName: key as String)
+        }
+        
+        multipartFormData.append(imageData[page - 1], withName: "media_file", fileName: "doc.jpg", mimeType: "image/jpg")
+        
+    }, usingThreshold: UInt64.init(),to: url, method: .post, headers: headers) { (result) in
+        switch result{
+        case .success(let upload, _, _):
+            upload.responseJSON { response in
+                
+                if let err = response.error{
+                    
+                    print(err)
+                    completion(false)
+                }
+                
+                if page < document.document_pages.count {
+                    editDocumentInCarteNew(document: document,imageData: imageData,page: page + 1, isEdited: isEdited, completion: completion)
+                } else {
+                    completion(true)
+                }
+            }
+        case .failure(let error):
+            print("Error in upload: \(error.localizedDescription)")
+            completion(false)
+        }
+    }
+}
+
+//Edit Documents Page
 func editDocumentInCarte(documentPageID:Int,page:Int,imageData:Data,isEdited:Int,completion:@escaping(Bool) -> ()) {
     let url = kAPI_URL + kAPI_DOCUMENT_PAGE + "/update-two/\(documentPageID)"
     
@@ -3083,10 +3062,34 @@ func countStorage(completion:@escaping(Bool) -> ()) {
         switch(response.result) {
             
         case.success(let data):
-            _ = JSON(data)
+            let json = JSON(data)
             
+            if (json.count > 0) {
+                if let maxSize = json["accountMaxSize"] as JSON? {
+                    // access nested dictionary values by key
+                    for (key, value) in maxSize {
+                        // access all key / value pairs in dictionary
+                        print(key)
+                        print(value)
+                        if key == "bytes" {
+                            GlobalVariables.sharedManager.limitSize = value.int64Value
+                        }
+                    }
+                }
+                
+                if let maxSize = json["curentSize"] as JSON? {
+                    // access nested dictionary values by key
+                    for (key, value) in maxSize {
+                        // access all key / value pairs in dictionary
+                        print(key)
+                        print(value)
+                        if key == "bytes" {
+                            GlobalVariables.sharedManager.currentSize = value.int64Value
+                        }
+                    }
+                }
+            }
             completion(true)
-            
         case.failure(let error):
             print(error)
             completion(false)

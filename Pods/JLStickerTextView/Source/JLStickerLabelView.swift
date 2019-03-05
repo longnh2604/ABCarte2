@@ -476,20 +476,20 @@ extension JLStickerLabelView {
                 border?.removeFromSuperlayer()
             }
             
-//            if let transform: CGAffineTransform = superView.transform {
-//                let scale = CalculateFunctions.CGAffineTransformGetScale(transform)
-//                let t = CGAffineTransform(scaleX: scale.width, y: scale.height)
-//                closeView?.transform = t.inverted()
-//                rotateView?.transform = t.inverted()
-//
-//                if (isShowingEditingHandles) {
-//                    if let border: CALayer = border {
-//                        labelTextView?.layer.addSublayer(border)
-//                    }
-//                }else {
-//                    border?.removeFromSuperlayer()
-//                }
-//            }
+            //            if let transform: CGAffineTransform = superView.transform {
+            //                let scale = CalculateFunctions.CGAffineTransformGetScale(transform)
+            //                let t = CGAffineTransform(scaleX: scale.width, y: scale.height)
+            //                closeView?.transform = t.inverted()
+            //                rotateView?.transform = t.inverted()
+            //
+            //                if (isShowingEditingHandles) {
+            //                    if let border: CALayer = border {
+            //                        labelTextView?.layer.addSublayer(border)
+            //                    }
+            //                }else {
+            //                    border?.removeFromSuperlayer()
+            //                }
+            //            }
         }
     }
     

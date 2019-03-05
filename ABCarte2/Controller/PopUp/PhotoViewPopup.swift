@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import JGProgressHUD
 
 protocol PhotoViewPopupDelegate: class {
     func onSetCartePhoto(mediaID:String,url:String)
@@ -39,36 +38,28 @@ class PhotoViewPopup: UIViewController {
         scrollView.maximumZoomScale = 5.0
         scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-        guard let url = imgURL else {
-            return
-        }
+        guard let url = imgURL else { return }
         
-        let hud = JGProgressHUD(style: .dark)
-        hud.vibrancyEnabled = true
-        hud.textLabel.text = "LOADING"
-        hud.layoutMargins = UIEdgeInsetsMake(0.0, 0.0, 10.0, 0.0)
-        hud.show(in: self.view)
+        SVProgressHUD.show(withStatus: "読み込み中")
+        SVProgressHUD.setDefaultMaskType(.clear)
         
         imvPhoto.sd_setImage(with: URL(string: url)) { (image, error, cache, url) in
             if (error != nil) {
-                showAlert(message: kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
-                
-            } else {
-                
+                showAlert(message: MSG_ALERT.kALERT_CANT_GET_PHOTO_INFO_PLEASE_CHECK_NETWORK, view: self)
             }
-            hud.dismiss()
+            SVProgressHUD.dismiss()
         }
         
         guard let ty = type else {
             btnSetCartePhoto.isHidden = true
             return
         }
-        
         if ty == 1 {
             btnSetCartePhoto.isHidden = false
         } else {
             btnSetCartePhoto.isHidden = true
         }
+        setButtonColorStyle(button: btnSetCartePhoto, type: 1)
     }
     
     //*****************************************************************

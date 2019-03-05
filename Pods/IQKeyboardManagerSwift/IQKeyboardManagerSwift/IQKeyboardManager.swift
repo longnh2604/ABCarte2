@@ -168,12 +168,6 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
     }
 
     /**
-    Prevent keyboard manager to slide up the rootView to more than keyboard height. Default is YES.
-    */
-    @available(*,deprecated, message: "Due to change in core-logic of handling distance between textField and keyboard distance, this tweak is no longer needed and things will just work out of the box for most of the cases.")
-    @objc public var preventShowingBottomBlankSpace = true
-    
-    /**
     Returns the default singleton instance.
     */
     @objc public class var shared: IQKeyboardManager {
@@ -285,28 +279,22 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
     @objc public var previousNextDisplayMode = IQPreviousNextDisplayMode.Default
 
     /**
-     Toolbar done button icon, If nothing is provided then check toolbarDoneBarButtonItemText to draw done button.
+     Toolbar previous/next/done button icon, If nothing is provided then check toolbarDoneBarButtonItemText to draw done button.
      */
+    @objc public var toolbarPreviousBarButtonItemImage : UIImage?
+    @objc public var toolbarNextBarButtonItemImage : UIImage?
     @objc public var toolbarDoneBarButtonItemImage : UIImage?
-    
+
     /**
-     Toolbar done button text, If nothing is provided then system default 'UIBarButtonSystemItemDone' will be used.
+     Toolbar previous/next/done button text, If nothing is provided then system default 'UIBarButtonSystemItemDone' will be used.
      */
+    @objc public var toolbarPreviousBarButtonItemText : String?
+    @objc public var toolbarNextBarButtonItemText : String?
     @objc public var toolbarDoneBarButtonItemText : String?
 
     /**
     If YES, then it add the textField's placeholder text on IQToolbar. Default is YES.
     */
-    @available(*,deprecated, message: "This is renamed to `shouldShowToolbarPlaceholder` for more clear naming.")
-    @objc public var shouldShowTextFieldPlaceholder: Bool {
-        
-        set {
-            shouldShowToolbarPlaceholder =  newValue
-        }
-        get {
-            return shouldShowToolbarPlaceholder
-        }
-    }
     @objc public var shouldShowToolbarPlaceholder = true
 
     /**
@@ -589,7 +577,7 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
                 var invocation = barButton.invocation
                 //Handling search bar special case
                 do {
-                    if let searchBar = textFieldRetain.searchBar() {
+                    if let searchBar = textFieldRetain.textFieldSearchBar() {
                         invocation = searchBar.keyboardToolbar.previousBarButton.invocation
                     }
                 }
@@ -618,7 +606,7 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
                 var invocation = barButton.invocation
                 //Handling search bar special case
                 do {
-                    if let searchBar = textFieldRetain.searchBar() {
+                    if let searchBar = textFieldRetain.textFieldSearchBar() {
                         invocation = searchBar.keyboardToolbar.nextBarButton.invocation
                     }
                 }
@@ -646,7 +634,7 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
             var invocation = barButton.invocation
             //Handling search bar special case
             do {
-                if let searchBar = textFieldRetain.searchBar() {
+                if let searchBar = textFieldRetain.textFieldSearchBar() {
                     invocation = searchBar.keyboardToolbar.doneBarButton.invocation
                 }
             }
@@ -704,28 +692,6 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
     If YES, then calls 'setNeedsLayout' and 'layoutIfNeeded' on any frame update of to viewController's view.
     */
     @objc public var layoutIfNeededOnUpdate = false
-
-    ///-----------------------------------------------
-    /// MARK: InteractivePopGestureRecognizer handling
-    ///-----------------------------------------------
-    
-    /**
-     If YES, then always consider UINavigationController.view begin point as {0,0}, this is a workaround to fix a bug #464 because there are no notification mechanism exist when UINavigationController.view.frame gets changed internally.
-     */
-    @available(*,deprecated, message: "Due to change in core-logic of handling distance between textField and keyboard distance, this tweak is no longer needed and things will just work out of the box for most of the cases. This property will be removed in future release.")
-    @objc public var shouldFixInteractivePopGestureRecognizer = true
-    
-#if swift(>=3.2)
-    ///----------------
-    /// MARK: Safe Area
-    ///----------------
-
-    /**
-     If YES, then library will try to adjust viewController.additionalSafeAreaInsets to automatically handle layout guide. Default is NO.
-     */
-    @available(*,deprecated, message: "Due to change in core-logic of handling distance between textField and keyboard distance, this safe area tweak is no longer needed and things will just work out of the box regardless of constraint pinned with safeArea/layoutGuide/superview. This property will be removed in future release.")
-    @objc public var canAdjustAdditionalSafeAreaInsets = false
-#endif
 
     ///------------------------------------
     /// MARK: Class Level disabling methods
@@ -975,7 +941,7 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
             //Maintain keyboardDistanceFromTextField
             var specialKeyboardDistanceFromTextField = textFieldView.keyboardDistanceFromTextField
             
-            if let searchBar = textFieldView.searchBar() {
+            if let searchBar = textFieldView.textFieldSearchBar() {
                 
                 specialKeyboardDistanceFromTextField = searchBar.keyboardDistanceFromTextField
             }
@@ -983,9 +949,12 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
             let newKeyboardDistanceFromTextField = (specialKeyboardDistanceFromTextField == kIQUseDefaultKeyboardDistance) ? keyboardDistanceFromTextField : specialKeyboardDistanceFromTextField
             var kbSize = _kbSize
             kbSize.height += newKeyboardDistanceFromTextField
-            
-            let topLayoutGuide : CGFloat = rootController.view.layoutMargins.top + 5
-            let bottomLayoutGuide : CGFloat = rootController.view.layoutMargins.bottom
+
+            let navigationBarAreaHeight : CGFloat = UIApplication.shared.statusBarFrame.height + ( rootController.navigationController?.navigationBar.frame.height ?? 0)
+            let layoutAreaHeight : CGFloat = rootController.view.layoutMargins.bottom
+
+            let topLayoutGuide : CGFloat = max(navigationBarAreaHeight, layoutAreaHeight) + 5
+            let bottomLayoutGuide : CGFloat = (textFieldView is UITextView) ? 0 : rootController.view.layoutMargins.bottom  //Validation of textView for case where there is a tab bar at the bottom or running on iPhone X and textView is at the bottom.
 
             //  Move positive = textField is hidden.
             //  Move negative = textField is showing.
@@ -1802,34 +1771,47 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
                         textField.inputAccessoryView?.tag == IQKeyboardManager.kIQPreviousNextButtonToolbarTag ||
                         textField.inputAccessoryView?.tag == IQKeyboardManager.kIQDoneButtonToolbarTag {
                         
+                        let rightConfiguration : IQBarButtonItemConfiguration
+                        
+                        if let doneBarButtonItemImage = toolbarDoneBarButtonItemImage {
+                            rightConfiguration = IQBarButtonItemConfiguration(image: doneBarButtonItemImage, action: #selector(self.doneAction(_:)))
+                        } else if let doneBarButtonItemText = toolbarDoneBarButtonItemText {
+                            rightConfiguration = IQBarButtonItemConfiguration(title: doneBarButtonItemText, action: #selector(self.doneAction(_:)))
+                        } else {
+                            rightConfiguration = IQBarButtonItemConfiguration(barButtonSystemItem: .done, action: #selector(self.doneAction(_:)))
+                        }
+                        
                         //	If only one object is found, then adding only Done button.
                         if (siblings.count == 1 && previousNextDisplayMode == .Default) || previousNextDisplayMode == .alwaysHide {
                             
-                            if let doneBarButtonItemImage = toolbarDoneBarButtonItemImage {
-                                textField.addRightButtonOnKeyboardWithImage(doneBarButtonItemImage, target: self, action: #selector(self.doneAction(_:)), shouldShowPlaceholder: shouldShowToolbarPlaceholder)
-                            }
-                                //Supporting Custom Done button text (Enhancement ID: #209, #411, Bug ID: #376)
-                            else if let doneBarButtonItemText = toolbarDoneBarButtonItemText {
-                                textField.addRightButtonOnKeyboardWithText(doneBarButtonItemText, target: self, action: #selector(self.doneAction(_:)), shouldShowPlaceholder: shouldShowToolbarPlaceholder)
-                            } else {
-                                //Now adding textField placeholder text as title of IQToolbar  (Enhancement ID: #27)
-                                textField.addDoneOnKeyboardWithTarget(self, action: #selector(self.doneAction(_:)), shouldShowPlaceholder: shouldShowToolbarPlaceholder)
-                            }
+                            textField.addKeyboardToolbarWithTarget(target: self, titleText: (shouldShowToolbarPlaceholder ? textField.drawingToolbarPlaceholder : nil), rightBarButtonConfiguration: rightConfiguration, previousBarButtonConfiguration: nil, nextBarButtonConfiguration: nil)
+
                             textField.inputAccessoryView?.tag = IQKeyboardManager.kIQDoneButtonToolbarTag //  (Bug ID: #78)
                             
                         } else if (siblings.count > 1 && previousNextDisplayMode == .Default) || previousNextDisplayMode == .alwaysShow {
                             
-                            //Supporting Custom Done button image (Enhancement ID: #366)
-                            if let doneBarButtonItemImage = toolbarDoneBarButtonItemImage {
-                                textField.addPreviousNextRightOnKeyboardWithTarget(self, rightButtonImage: doneBarButtonItemImage, previousAction: #selector(self.previousAction(_:)), nextAction: #selector(self.nextAction(_:)), rightButtonAction: #selector(self.doneAction(_:)), shouldShowPlaceholder: shouldShowToolbarPlaceholder)
-                            }
-                                //Supporting Custom Done button text (Enhancement ID: #209, #411, Bug ID: #376)
-                            else if let doneBarButtonItemText = toolbarDoneBarButtonItemText {
-                                textField.addPreviousNextRightOnKeyboardWithTarget(self, rightButtonTitle: doneBarButtonItemText, previousAction: #selector(self.previousAction(_:)), nextAction: #selector(self.nextAction(_:)), rightButtonAction: #selector(self.doneAction(_:)), shouldShowPlaceholder: shouldShowToolbarPlaceholder)
+                            let prevConfiguration : IQBarButtonItemConfiguration
+                            
+                            if let doneBarButtonItemImage = toolbarPreviousBarButtonItemImage {
+                                prevConfiguration = IQBarButtonItemConfiguration(image: doneBarButtonItemImage, action: #selector(self.previousAction(_:)))
+                            } else if let doneBarButtonItemText = toolbarPreviousBarButtonItemText {
+                                prevConfiguration = IQBarButtonItemConfiguration(title: doneBarButtonItemText, action: #selector(self.previousAction(_:)))
                             } else {
-                                //Now adding textField placeholder text as title of IQToolbar  (Enhancement ID: #27)
-                                textField.addPreviousNextDoneOnKeyboardWithTarget(self, previousAction: #selector(self.previousAction(_:)), nextAction: #selector(self.nextAction(_:)), doneAction: #selector(self.doneAction(_:)), shouldShowPlaceholder: shouldShowToolbarPlaceholder)
+                                prevConfiguration = IQBarButtonItemConfiguration(image: (UIImage.keyboardPreviousImage() ?? UIImage()), action: #selector(self.previousAction(_:)))
                             }
+
+                            let nextConfiguration : IQBarButtonItemConfiguration
+                            
+                            if let doneBarButtonItemImage = toolbarNextBarButtonItemImage {
+                                nextConfiguration = IQBarButtonItemConfiguration(image: doneBarButtonItemImage, action: #selector(self.nextAction(_:)))
+                            } else if let doneBarButtonItemText = toolbarNextBarButtonItemText {
+                                nextConfiguration = IQBarButtonItemConfiguration(title: doneBarButtonItemText, action: #selector(self.nextAction(_:)))
+                            } else {
+                                nextConfiguration = IQBarButtonItemConfiguration(image: (UIImage.keyboardNextImage() ?? UIImage()), action: #selector(self.nextAction(_:)))
+                            }
+
+                            textField.addKeyboardToolbarWithTarget(target: self, titleText: (shouldShowToolbarPlaceholder ? textField.drawingToolbarPlaceholder : nil), rightBarButtonConfiguration: rightConfiguration, previousBarButtonConfiguration: prevConfiguration, nextBarButtonConfiguration: nextConfiguration)
+
                             textField.inputAccessoryView?.tag = IQKeyboardManager.kIQPreviousNextButtonToolbarTag //  (Bug ID: #78)
                         }
 
@@ -1841,7 +1823,7 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
                             //Bar style according to keyboard appearance
                             switch _textField.keyboardAppearance {
                                 
-                            case UIKeyboardAppearance.dark:
+                            case .dark:
                                 toolbar.barStyle = UIBarStyle.black
                                 toolbar.tintColor = UIColor.white
                                 toolbar.barTintColor = nil
@@ -1863,7 +1845,7 @@ public class IQKeyboardManager: NSObject, UIGestureRecognizerDelegate {
                             //Bar style according to keyboard appearance
                             switch _textView.keyboardAppearance {
                                 
-                            case UIKeyboardAppearance.dark:
+                            case .dark:
                                 toolbar.barStyle = UIBarStyle.black
                                 toolbar.tintColor = UIColor.white
                                 toolbar.barTintColor = nil

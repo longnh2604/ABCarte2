@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 open class Brush: NSObject {
     @objc open var color: UIColor = UIColor.black {
         willSet(colorValue) {
@@ -16,11 +17,9 @@ open class Brush: NSObject {
             blendMode = isEraser ? .clear : .normal
         }
     }
-    @objc open var width: CGFloat = 15.0
+    @objc open var width: CGFloat = 1.0
     @objc open var alpha: CGFloat = 1.0
     
     @objc internal var blendMode: CGBlendMode = .normal
     @objc internal var isEraser: Bool = false
 }
-
-

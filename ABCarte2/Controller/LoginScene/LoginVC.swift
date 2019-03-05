@@ -23,14 +23,35 @@ class LoginVC: UIViewController {
     
     // IBOutlet
     @IBOutlet weak var btnLogin: TransitionButton!
+    @IBOutlet weak var btnFacebook: UIButton!
     @IBOutlet weak var btnQRLogin: TransitionButton!
     @IBOutlet weak var viewLogin: UIView!
     @IBOutlet weak var tfUsername: UITextField!
     @IBOutlet weak var tfPassword: UITextField!
     @IBOutlet weak var lblVersion: UILabel!
+    @IBOutlet weak var imvBackground: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        #if SERMENT
+        UserDefaults.standard.set(2, forKey: "colorset")
+        imvBackground.image = UIImage(named: "SERMENT_splash.png")
+        lblVersion.textColor = UIColor.black
+        btnFacebook.isHidden = true
+        #elseif SHISEI
+        UserDefaults.standard.set(5, forKey: "colorset")
+        imvBackground.image = UIImage(named: "SHISEI_splash.png")
+        lblVersion.textColor = UIColor.black
+        #elseif AIMB
+        UserDefaults.standard.set(6, forKey: "colorset")
+        imvBackground.image = UIImage(named: "AIMB_login.png")
+        lblVersion.textColor = UIColor.black
+        btnFacebook.isHidden = true
+        #else
+        UserDefaults.standard.set(1, forKey: "colorset")
+        imvBackground.image = UIImage(named: "JBS_attender_splash.jpg")
+        #endif
         
         setupUI()
     }
@@ -78,12 +99,16 @@ class LoginVC: UIViewController {
         }
     }
     
-    func goToAppSelect() {
-        guard let vc =  self.storyboard?.instantiateViewController(withIdentifier: "AppSelectVC") as? AppSelectVC else {
-            return
-        }
-        
+    func goNextPage() {
+        #if SERMENT || SHISEI || AIMB
+        guard let mainPageView =  self.storyboard?.instantiateViewController(withIdentifier: "MainVC") as? MainVC else { return }
+        let navController = UINavigationController(rootViewController: mainPageView)
+        navController.navigationBar.tintColor = UIColor.white
+        self.present(navController, animated: true, completion: nil)
+        #else
+        guard let vc =  self.storyboard?.instantiateViewController(withIdentifier: "AppSelectVC") as? AppSelectVC else { return }
         self.present(vc, animated: true, completion: nil)
+        #endif
     }
     
     func callNumber(phoneNumber:String) {
@@ -100,7 +125,7 @@ class LoginVC: UIViewController {
         let alert = UIAlertController(title: "ユーザー名:\(comName)でログインしてよろしいですか？", message: nil, preferredStyle: .alert)
         let cancel = UIAlertAction(title: "取消", style: .default, handler: nil)
         let confirm = UIAlertAction(title: "OK", style: .default) { UIAlertAction in
-            self.goToAppSelect()
+            self.goNextPage()
         }
         
         alert.addAction(confirm)
@@ -114,7 +139,6 @@ class LoginVC: UIViewController {
         switch type {
         case 1:
             self.btnLogin.stopAnimation()
-            
         case 2:
             self.btnQRLogin.stopAnimation()
         default:
@@ -135,59 +159,60 @@ class LoginVC: UIViewController {
             isLogin = true
             sender.startAnimation()
             
-            guard let appV = appVersion, let iosV = iosVersion else {
-                return
-            }
+            guard let appV = appVersion, let iosV = iosVersion else { return }
             
             authenticateServer(accID: tfUsername.text!, accPassword: tfPassword.text!,appVer: appV,iOSVer: iosV) { (success, msg) in
                 if success {
-                  
-                    searchCustomers(completion: { (success) in
-                        if success {
-                            
-                            let realm = try! Realm()
-                            try! realm.write {
-                                realm.delete(realm.objects(CustomerData.self))
-                            }
-                            
-                            getCustomers(page: 1, completion: { (success) in
-                                if success {
-                                    sender.stopAnimation()
-                                    self.goToAppSelect()
-                                } else {
-                                    self.stopLoginProcess(message: kALERT_CANT_GET_ACCOUNT_INFO_PLEASE_CONTACT_SUPPORTER,type: 1)
-                                }
-                            })
-                        } else {
-                            self.stopLoginProcess(message: msg,type: 1)
-                        }
-                    })
+                    self.goNextPage()
                 } else {
                     self.stopLoginProcess(message: msg,type: 1)
                 }
+                sender.stopAnimation()
             }
         }
     }
     
     //open QR View Controller
     @IBAction func onQRLoginSelect(_ sender: UIButton) {
-        let controller = BarcodeScannerViewController()
-        controller.codeDelegate = self
-        controller.errorDelegate = self
-        controller.dismissalDelegate = self
-        present(controller, animated: true, completion: nil)
+        
+        if isLogin == false { 
+            guard let controller = BarcodeScannerViewController() as BarcodeScannerViewController? else { return }
+            controller.codeDelegate = self
+            controller.errorDelegate = self
+            controller.dismissalDelegate = self
+            present(controller, animated: true, completion: nil)
+        }
+        
     }
     
     //redirect to website
     @IBAction func onWebsiteSelect(_ sender: UIButton) {
+        #if SERMENT
+        UIApplication.tryURL(urls: ["https://www.sermentjapan.com/"])
+        #elseif SHISEI
+        UIApplication.tryURL(urls: ["https://jppm.or.jp/index.html"])
+        #elseif AIMB
+        UIApplication.tryURL(urls: ["https://aim-b.co.jp"])
+        #else
         UIApplication.tryURL(urls: ["http://eyebrow.co.jp/index.html"])
+        #endif
     }
     
     //call by phone
     @IBAction func onFacebookSelect(_ sender: UIButton) {
+        
+        var appURL = ""
+        var webURL = ""
+        #if SHISEI
+        appURL = "fb://profile/nakada.tomoko.96"
+        webURL = "https://www.facebook.com/nakada.tomoko.96/"
+        #else
+        appURL = "fb://profile/eyebrow.willbrow.ista"
+        webURL = "https://www.facebook.com/eyebrow.willbrow.ista/"
+        #endif
         UIApplication.tryURL(urls: [
-            "fb://profile/eyebrow.willbrow.ista", // App
-            "https://www.facebook.com/eyebrow.willbrow.ista/" // Website if app fails
+            appURL, // App
+            webURL // Website if app fails
             ])
     }
     
@@ -249,41 +274,26 @@ extension LoginVC:BarcodeScannerDismissalDelegate,BarcodeScannerCodeDelegate,Bar
             
             if success {
              
-                guard let appV = self.appVersion, let iosV = self.iosVersion else {
-                    return
-                }
+                guard let appV = self.appVersion, let iosV = self.iosVersion else { return }
                 
                 authenticateServer(accID: user, accPassword: pass,appVer: appV,iOSVer: iosV) { (success, msg) in
                     if success {
-                       
-                        searchCustomers(completion: { (success) in
-                            if success {
-                                
-                                let realm = try! Realm()
-                                try! realm.write {
-                                    realm.delete(realm.objects(CustomerData.self))
-                                }
-                                
+                        
                                 getCustomers(page: 1, completion: { (success) in
                                     if success {
                                         self.btnQRLogin.stopAnimation()
+                                        self.isLogin = false
                                         completion(true)
                                     } else {
-                                        self.stopLoginProcess(message: kALERT_CANT_GET_ACCOUNT_INFO_PLEASE_CONTACT_SUPPORTER,type: 2)
+                                        self.stopLoginProcess(message: MSG_ALERT.kALERT_CANT_GET_ACCOUNT_INFO_PLEASE_CONTACT_SUPPORTER,type: 2)
                                         completion(false)
                                     }
                                 })
-                            } else {
-                                self.stopLoginProcess(message: msg,type: 2)
-                                completion(false)
-                            }
-                        })
                     } else {
                         self.stopLoginProcess(message: msg,type: 2)
                         completion(false)
                     }
                 }
-                
             } else {
                 self.stopLoginProcess(message: msg,type: 2)
                 completion(false)
